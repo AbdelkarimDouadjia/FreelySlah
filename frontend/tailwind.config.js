@@ -14,8 +14,18 @@ export default {
         textColor: "#4E545F",
       },
 
+      // boxShadow: {
+      //   panelShadow: "rgba(17, 12, 46, 0.15) 0px 48px 100px 0px",
+      // },
+
       boxShadow: {
-        panelShadow: "rgba(17, 12, 46, 0.15) 0px 48px 100px 0px",
+        "input": "0 1px 2px 0 #1018280d",
+      },
+      boxshadow: {
+        "bshadow": "inset 0 0 0 0px #fff, inset 0 0 0 1px rgb(209 213 219 / 1), 0 0 #000",
+      },
+      minHeight: {
+        "minus-72": "calc(100vh - 72px)",
       },
     },
   },
