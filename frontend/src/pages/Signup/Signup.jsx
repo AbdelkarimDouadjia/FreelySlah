@@ -1,8 +1,83 @@
 import React, { useState } from "react";
 import { Country } from "country-state-city";
 import "./Signup.css";
+import { useNavigate } from "react-router-dom";
+import newRequest from "../../utils/newRequest";
+import { GoogleAuthProvider, signInWithPopup, getAuth } from "@firebase/auth";
+import { app } from "../../firebase.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const SignupD = () => {
+const Signup = () => {
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState({
+    username: "",
+    fname: "",
+    lname: "",
+    email: "",
+    password: "",
+    img: "",
+    country: "",
+    isSeller: false,
+    desc: "",
+  });
+
+  const navigate = useNavigate();
+
+  //handle all notifications
+
+  const handleChange = (e) => {
+    setUser((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+
+  const handleGoogleClick = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth(app);
+      const result = await signInWithPopup(auth, provider);
+      const user1 = result.user;
+      console.log(user1);
+      await newRequest.post("/auth/google", {
+        email: user1.email,
+        name: user1.displayName,
+        img: user1.photoURL,
+        country: "DZ",
+      });
+      // navigate("/");
+      // Show success notification
+      toast.success("Signup successful!", { position: "top-right" });
+    } catch (err) {
+      console.log("could not login with google", err);
+      setError(err.response.data);
+      // Show error notification
+      toast.error(error || "Signup failed. Please try again.", {
+        position: "top-right",
+      });
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await newRequest.post("/auth/register", {
+        ...user,
+        username: `${user.fname}_${user.lname}`,
+      });
+      // navigate("/");
+      // Show success notification
+      toast.success("Signup successful!", { position: "top-right" });
+    } catch (err) {
+      setError(err.response.data);
+      // Show error notification
+      toast.error(error || "Signup failed. Please try again.", {
+        position: "top-right",
+      });
+    }
+  };
+
   let countryData = Country.getAllCountries();
   //   console.log(countryData);
 
@@ -16,7 +91,7 @@ const SignupD = () => {
     // Container
     <div className="bg-[#fcfcfc] flex justify-center items-center h-screen w-full relative">
       {/* <!-- Right: Login Form --> */}
-      <div className=" w-full h-screen lg:w-1/2 flex flex-col justify-between items-center">
+      <div className=" w-full h-screen lg:w-2/3 flex flex-col justify-between items-center">
         <div className="flex items-center flex-row justify-between p-6 bg-[#fcfcfc]   w-full ">
           {/* Login Header */}
           <div>
@@ -50,7 +125,10 @@ const SignupD = () => {
           </h4>
           {/* <!-- Google Login --> */}
           <div className="flex items-center justify-between max-w-[450px] mx-auto">
-            <button className="font-medium bg-white shadow-bshadow border py-2 w-full rounded-xl flex justify-center items-center text-sm">
+            <button
+              className="font-medium bg-white shadow-bshadow border py-2 w-full rounded-xl flex justify-center items-center text-sm hover:bg-gray-100 focus:outline-none"
+              onClick={handleGoogleClick}
+            >
               {/* <!-- google logo svg --> */}
               <svg
                 className="mr-3"
@@ -80,7 +158,7 @@ const SignupD = () => {
             <hr className="outline-gray-400" />
           </div>
 
-          <form action="#" method="POST">
+          <form onSubmit={handleSubmit}>
             {/* <!-- First Name Input --> */}
             <div className="max-w-[450px] mx-auto flex flex-row justify-between items-center mb-3">
               <div className="w-[48%]">
@@ -96,6 +174,7 @@ const SignupD = () => {
                   name="fname"
                   className="input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
                   placeholder="First name"
+                  onChange={handleChange}
                 />
               </div>
               {/* <!-- Last Name Input --> */}
@@ -112,6 +191,7 @@ const SignupD = () => {
                   name="lname"
                   className="input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
                   placeholder="Last name"
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -128,6 +208,7 @@ const SignupD = () => {
                 name="email"
                 className="input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
                 placeholder="your@email.com"
+                onChange={handleChange}
               />
             </div>
             {/* <!-- Password Input --> */}
@@ -146,6 +227,7 @@ const SignupD = () => {
                   minLength={8}
                   className="input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3] "
                   placeholder="Password (min 8 characters)"
+                  onChange={handleChange}
                 />
                 <div
                   className="absolute top-0 right-0 bottom-0 flex items-center justify-center w-8 cursor-pointer"
@@ -193,9 +275,11 @@ const SignupD = () => {
               >
                 Country
               </label>
+
               <select
                 id="country"
                 name="country"
+                onChange={handleChange}
                 className="input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3] "
               >
                 <option value="">Select Country</option>
@@ -235,21 +319,56 @@ const SignupD = () => {
               >
                 Signup
               </button>
+              {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+
+              {/* Handle notifications */}
+              <ToastContainer />
             </div>
           </form>
         </div>
       </div>
 
       {/* <!-- Right: Image --> */}
-      <div className="w-1/2 h-screen hidden lg:block">
-        <img
-          src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
-          alt="Placeholder Image"
-          className="object-cover w-full h-full"
-        />
+      <div className="w-1/3 h-screen hidden border-l-2 border-[#f0f0f0] relative lg:flex lg:flex-col lg:justify-between">
+        <div className="relative h-full">
+          <img
+            src="/src/assets/bg4.png"
+            alt="Background Image"
+            className="object-cover w-full h-full"
+          />
+          {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0e9f6e] to-[#0e9f6e] opacity-90"></div> */}
+          <div className="absolute inset-0 flex flex-col justify-center text-white p-6 pt-10">
+            <h4 className="text-sm font-semibold mb-4 inline-block w-fit h-fit px-4 py-5 relative z-10 overflow-hidden rounded text-left">
+              Explore a universe of skilled professionals Talents
+              <span className="inline-flex ml-2 mr-1">
+                <img
+                  alt="svgImg"
+                  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxwYXRoIGZpbGw9IiNmZmE2MDIiIGQ9Ik00OC44NDcsMjQuNTI5bDguOTIzLDMuNzgzYzEuOTMyLDAuODE5LDEuOTMyLDMuNTU3LDAsNC4zNzZsLTguOTIzLDMuNzgzCWMtMS4xMzUsMC40ODEtMi4wMzksMS4zODUtMi41MjEsMi41MjFsLTMuNzgzLDguOTIzYy0wLjgxOSwxLjkzMi0zLjU1NywxLjkzMi00LjM3NiwwbC0zLjc4My04LjkyMwljLTAuNDgxLTEuMTM1LTEuMzg1LTIuMDM5LTIuNTIxLTIuNTIxbC04LjkyMy0zLjc4M2MtMS45MzItMC44MTktMS45MzItMy41NTcsMC00LjM3Nmw4LjkyMy0zLjc4MwljMS4xMzUtMC40ODEsMi4wMzktMS4zODUsMi41MjEtMi41MjFsMy43ODMtOC45MjNjMC44MTktMS45MzIsMy41NTctMS45MzIsNC4zNzYsMGwzLjc4Myw4LjkyMwlDNDYuODA4LDIzLjE0NCw0Ny43MTIsMjQuMDQ4LDQ4Ljg0NywyNC41Mjl6Ij48L3BhdGg+PGVsbGlwc2UgY3g9IjMyIiBjeT0iNjEiIG9wYWNpdHk9Ii4zIiByeD0iMjIuNSIgcnk9IjMiPjwvZWxsaXBzZT48cGF0aCBmaWxsPSIjZmZhNjAyIiBkPSJNMjIuMDYsMTQuMDQ4bDQuOTQzLDIuMDk2YzEuMDcsMC40NTQsMS4wNywxLjk3LDAsMi40MjRsLTQuOTQzLDIuMDk2CWMtMC42MjksMC4yNjctMS4xMywwLjc2Ny0xLjM5NiwxLjM5NmwtMi4wOTYsNC45NDNjLTAuNDU0LDEuMDctMS45NywxLjA3LTIuNDI0LDBsLTIuMDk2LTQuOTQzCWMtMC4yNjctMC42MjktMC43NjctMS4xMy0xLjM5Ni0xLjM5NmwtNC45NDMtMi4wOTZjLTEuMDctMC40NTQtMS4wNy0xLjk3LDAtMi40MjRsNC45NDMtMi4wOTZjMC42MjktMC4yNjcsMS4xMy0wLjc2NywxLjM5Ni0xLjM5NglsMi4wOTYtNC45NDNjMC40NTQtMS4wNywxLjk3LTEuMDcsMi40MjQsMGwyLjA5Niw0Ljk0M0MyMC45MywxMy4yODEsMjEuNDMxLDEzLjc4MiwyMi4wNiwxNC4wNDh6Ij48L3BhdGg+PHBhdGggZmlsbD0iI2ZmYTYwMiIgZD0iTTIyLjA2LDQxLjA0OGw0Ljk0MywyLjA5NmMxLjA3LDAuNDU0LDEuMDcsMS45NywwLDIuNDI0bC00Ljk0MywyLjA5NgljLTAuNjI5LDAuMjY3LTEuMTMsMC43NjctMS4zOTYsMS4zOTZsLTIuMDk2LDQuOTQzYy0wLjQ1NCwxLjA3LTEuOTcsMS4wNy0yLjQyNCwwbC0yLjA5Ni00Ljk0MwljLTAuMjY3LTAuNjI5LTAuNzY3LTEuMTMtMS4zOTYtMS4zOTZsLTQuOTQzLTIuMDk2Yy0xLjA3LTAuNDU0LTEuMDctMS45NywwLTIuNDI0bDQuOTQzLTIuMDk2YzAuNjI5LTAuMjY3LDEuMTMtMC43NjcsMS4zOTYtMS4zOTYJbDIuMDk2LTQuOTQzYzAuNDU0LTEuMDcsMS45Ny0xLjA3LDIuNDI0LDBsMi4wOTYsNC45NDNDMjAuOTMsNDAuMjgxLDIxLjQzMSw0MC43ODIsMjIuMDYsNDEuMDQ4eiI+PC9wYXRoPjxwYXRoIGQ9Ik01Ny43NywyOC4zMTJsLTEuMTM1LTAuNDgxYy0wLjI3NCwwLjA2NS0wLjU0OCwwLjE0LTAuODE3LDAuMjU0bC04LjkyMywzLjc4MyBjLTIuMzQyLDAuOTkzLTQuMTc4LDIuODMtNS4xNzIsNS4xNzJsLTMuNzgzLDguOTIzYy0wLjExNCwwLjI2OC0wLjE4OSwwLjU0My0wLjI1MywwLjgxN2wwLjQ4MSwxLjEzNCBjMC44MTksMS45MzIsMy41NTcsMS45MzIsNC4zNzYsMGwzLjc4My04LjkyM2MwLjQ4MS0xLjEzNSwxLjM4NS0yLjAzOSwyLjUyMS0yLjUyMWw4LjkyMy0zLjc4MyBDNTkuNzAyLDMxLjg2OSw1OS43MDIsMjkuMTMxLDU3Ljc3LDI4LjMxMnoiIG9wYWNpdHk9Ii4xNSI+PC9wYXRoPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0zOC45ODksMjMuOTZsMy43ODMtOC45MjNjMC4xMTQtMC4yNjgsMC4xODktMC41NDIsMC4yNTMtMC44MTdsLTAuNDgxLTEuMTM1IGMtMC44MTktMS45MzItMy41NTctMS45MzItNC4zNzYsMGwtMy43ODMsOC45MjNjLTAuNDgxLDEuMTM1LTEuMzg1LDIuMDM5LTIuNTIxLDIuNTIxbC04LjkyMywzLjc4MyBjLTEuOTMyLDAuODE5LTEuOTMyLDMuNTU3LDAsNC4zNzZsMS4xMzQsMC40ODFjMC4yNzUtMC4wNjQsMC41NDktMC4xMzksMC44MTctMC4yNTNsOC45MjMtMy43ODMgQzM2LjE1OSwyOC4xMzksMzcuOTk1LDI2LjMwMywzOC45ODksMjMuOTZ6IiBvcGFjaXR5PSIuMyI+PC9wYXRoPjxsaW5lIHgxPSIzOC4wNjgiIHgyPSI0MC4zNTYiIHkxPSIyMy41NyIgeTI9IjE4LjE3MyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLXdpZHRoPSIzIj48L2xpbmU+Cjwvc3ZnPg=="
+                />
+              </span>
+              .<div className="glass-overlay absolute inset-0 z-0"></div>
+            </h4>
+            <p className="text-gray-350 text-sm pl-4 max-w-[550px]">
+              Discover the world&apos;s top freelance talents on FreelySlah.
+              Join our community and unlock new opportunities.
+            </p>
+            <div className="w-* h-96 mt-1 mb-8 m-auto">
+              <video
+                className="w-full h-full m-auto"
+                autoPlay
+                loop
+                muted
+                playsInline
+              >
+                <source src="/src/assets/signup.webm" type="video/webm" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default SignupD;
+export default Signup;

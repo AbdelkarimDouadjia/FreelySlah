@@ -1,16 +1,113 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import newRequest from "../../utils/newRequest";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { GoogleAuthProvider, signInWithPopup, getAuth } from "@firebase/auth";
+import { app } from "../../firebase.js";
 
-export const LoginD = () => {
+export const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await newRequest.post("/auth/login", { email, password });
+      localStorage.setItem("currentUser", JSON.stringify(res.data));
+      navigate("/");
+      // Show success notification
+      toast.success("Logged in successfully", { position: "top-right" });
+    } catch (err) {
+      setError(err.response.data);
+      // Show error use state variable or error notification string
+      toast.error(error || "Could not login", { position: "top-right" });
+    }
+  };
+
+  const handleGoogleClick = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth(app);
+      const res = await signInWithPopup(auth, provider);
+      const { user } = res;
+      const { email, displayName, photoURL } = user;
+      const res1 = await newRequest.post("/auth/google", {
+        email,
+        name: displayName,
+        img: photoURL,
+        country: "DZ",
+      });
+      localStorage.setItem("currentUser", JSON.stringify(res1.data));
+      // to show success notification
+      toast.success("Logged in successfully", { position: "top-right" });
+      navigate("/");
+    } catch (err) {
+      console.log("could not login with google", err);
+      setError(err.response.data);
+
+      // Show error use state variable or error notification string
+      toast.error(error || "Could not login with google", {
+        position: "top-right",
+      });
+    }
+  };
+
   const [show, setShow] = useState(true);
 
   const handleShow = () => {
     setShow(!show);
   };
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [timer, setTimer] = useState(0);
+  const sliderRef = useRef(null);
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: false,
+    beforeChange: (current, next) => setCurrentSlide(next),
+    afterChange: () => setTimer(0),
+    prevArrow: null, // Remove the left arrow
+    nextArrow: null, // Remove the right arrow
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prevTimer) =>
+        prevTimer < 5 ? prevTimer + 1 : handleNextSlide()
+      );
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleNextSlide = () => {
+    sliderRef.current.slickNext();
+    setTimer(0);
+  };
+
+  const handlePointClick = (index) => {
+    setCurrentSlide(index);
+    sliderRef.current.slickGoTo(index);
+    setTimer(0);
+  };
+
   return (
     // Container
     <div className="bg-[#fcfcfc] flex justify-center items-center h-screen w-full relative">
       {/* <!-- Left: Login Form --> */}
-      <div className=" w-full h-screen lg:w-1/2 flex flex-col justify-between items-center">
+      <div className=" w-full h-screen lg:w-3/5 flex flex-col justify-between items-center">
         <div className="flex items-center flex-row justify-between p-6 bg-[#fcfcfc]  w-full ">
           {/* Login Header */}
           <div>
@@ -43,21 +140,22 @@ export const LoginD = () => {
             <h4 className="max-w-[450px] mx-auto text-[#333] text-2xl font-normal mb-6">
               Sign into your account
             </h4>
-            <form action="#" method="POST">
-              {/* <!-- Username Input --> */}
+            <form onSubmit={handleSubmit}>
+              {/* <!-- Email Input --> */}
               <div className="max-w-[450px] mx-auto">
                 <label
-                  htmlFor="username"
+                  htmlFor="email"
                   className="text-[#344054] text-xs font-normal mb-1 inline-block"
                 >
                   Email
                 </label>
                 <input
-                  type="email"
-                  id="username"
-                  name="username"
+                  type="text"
+                  id="email"
+                  name="email"
                   className="input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
                   placeholder="your@email.com"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               {/* <!-- Password Input --> */}
@@ -76,6 +174,7 @@ export const LoginD = () => {
                     minLength={8}
                     className="input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3] "
                     placeholder="Password (min 8 characters)"
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <div
                     className="absolute top-0 right-0 bottom-0 flex items-center justify-center w-8 cursor-pointer"
@@ -151,6 +250,9 @@ export const LoginD = () => {
                 >
                   Login
                 </button>
+                {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+                {/* Handle notifications */}
+                <ToastContainer />
               </div>
             </form>
 
@@ -164,7 +266,11 @@ export const LoginD = () => {
 
             {/* <!-- Google Login --> */}
             <div className="mt-2 flex items-center justify-between max-w-[450px] mx-auto">
-              <button className="font-medium bg-white shadow-bshadow border py-2 w-full rounded-lg mt-5 flex justify-center items-center text-sm">
+              <button
+                className="font-medium bg-white shadow-bshadow border py-2 w-full rounded-lg mt-5 flex justify-center items-center text-sm hover:bg-gray-200 focus:outline-none"
+                type="button"
+                onClick={handleGoogleClick}
+              >
                 {/* <!-- google logo svg --> */}
                 <svg
                   className="mr-3"
@@ -191,14 +297,100 @@ export const LoginD = () => {
       </div>
 
       {/* <!-- Right: Image --> */}
-      <div className="w-1/2 h-screen hidden lg:block">
-        <img
+      <div
+        className="w-2/5 h-screen hidden border-l-2 border-[#f0f0f0] relative lg:flex lg:flex-col lg:justify-between  bg-[#F7F6FB]"
+        // style={{ background: "linear-gradient(45deg, #F7F6FB, #F7F6FB)" }}
+      >
+        {/* <img
           src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
           alt="Placeholder Image"
           className="object-cover w-full h-full"
-        />
+        /> */}
+        {/* <div className="h-full! h-screen! w-full flex flex-col justify-between"> */}
+        <Slider
+          ref={sliderRef}
+          {...settings}
+          className="w-full max-w-xl m-auto"
+        >
+          <div className="p-6 text-center h-full">
+            <div className="w-5/6 h-80 mt-5 mb-8 m-auto">
+              <img
+                src="/src/assets/pic1.png"
+                alt="image"
+                className="w-full h-full m-auto"
+              />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-2">
+                Unleash Your Potential
+              </h3>
+              <p className="text-gray-600 text-sm">
+                FreelySlah is a leading freelancing platform that connects
+                skilled professionals with clients worldwide, empowering you to
+                unlock your full potential and grow your career.
+              </p>
+            </div>
+          </div>
+          <div className="p-5 text-center h-full">
+            <div className="w-9/12 h-80 mt-5 mb-8 m-auto pt-14">
+              <img
+                src="/src/assets/pic2.png"
+                alt="image"
+                className="w-full m-auto"
+              />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-2">
+                Explore Global Opportunities
+              </h3>
+              <p className="text-gray-600 text-sm">
+                With FreelySlah, you can access a wide range of freelance
+                projects from clients around the globe, expanding your horizons
+                and allowing you to showcase your talents on a global stages
+              </p>
+            </div>
+          </div>
+          <div className="p-5 text-center h-full">
+            <div className="w-9/12 h-80 mt-5 mb-8 m-auto">
+              <img
+                src="/src/assets/secure.png"
+                alt="image"
+                className=" h-full m-auto"
+              />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-2">
+                Flexible and Secure
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Our platform provides a flexible and secure environment,
+                ensuring seamless collaboration, transparent communication, and
+                secure payments for both freelancers and clients.
+              </p>
+            </div>
+          </div>
+        </Slider>
+        <div className="flex justify-center points-container mb-8">
+          {[0, 1, 2].map((index) => (
+            <div
+              className={`point ${
+                currentSlide === index ? "active-point" : ""
+              }`}
+              key={index}
+              onClick={() => handlePointClick(index)}
+            >
+              {currentSlide === index && (
+                <div
+                  className="progress"
+                  style={{ width: `${(timer / 5) * 100}%` }}
+                ></div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
+    // </div>
   );
 };
-export default LoginD;
+export default Login;
