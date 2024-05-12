@@ -14,7 +14,7 @@ const SignupD = () => {
 
   return (
     // Container
-    <div className="bg-[#fcfcfc] flex justify-center items-center h-screen w-full relative">
+    <div className="bg-[#FCFCFC] flex justify-center items-center h-screen w-full relative ">
       {/* <!-- Right: Login Form --> */}
       <div className=" w-full h-screen lg:w-1/2 flex flex-col justify-between items-center">
         <div className="flex items-center flex-row justify-between p-6 bg-[#fcfcfc]   w-full ">

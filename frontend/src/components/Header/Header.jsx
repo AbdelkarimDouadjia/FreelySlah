@@ -40,34 +40,31 @@ const Header = () => {
       </li>
       <li tabIndex={0}>
         <details>
-          <summary>
-            <TbCategory />
-            Categories
-          </summary>
+          <summary>Find Talent</summary>
           <ul className="p-2 bg-[#FCFCFC]">
             <li>
-              <a>All</a>
+              <a href="/findTalent">All</a>
             </li>
             <li>
-              <a>
+              <a href="/findTalent">
                 <MdOutlineDesignServices />
-                Graphic Design
+                Creative & Design
               </a>
             </li>
             <li>
-              <a>
+              <a href="/findTalent">
                 <FaCode />
-                Programming & tech
+                Technology & Development
               </a>
             </li>
             <li>
-              <a>
+              <a href="/findTalent">
                 <FaCamera />
-                Photography
+                Arts & Entertainment
               </a>
             </li>
             <li>
-              <a>
+              <a href="/findTalent">
                 <IoDocumentTextOutline />
                 Writing & Translation
               </a>
@@ -75,11 +72,14 @@ const Header = () => {
           </ul>
         </details>
       </li>
+      <li>
+        <a href="/findJob">Find Job</a>
+      </li>
       <li tabIndex={0}>
         <details>
           <summary>
             <TbCategory />
-            Products
+            Find Product
           </summary>
           <ul className="p-2 bg-[#FCFCFC]">
             <li>
@@ -108,13 +108,13 @@ const Header = () => {
           </summary>
           <ul className="p-2 bg-[#FCFCFC]">
             <li>
-              <a>Find Job</a>
+              <a href="/about">About US</a>
             </li>
             <li>
-              <a>Find Talent</a>
+              <a>Help</a>
             </li>
             <li>
-              <a>Find Product</a>
+              <a>Terms Of Use</a>
             </li>
           </ul>
         </details>
@@ -174,10 +174,16 @@ const Header = () => {
           <ul className="menu menu-horizontal px-1">{navItems}</ul>
         </div>
         <div className="navbar-end">
-          <a className="btn bg-[#047857] text-white rounded-full px-6 mr-3 lg:flex hidden items-center gap-2 border-none">
+          <a
+            href="/signup"
+            className="btn bg-[#047857] text-white rounded-full px-6 mr-3 lg:flex hidden items-center gap-2 border-none"
+          >
             Join Us
           </a>
-          <a className="btn text-[#047857] bg-white hover:text-white rounded-full px-6 hidden lg:flex gap-2">
+          <a
+            href="/login"
+            className="btn text-[#047857] bg-white hover:text-white rounded-full px-6 hidden lg:flex gap-2"
+          >
             <IoLogInOutline />
             Login
           </a>
