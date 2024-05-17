@@ -1,0 +1,189 @@
+.iconbox-style1 .icon:before {
+	background-color: #fbf7ed;
+	border-radius: 50%;
+	bottom: -10px;
+	content: "";
+	height: 40px;
+	position: absolute;
+	right: -20px;
+	width: 40px;
+	z-index: -1;
+	transition: all .3s ease;
+}
+
+i[class*=" flaticon-"]:before,
+i[class^=flaticon-]:before,
+span[class*=" flaticon-"]:before,
+span[class^=flaticon-]:before {
+	font-family: 'Flaticon' !important;
+	font-style: normal;
+	font-weight: 400 !important;
+	font-feature-settings: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.fa-star:before {
+	content: "\2b50";
+}
+
+.flaticon-file-1:before {
+	content: "\f124" !important;
+}
+
+.flaticon-website:before {
+	content: "\f123";
+}
+
+.flaticon-calendar:before {
+	content: "\f125";
+}
+
+.flaticon-goal:before {
+	content: "\f11c";
+}
+
+.flaticon-tracking:before {
+	content: "\f126";
+}
+
+.next-btn,
+.prev-btn {
+	background-color: #fff !important;
+	-o-box-shadow: 0 10px 35px rgba(5, 16, 54, .1);
+	box-shadow: 0 10px 35px rgb(5 16 54 / 10%);
+	border: none;
+	border-radius: 50%;
+	color: #051036;
+	display: inline-block;
+	height: 60px;
+	line-height: 60px;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	top: 38%;
+	width: 60px;
+	transition: all .3s ease;
+	z-index: 1;
+}
+
+.ui-service-gig-slder-bottom .swiper-slide {
+	border-radius: 4px !important;
+	height: 120px !important;
+	width: 150px !important;
+}
+
+.btn-thm:before,
+.btn-transparent2:before,
+.btn-transparent:before,
+.btn-white:before,
+.ud-btn:before {
+	background-color: #5bbb7b;
+	content: "";
+	height: 100%;
+	left: -100%;
+	position: absolute;
+	top: 0;
+	width: 0;
+	z-index: -1;
+	transform: skew(50deg);
+	transition: width .6s;
+	transform-origin: top left;
+	transition: all .4s ease;
+}
+
+.btn-thm:hover:before {
+	background-color: #1f4b3f;
+}
+
+.btn-thm:hover:before,
+.btn-transparent2:hover:before,
+.btn-transparent:hover:before,
+.btn-white:hover:before,
+.ud-btn:hover:before {
+	height: 100%;
+	width: 200%;
+}
+
+.custom_checkbox input:checked~.checkmark {
+	background-color: #1f4b3f;
+}
+
+.custom_checkbox .checkmark:after {
+	content: "";
+	position: absolute;
+	left: 5px;
+	top: 2px;
+	width: 5px;
+	height: 8px;
+	border: solid #fff;
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+}
+
+.ud-btn {
+	border-radius: 4px;
+	display: inline-block;
+	font-weight: 700;
+	font-size: 15px;
+	font-style: normal;
+	letter-spacing: 0;
+	padding: 13px 35px;
+	position: relative;
+	overflow: hidden;
+	text-align: center;
+	z-index: 0;
+	transition: all .4s ease;
+}
+
+.listing-thumbIn-slider:before {
+	background: linear-gradient(180deg, rgba(34, 34, 34, 0) 51.22%, rgba(34, 34, 34, .6));
+	bottom: 0;
+	content: "";
+	height: 80%;
+	left: 0;
+	right: 0;
+	opacity: 0;
+}
+
+.listing-thumbIn-slider:before,
+.tag-del {
+	position: absolute;
+	z-index: 1;
+	transition: all .4s ease;
+}
+
+.swiper__pagination-2 .swiper-pagination-bullet {
+	background-color: hsla(0, 0%, 100%, .6) !important;
+	opacity: 1 !important;
+	width: 6px !important;
+	height: 6px !important;
+	border-radius: 50%;
+	position: relative;
+	transition: all .3s ease;
+	cursor: pointer;
+	margin: 0 4px;
+	z-index: 20;
+}
+
+.swiper__pagination-2 .swiper-pagination-bullet-active {
+	background: #fff !important;
+	height: 8px !important;
+	width: 8px !important;
+	border-radius: 50%;
+}
+
+.dropdown-toggle:after {
+	display: inline-block;
+	margin-left: 0.255em;
+	vertical-align: 0.255em;
+	content: "";
+	border-top: 0.3em solid;
+	border-right: 0.3em solid transparent;
+	border-bottom: 0;
+	border-left: 0.3em solid transparent;
+	margin-top: -1px;
+}

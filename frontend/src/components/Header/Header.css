@@ -1,0 +1,131 @@
+.at-home20 {
+	background-image: url("/src/assets/images/background/home20-hero-bg.png");
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.ui-active {
+	color: #5bbb7b !important;
+}
+
+header .custom-container {
+	padding-left: 110px;
+	padding-right: 110px;
+}
+
+.login-info {
+	font-size: 15px;
+	color: #222222;
+	font-family: var(--title-font-family);
+	font-weight: 500;
+	transition: all 0.4s ease;
+}
+
+.ud-btn:before {
+	background-color: #5BBB7B;
+	content: "";
+	height: 100%;
+	left: -100%;
+	position: absolute;
+	top: 0;
+	width: 0;
+	z-index: -1;
+	transform: skew(50deg);
+	transition: width 0.6s;
+	transform-origin: top left;
+	transition: all 0.4s ease;
+}
+
+.ace-responsive-menu>li {
+	border: 0px;
+		display: inline-block;
+		margin: 0;
+		padding: 0;
+		text-align: left;
+	}
+	
+	.ace-responsive-menu li {
+		list-style: none;
+	}
+	
+	.ace-responsive-menu>li>a {
+		border: 0px;
+		display: block;
+		margin: 0;
+		padding: 18px 20px 18px 5px;
+		padding-top: 18px !important;
+		padding-bottom: 18px !important;
+		position: relative;
+		text-decoration: none;
+		text-transform: capitalize;
+	}
+	
+	a.list-items:before {
+		background-color: #5BBB7B;
+		content: "";
+		height: 2px;
+		left: 0;
+		position: absolute;
+		top: -7px;
+		width: 0;
+		transition: all 0.4s ease;
+	}
+	
+	/* Home Menu */
+	/* .home-menu-parent:hover {
+		cursor: pointer;
+	}
+	
+	.home-menu-parent:hover .home-menu,
+	.menu-active:hover .sub-menu {
+		display: grid !important;
+		width: 320px !important;
+		grid-template-columns: 150px 150px !important;
+		grid-column-gap: 20px;
+		column-gap: 20px;
+	} */
+	
+	/* Sub Menu */
+	.sub-menu li:hover {
+		background-color: #F0EFEC;
+		border-left: 2px solid #5BBB7B;
+	}
+	
+	@media screen and (max-width: 768px) {
+		.ace-responsive-menu>li {
+			border-bottom: 1px solid #242424;
+			float: none;
+		}
+	}
+	
+	@media (max-width: 1050px) {
+		header .custom-container2 {
+			padding-left: 80px !important;
+			padding-right: 80px !important;
+		}
+	}
+	
+	@media (min-width: 993px) {
+		.main-menu {
+			display: block;
+		}
+	
+		.mobile-menu {
+			display: none;
+		}
+	}
+	
+	@media (max-width: 992px) {
+		.main-menu {
+			display: none !important;
+		}
+	
+		.mobile-menu {
+			display: block;
+		}
+	
+		.header,
+		.footer {
+			padding: 0 20px !important;
+		}
+	}
