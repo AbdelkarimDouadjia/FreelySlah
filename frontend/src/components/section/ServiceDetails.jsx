@@ -57,7 +57,7 @@ export default function ServiceDetails() {
                                 width={40}
                                 height={40}
                                 className="text-transparent rounded-[50%]"
-                                src="/src/assets/images/team/fl-d-1.png"
+                                src="/src/assets//images/avatar/Image.jpg"
                                 alt="Freelancer Photo"
                               />
                               <span className="bg-[#5bbb7b] border-2 border-white absolute rounded-[50%] left-[30px] top-0 h-[9px] w-[9px] max-[575.98px]:right-0"></span>

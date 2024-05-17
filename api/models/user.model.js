@@ -45,6 +45,14 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    city: {
+      type: String,
+      required: false,
+    },
+    state: {
+      type: String,
+      required: false,
+    },
     phone: {
       type: String,
       required: false,
@@ -77,7 +85,87 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-
+    freelancerType: {
+      type: String,
+      required: false,
+    },
+    userProfile: [
+      {
+        userEducation: [
+          {
+            school: {
+              type: String,
+              required: false,
+            },
+            degree: {
+              type: String,
+              required: false,
+            },
+            fieldOfStudy: {
+              type: String,
+              required: false,
+            },
+            startYear: {
+              type: String,
+              required: false,
+            },
+            endYear: {
+              type: String,
+              required: false,
+            },
+            description: {
+              type: String,
+              required: false,
+            },
+          },
+        ],
+        //user Skills (array of strings)
+        userSkills: [
+          {
+            skill: {
+              type: String,
+              required: false,
+            },
+          },
+        ],
+        workExperience: [
+          {
+            title: {
+              type: String,
+              required: false,
+            },
+            company: {
+              type: String,
+              required: false,
+            },
+            startYear: {
+              type: String,
+              required: false,
+            },
+            endYear: {
+              type: String,
+              required: false,
+            },
+            description: {
+              type: String,
+              required: false,
+            },
+          },
+        ],
+        userLanguages: [
+          {
+            language: {
+              type: String,
+              required: false,
+            },
+            proficiency: {
+              type: String,
+              required: false,
+            },
+          },
+        ],
+      },
+    ],
   },
   {
     timestamps: true,

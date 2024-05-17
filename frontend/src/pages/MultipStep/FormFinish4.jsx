@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import AppContext from "./Context";
 import "./styles.module.css";
 import { useNavigate } from "react-router-dom";
@@ -10,10 +10,12 @@ const FormFinish = () => {
   const userInfo = JSON.parse(localStorage.getItem("currentUser"));
   const navigate = useNavigate();
 
-  //if there the user is not found in the local storage then we will redirect the user to the login page
-  if (!userInfo) {
-    navigate("/login");
-  }
+  // If the user is not found in the local storage, redirect to the login page
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login");
+    }
+  }, [userInfo, navigate]);
 
   const [error, setError] = useState(null);
   const myContext = useContext(AppContext);
@@ -22,13 +24,64 @@ const FormFinish = () => {
   const name = updateContext.userName;
   console.log(updateContext);
 
+  let res = updateContext;
+
+  useEffect(() => {
+    // Update currentUser in localStorage when userName is updated
+    if (res && res.data) {
+      const updatedUserInfo = { ...userInfo, ...res.data };
+      localStorage.setItem("currentUser", JSON.stringify(updatedUserInfo));
+    }
+  }, [res, userInfo]);
+
+  // Set the userProfile variable to the user profile
+  const userProfile =
+    [
+      {
+        userEducation: (updateContext.userEducation || []).map((education) => ({
+          school: `${education.school}`,
+          degree: `${education.degree}`,
+          fieldOfStudy: `${education.areaOfStudy}`,
+          startYear: `${education.dataSchoolFrom}`,
+          endYear: `${education.dataSchoolTo}`,
+          description: `${education.descEducation}`,
+        })),
+        // This is just an array of strings
+        userSkills: (updateContext.userSkills || []).map((skill) => ({
+          skill: `${skill}`,
+        })),
+        workExperience: (updateContext.workExperience || []).map((work) => ({
+          title: `${work.jobRole}`,
+          company: `${work.companyName}`,
+          startYear: `${work.dateWorkFrom}`,
+          endYear: `${work.dateWorkTo}`,
+          description: `${work.descWork}`,
+        })),
+        userLanguages: (updateContext.userLanguages || []).map((language) => ({
+          language: `${language.language}`,
+          proficiency: `${language.proficiency}`,
+        })),
+      },
+    ] || [];
+
+  console.log(userProfile);
+
+  const updateCurrentUser = (res) => {
+    const updatedUserInfo = { ...userInfo, ...res };
+    localStorage.setItem("currentUser", JSON.stringify(updatedUserInfo));
+
+    // Emit a custom event to notify other components of the update
+    const event = new CustomEvent("currentUserUpdated", {
+      detail: updatedUserInfo,
+    });
+    window.dispatchEvent(event);
+  };
+
+  // In your finish function, make sure to call updateCurrentUser with the response data
   const finish = async () => {
     try {
       const img = await updateContext.userImg;
-      console.log(img === undefined ? img : userInfo.img);
-      //if the img promise is vide then we will use the old image from userInfo.img
-
-      const res = await newRequest.post("/stepper/welcome", {
+      res = await newRequest.post("/stepper/welcome", {
         _id: `${userInfo._id}`,
         username: `${updateContext.userName}`,
         displayName: `${updateContext.userDisplayName}`,
@@ -42,25 +95,24 @@ const FormFinish = () => {
         userIssuedD: `${updateContext.userIssuedD}`,
         userExpiredD: `${updateContext.userExpiredD}`,
         userOccupation: `${updateContext.userOccupation}`,
+        freelancerType: `${updateContext.freelancerType}`,
+        city: `${updateContext.city}`,
+        state: `${updateContext.state}`,
+        userProfile: userProfile,
         ...(img === null ? { img: `${userInfo.img}` } : { img: `${img}` }),
       });
-      localStorage.setItem("currentUser", JSON.stringify(res.data));
-      //   navigate("/");
-      // Show success notification
+      updateCurrentUser(res.data);
       toast.success("welcome", { position: "top-right" });
     } catch (err) {
       setError(err.response.data);
-      console.log(error);
-      // Show error notification
-      toast.error(error, {
-        position: "top-right",
-      });
+      toast.error(error, { position: "top-right" });
     }
   };
+
   return (
     <>
       <div className="scroll flex flex-col items-center justify-center gap-3 bg-[#F9F9F9] min-h-[84vh]">
-        <form className="px-4 md-b:max-w-[700px] text-center">
+        <form className="px-4 md-b:max-w-[700px] text-center" onSubmit={finish}>
           <div className="w-full flex items-center justify-center my-5 overflow-hidden ">
             <img
               className="done mx-auto w-40 h-40 z-20"
@@ -84,9 +136,8 @@ const FormFinish = () => {
           <button
             className="border mt-8 w-fit font-bold px-7 py-[5px] text-lg   border-[#1DBF73] !bg-[#0E9F6E]  hover:!bg-[#046c4e] text-white rounded-md   "
             type="submit"
-            onClick={finish}
           >
-			Finish
+            Finish
           </button>
           {/* Handle notifications */}
           <ToastContainer />

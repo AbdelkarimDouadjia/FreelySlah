@@ -41,17 +41,19 @@ const FormThree3 = () => {
                 >
                   ID Type
                 </label>
-                <input
-                  className="block p-4 w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
-                  type="text"
+                <select
+                  className="block w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
                   name="idType"
                   id="idType"
-                  placeholder="Enter ID Type"
-                  required
-                  maxLength="10"
                   onChange={(e) => updateContext.setIdType(e.target.value)}
-                />
+                >
+                  <option selected>Select ID Type </option>
+                  <option value="National ID">National ID</option>
+                  <option value="Passport">Passport</option>
+                  <option value="Female">Driving licence</option>
+                </select>
               </div>
+
               <div className="w-[44%] mx-auto mt-1 leading-normal">
                 <label
                   className="mb-2 text-xs font-medium text-gray-900 dark:text-[#333]"

@@ -1,14 +1,14 @@
 export const product = [
   {
     id: 1,
-    img: "/src/assets/images/listings/g-1.jpg",
-    img2: "/src/assets/images/listings/g-17.jpg",
+    img: "/src/assets/images/listings/s0.jpg",
+    img2: "/src/assets/images/listings/s1.jpg",
     category: "Web & App Design",
     title: "I will design modern websites in figma or adobe xd",
     rating: 4.82,
     review: 94,
     author: {
-      img: "/src/assets/images/team/fl-s-1.png",
+      img: "/src/assets/images/team/fl-s-3.png",
       name: "Wanda Runo",
     },
     price: 983,
@@ -25,19 +25,19 @@ export const product = [
   },
   {
     id: 2,
-    img: "/src/assets/images/listings/g-2.jpg",
-    img2: "/src/assets/images/listings/g-18.jpg",
+    img: "/src/assets/images/listings/s4.jpg",
+    img2: "/src/assets/images/listings/s5.jpg",
     category: "Art & Illustration",
     title: "I will create modern flat design illustration",
     rating: 4.82,
     review: 94,
     gallery: [
-      "/src/assets/images/listings/g-2.jpg",
-      "/src/assets/images/listings/g-1.jpg",
-      "/src/assets/images/listings/g-3.jpg",
+      "/src/assets/images/listings/s2.jpg",
+      "/src/assets/images/listings/s7.jpg",
+      "/src/assets/images/listings/s10.jpg",
     ],
     author: {
-      img: "/src/assets/images/team/fl-s-2.png",
+      img: "/src/assets/images/team/fl-s-3.png",
       name: "Ali Tufan",
     },
     price: 983,
@@ -54,8 +54,8 @@ export const product = [
   },
   {
     id: 3,
-    img: "/src/assets/images/listings/g-3.jpg",
-    img2: "/src/assets/images/listings/g-19.jpg",
+    img: "/src/assets/images/listings/s3.jpg",
+    img2: "/src/assets/images/listings/s11.jpg",
     category: "Design & Creative",
     title:
       "I will build a fully responsive design in HTML,CSS, bootstrap, and javascript",
@@ -79,8 +79,8 @@ export const product = [
   },
   {
     id: 4,
-    img: "/src/assets/images/listings/g-4.jpg",
-    img2: "/src/assets/images/listings/g-20.jpg",
+    img: "/src/assets/images/listings/s4.jpg",
+    img2: "/src/assets/images/listings/s0.jpg",
     category: "Web & App Design",
     title: "I will do mobile app development for ios and android",
     rating: 4.82,
@@ -103,8 +103,8 @@ export const product = [
   },
   {
     id: 5,
-    img: "/src/assets/images/listings/g-5.jpg",
-    img2: "/src/assets/images/listings/g-21.jpg",
+    img: "/src/assets/images/listings/s5.jpg",
+    img2: "/src/assets/images/listings/s1.jpg",
     category: "Web & App Design",
     title: "I will design modern websites in figma or adobe xd",
     rating: 4.82,
@@ -127,8 +127,8 @@ export const product = [
   },
   {
     id: 6,
-    img: "/src/assets/images/listings/g-6.jpg",
-    img2: "/src/assets/images/listings/g-22.jpg",
+    img: "/src/assets/images/listings/s6.jpg",
+    img2: "/src/assets/images/listings/s7.jpg",
     category: "Web & App Design",
     title: "I will design modern websites in figma or adobe xd",
     rating: 4.82,
@@ -290,7 +290,7 @@ export const product = [
   },
 ];
 
-export const hightedRated1 = [
+export const hightedRated = [
   {
     id: 1,
     avatar: "/src/assets/images/team/fl-1.png",
@@ -389,7 +389,7 @@ export const hightedRated1 = [
   },
 ];
 
-export const shopProduct1 = [
+export const shopProduct = [
   {
     id: 1,
     img: "/src/assets/images/shop/1.png",
@@ -631,7 +631,7 @@ export const shopProduct1 = [
   },
 ];
 
-export const project1 = [
+export const project = [
   {
     id: 1,
     title: "Food Delviery Mobile App",
@@ -786,7 +786,7 @@ export const project1 = [
   },
 ];
 
-export const projectProposal1 = [
+export const projectProposal = [
   {
     id: 1,
     name: "Leslie Alexander",
@@ -1026,7 +1026,7 @@ export const employee = [
   },
 ];
 
-export const freelancer1 = [
+export const freelancer = [
   {
     id: 1,
     img: "/src/assets/images/team/fl-1.png",

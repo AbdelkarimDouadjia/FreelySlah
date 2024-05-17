@@ -23,9 +23,11 @@ function NavbarF() {
     };
 
     window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("currentUserUpdated", handleStorageChange);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("currentUserUpdated", handleStorageChange);
     };
   }, []);
 
@@ -33,6 +35,7 @@ function NavbarF() {
     try {
       await newRequest.post("/auth/logout");
       localStorage.setItem("currentUser", null);
+      setCurrentUser(null); // Update state to reflect logout
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -53,28 +56,19 @@ function NavbarF() {
                 <div className="flex items-center ">
                   <Link
                     className="header-logo logo1 outline-none 2xl-b:pr-[30px] border-r border-[#E9E9E9] cursor-pointer text-[#222] pr-[5px]"
-                    href="/"
+                    to="/"
                   >
-                    {/* <img
-                      height={40}
-                      width={133}
-                      src="/src/assets/images/logo.png"
-                      alt="Header Logo"
-                      className="text-transparent h-full w-full object-contain align-middle w-[133px] h-[40px] max-w-full"
-                    /> */}
                     <span className="text-[#222] text-[20px] font-semibold mr-2">
                       FreelySlah
                     </span>
                   </Link>
                   <div className="home1_style ml-4">
-                    {/* <Mega /> */}
                     <Navigation />
                   </div>
                 </div>
               </div>
               <div className=" w-auto  max-w-full flex-initial !flex-shrink-0 px-3 mt-0 ">
                 <div className="flex  items-center">
-                  {/* <Navigation /> */}
                   <a
                     className="login-info bdrl1 pl15-lg pl30 pl-[15px] xl-b:pl-[30px] border-l border-[#E9E9E9]  text-[15px] text-[#222] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none "
                     data-bs-toggle="modal"
@@ -82,11 +76,10 @@ function NavbarF() {
                   >
                     <GoSearch className="text-[#222] text-[20px] cursor-pointer" />
                   </a>
-                  {/* If current user is Seller don't Show this Link */}
                   {!currentUser?.isSeller && (
                     <Link
                       className={`mx-[15px] xl-b:mx-[30px] text-[15px]  text-[#222] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none`}
-                      href="/become-seller"
+                      to="/become-seller"
                     >
                       <span className="hidden xl-b:inline-block">Become a</span>{" "}
                       Seller
@@ -111,9 +104,6 @@ function NavbarF() {
                       />
                     </Link>
                   )}
-
-                  {/* if we have a current user don't show this button */}
-
                   {!currentUser && (
                     <Link
                       className="ud-btn btn-thm btn-white relative add-joining text-[15px] h-[40px] py-[13px] px-[25px] xxs-b:py-[5px] xxs-b:px-[30px] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none bg-[#5BBB7B] border-2 border-[#5BBB7B] text-white hover:!text-white hover:border-[#1F4B3F] "
@@ -122,7 +112,6 @@ function NavbarF() {
                       Join
                     </Link>
                   )}
-                  {/* if we have a current user show this button */}
                   {currentUser && (
                     <div
                       className="user flex items-center gap-[10px] cursor-pointer relative mr-10 "
@@ -135,7 +124,9 @@ function NavbarF() {
                         }
                         alt=""
                       />
-                      <span>{currentUser?.username}</span>
+                      <span>
+                        {currentUser?.displayName || currentUser?.fname}
+                      </span>
                       {open && (
                         <div className="options absolute top-[50px] right-0 p-[20px] bg-white rounded-[10px] border border-[lightgray] flex flex-col gap-[10px]  w-[200px] font-light z-50">
                           {currentUser?.isSeller && (

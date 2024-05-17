@@ -136,7 +136,7 @@ const FormOne = () => {
             </div>
             <div className="flex flex-col w-full text-left">
               <label className={labelClassName} htmlFor="description">
-                Description
+                Introduce Yourself
               </label>
               <textarea
                 name="description"

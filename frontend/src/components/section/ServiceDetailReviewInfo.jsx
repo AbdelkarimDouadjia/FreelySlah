@@ -127,7 +127,7 @@ const ServiceDetailReviewInfo = () => {
                 <img
                   height={60}
                   width={60}
-                  src="/src/assets/images/blog/comments-2.png"
+                  src="/src/assets/images/avatar/Image (11).jpg"
                   className="text-transparent align-middle "
                   alt="comments-2.png"
                 />
@@ -164,7 +164,7 @@ const ServiceDetailReviewInfo = () => {
                 <img
                   height={60}
                   width={60}
-                  src="/src/assets/images/blog/comments-2.png"
+                  src="/src/assets/images/avatar/Image (3).jpg"
                   className="text-transparent align-middle "
                   alt="comments-2.png"
                 />

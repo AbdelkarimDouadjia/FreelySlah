@@ -17,6 +17,9 @@ import MultiStep from "../pages/MultipStep/MultiStep.jsx";
 import StepForm from "../pages/MultipStep/StepForm.jsx";
 import T from "../pages/MultipStep/Test.jsx";
 import StepForm1 from "../pages/MultipStep/StepForm1.jsx";
+import HomeClient from "../pages/HomeClient/HomeClient.jsx";
+import Overview from "../components/section/overview.jsx";
+import TabSection from "../components/section/TabSection.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -38,6 +41,17 @@ const Router = () => {
     );
   };
 
+  const Layout3 = () => {
+    return (
+      <>
+        <NavbarF />
+        <TabSection />
+        <Outlet />
+        <Footer />
+      </>
+    );
+  }
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -46,6 +60,8 @@ const Router = () => {
         { path: "/", element: <Home /> },
         { path: "/home", element: <Home /> },
         { path: "/service", element: <Service /> },
+        { path: "/homeclient", element: <HomeClient /> },
+        { path: "/overview", element: <Overview /> },
         // { path: "/welcome", element: <MultiStep /> },
       ],
     },
@@ -56,6 +72,12 @@ const Router = () => {
         { path: "/welcome", element: <MultiStep /> },
         { path: "/stepform", element: <StepForm /> },
         { path: "/t", element: <T /> },
+      ],
+    },
+    {
+      path: "/",
+      element: <Layout3 />,
+      children: [
       ],
     },
 

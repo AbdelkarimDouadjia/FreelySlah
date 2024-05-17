@@ -12,7 +12,7 @@ const ServiceContactWidget = () => {
               height={90}
               width={90}
               className="text-transparent rounded-[50%] mx-auto align-middle	"
-              src="/src/assets/images/team/fl-1.png"
+              src="/src/assets/images/avatar/Image (12).jpg"
               alt="img"
             />
             <span className="online bg-[#5bbb7b] border-2 border-white rounded-[50%] h-4 absolute right-0 top-2 w-[16px] " />

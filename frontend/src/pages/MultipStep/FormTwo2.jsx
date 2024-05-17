@@ -1,59 +1,59 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import AppContext from "./Context";
 import "./styles.module.css";
-import { Country } from "country-state-city";
+import { State, City } from "country-state-city";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const FormTwo2 = () => {
   const myContext = useContext(AppContext);
   const updateContext = myContext.userDetails;
-  let countryData = Country.getAllCountries();
-  //   const [stateData, setStateData] = useState();
-  //   const [cityData, setCityData] = useState();
+  const userInfo = JSON.parse(localStorage.getItem("currentUser"));
+  const userCountry = userInfo.country;
 
-  //   const [country, setCountry] = useState(countryData[0]);
-  //   const [state, setState] = useState();
-  //   const [city, setCity] = useState();
+  const [state, setState] = useState("");
+  const [statesData, setStatesData] = useState([]);
+  const [citiesData, setCitiesData] = useState([]);
 
-  //   useEffect(() => {
-  //     setStateData(State.getStatesOfCountry(country?.isoCode));
-  //   }, [country]);
+  useEffect(() => {
+    if (userCountry) {
+      setStatesData(State.getStatesOfCountry(userCountry));
+    } else {
+      setStatesData([]);
+      setState("");
+      setCitiesData([]);
+    }
+  }, [userCountry]);
 
-  //   useEffect(() => {
-  //     setCityData(City.getCitiesOfState(country?.isoCode, state?.isoCode));
-  //   }, [state]);
-
-  //   useEffect(() => {
-  //     stateData && setState(stateData[0]);
-  //   }, [stateData]);
-
-  //   useEffect(() => {
-  //     cityData && setCity(cityData[0]);
-  //   }, [cityData]);
-
-  //   console.log(country);
-  //   console.log(city);
-  //   console.log(state);
-
-  //  let cityData = City.getAllCities();
-  //   let stateData = state.getAllStates();
+  useEffect(() => {
+    if (state) {
+      setCitiesData(City.getCitiesOfState(userCountry, state));
+    } else {
+      setCitiesData([]);
+    }
+  }, [state, userCountry]);
 
   const next = () => {
-    if (updateContext.userDOB == null) {
+    if (!updateContext.userDOB) {
       toast.error("Please enter your Date of Birth");
     } else if (
-      updateContext.userPhone == null ||
-      updateContext.userPhone.length !== 10
+      !updateContext.userPhone ||
+      updateContext.userPhone.length < 10
     ) {
       toast.error("Please enter your phone number correctly");
-    } else if (updateContext.userCountry == null) {
-      toast.error("Please enter your Country");
-    } else if (updateContext.userGender == null) {
+    } else if (!updateContext.city) {
+      toast.error("Please enter your City");
+    } else if (!updateContext.state) {
+      toast.error("Please enter your State");
+      // add the state name rather than the state isoCode
+    } else if (!updateContext.userGender) {
       toast.error("Please enter your gender");
-    } else if (updateContext.userOccupation == null) {
+    } else if (!updateContext.userOccupation) {
       toast.error("Please enter your Occupation");
     } else {
+
       updateContext.setStep(updateContext.currentPage + 1);
     }
   };
@@ -95,113 +95,108 @@ const FormTwo2 = () => {
                 >
                   Mobile Number
                 </label>
-                <input
-                  className="block p-4 w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
-                  type="text"
-                  name="phone"
-                  id="phone"
-                  placeholder="Mobile Number"
-                  required
-                  maxLength="10"
-                  onChange={(e) => updateContext.setPhone(e.target.value)}
+                <PhoneInput
+                  country={"dz"}
+                  value={updateContext.userPhone}
+                  onChange={(phone) => updateContext.setPhone(phone)}
+                  inputClass="!block !w-full !input focus:!outline-none focus:!border-[#0e9f6e] focus-within:!outline-none focus-within:!border-[#0e9f6e] placeholder:!text-sm placeholder:!text-[#BEB5C3]"
+                  maxLength="13"
                 />
               </div>
             </div>
             <div className="flex justify-between flex-wrap w-full text-left">
-              {/* <!-- Country Input --> */}
+              {/* State Input */}
               <div className="w-[44%] mx-auto mt-1 leading-normal">
                 <label
-                  htmlFor="country"
+                  htmlFor="state"
                   className="text-[#344054] text-xs font-normal mb-1 inline-block"
                 >
-                  Country
+                  State
                 </label>
-
                 <select
-                  id="country"
-                  name="country"
-                  onChange={(e) => updateContext.setCountry(e.target.value)}
+                  id="state"
+                  name="state"
+                  onChange={(e) => {
+                    setState(e.target.value);
+                    updateContext.setState(e.target.value);
+                  }}
                   className="block w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
+                  disabled={!userCountry}
                 >
-                  <option value="">Select Country</option>
-                  {countryData.map((country) => (
-                    <option key={country.isoCode} value={country.isoCode}>
-                      {country.name}
+                  <option value="">Select State</option>
+                  {statesData.map((state) => (
+                    <option key={state.isoCode} value={state.isoCode}>
+                      {state.name}
                     </option>
                   ))}
                 </select>
               </div>
-              {/* <!-- Country Input --> */}
-              {/* <div className="w-[44%] mx-auto mt-1 leading-normal">
+              {/* City Input */}
+              <div className="w-[44%] mx-auto mt-1 leading-normal">
                 <label
-                  htmlFor="country"
+                  htmlFor="city"
                   className="text-[#344054] text-xs font-normal mb-1 inline-block"
                 >
-                  Country
+                  City
                 </label>
-
                 <select
-                  id="country"
-                  name="country"
-                  onChange={(e) => updateContext.setCountry(e.target.value)}
-                  className="block w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3] "
+                  id="city"
+                  name="city"
+                  onChange={(e) => updateContext.setCity(e.target.value)}
+                  className="block w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
+                  disabled={!state}
                 >
-                  <option value="">Select Country</option>
-                  {countryData.map((country) => (
-                    <option key={country.isoCode} value={country.isoCode}>
-                      {country.name}
+                  <option value="">Select City</option>
+                  {citiesData.map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}
                     </option>
                   ))}
                 </select>
-              </div> */}
-
-              <div className="flex justify-between flex-wrap w-full text-left">
-                {/* Gender */}
-                <div className="w-[44%] mx-auto mt-1 leading-normal">
-                  <label
-                    className="mb-2 text-xs font-medium text-gray-900 dark:text-[#333]"
-                    htmlFor="gender"
-                  >
-                    Gender
-                  </label>
-                  <select
-                    className="block w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
-                    name="gender"
-                    id="gender"
-                    onChange={(e) => updateContext.setGender(e.target.value)}
-                  >
-                    <option selected>Select </option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </select>
-                </div>
-
-                {/* Ocuupation */}
-                <div className="w-[44%] mx-auto mt-1 leading-normal">
-                  <label
-                    className="mb-2 text-xs font-medium text-gray-900 dark:text-[#333]"
-                    htmlFor="occupation"
-                  >
-                    Occupation
-                  </label>
-                  <input
-                    className="block p-4 w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
-                    type="text"
-                    name="occupation"
-                    id="occupation"
-                    placeholder="e.g. Software Developer"
-                    required
-                    onChange={(e) =>
-                      updateContext.setOccupation(e.target.value)
-                    }
-                  />
-                </div>
               </div>
             </div>
-
+            <div className="flex justify-between flex-wrap w-full text-left">
+              {/* Gender */}
+              <div className="w-[44%] mx-auto mt-1 leading-normal">
+                <label
+                  className="mb-2 text-xs font-medium text-gray-900 dark:text-[#333]"
+                  htmlFor="gender"
+                >
+                  Gender
+                </label>
+                <select
+                  className="block w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
+                  name="gender"
+                  id="gender"
+                  onChange={(e) => updateContext.setGender(e.target.value)}
+                >
+                  <option selected>Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              {/* Occupation */}
+              <div className="w-[44%] mx-auto mt-1 leading-normal">
+                <label
+                  className="mb-2 text-xs font-medium text-gray-900 dark:text-[#333]"
+                  htmlFor="occupation"
+                >
+                  Occupation
+                </label>
+                <input
+                  className="block p-4 w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]"
+                  type="text"
+                  name="occupation"
+                  id="occupation"
+                  placeholder="e.g. Software Developer"
+                  required
+                  onChange={(e) => updateContext.setOccupation(e.target.value)}
+                />
+              </div>
+            </div>
             <div className="w-full flex flex-wrap justify-between">
               <button
-                className="border mt-3 w-fit font-semibold px-5 py-[5px] text-lg  border-[#1DBF73] !bg-white ud-btn btn-thm btn-white  hover:!bg-[#046c4e] text-[#1DBF73] hover:text-white rounded-md"
+                className="border mt-3 w-fit font-semibold px-5 py-[5px] text-lg border-[#1DBF73] !bg-white ud-btn btn-thm btn-white hover:!bg-[#046c4e] text-[#1DBF73] hover:text-white rounded-md"
                 type="button"
                 onClick={() =>
                   updateContext.setStep(updateContext.currentPage - 1)
@@ -210,7 +205,7 @@ const FormTwo2 = () => {
                 Previous
               </button>
               <button
-                className="border ud-btn btn-thm btn-white mt-3 w-fit font-semibold px-5 py-[5px] text-lg  border-[#1DBF73] !bg-[#0E9F6E]  hover:!bg-[#046c4e] text-white rounded-md   "
+                className="border ud-btn btn-thm btn-white mt-3 w-fit font-semibold px-5 py-[5px] text-lg border-[#1DBF73] !bg-[#0E9F6E] hover:!bg-[#046c4e] text-white rounded-md"
                 type="button"
                 onClick={next}
               >

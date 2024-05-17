@@ -109,10 +109,50 @@
 .home-menu-parent:hover .home-menu,
 .menu-active:hover .sub-menu {
   display: grid !important;
-  width:  250px  !important;
+  width: 250px !important;
   grid-template-columns: 250px !important;
 }
 
+.swiper__pagination .swiper-pagination-bullet {
+  background-color: silver !important;
+  border-radius: 50%;
+  height: 6px !important;
+  position: relative;
+  width: 6px !important;
+  transition: all .3s ease;
+}
+
+.ud-btn2 {
+  font-weight: 600;
+  font-size: 15px;
+  position: relative;
+  text-align: center;
+  transition: all .4s ease;
+}
+
+.modal-content {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+}
 
 /* .home-menu-parent .home-menu::before
 .menu-active: .sub-menu::before {

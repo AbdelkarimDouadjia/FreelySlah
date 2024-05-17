@@ -16,14 +16,15 @@ export const Login = () => {
 
   const navigate = useNavigate();
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await newRequest.post("/auth/login", { email, password });
       localStorage.setItem("currentUser", JSON.stringify(res.data));
-      navigate("/");
       // Show success notification
       toast.success("Logged in successfully", { position: "top-right" });
+      navigate("/stepform1");
     } catch (err) {
       setError(err.response.data);
       // Show error use state variable or error notification string
@@ -47,7 +48,7 @@ export const Login = () => {
       localStorage.setItem("currentUser", JSON.stringify(res1.data));
       // to show success notification
       toast.success("Logged in successfully", { position: "top-right" });
-      navigate("/");
+      navigate("/stepform1");
     } catch (err) {
       console.log("could not login with google", err);
       setError(err.response.data);

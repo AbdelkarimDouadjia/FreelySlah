@@ -10,18 +10,17 @@ import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
 
 const gigImages = [
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
-  "/src/assets/images/listings/service-details-1.jpg",
+  "/src/assets/images/listings/s0.jpg",
+  "/src/assets/images/listings/s1.jpg",
+  "/src/assets/images/listings/s2.jpg",
+  "/src/assets/images/listings/s3.jpg",
+  "/src/assets/images/listings/s4.jpg",
+  "/src/assets/images/listings/s5.jpg",
+  "/src/assets/images/listings/s6.jpg",
+  "/src/assets/images/listings/s7.jpg",
+  "/src/assets/images/listings/s8.jpg",
+  "/src/assets/images/listings/s9.jpg",
+  "/src/assets/images/listings/s10.jpg",
 ];
 
 const ServiceDetailSlider = () => {
@@ -110,7 +109,7 @@ const ServiceDetailSlider = () => {
           </div>
         </div>
         <div className="service-single-sldier vam_nav_style slider-1-grid owl-carousel owl-theme mb60 owl-loaded owl-drag  relative block !mb-[60px] w-full z-[1] ">
-          <div className=" p-[50px] max-[767.98px]:p-[30px] bg-[#404040] rounded-[4px] mb-3">
+          <div className=" p-[50px] max-[767.98px]:p-[30px] bg-[#40404013] rounded-[4px] mb-3">
             {showSwiper && (
               <Swiper
                 loop={true}
@@ -132,7 +131,7 @@ const ServiceDetailSlider = () => {
                   <SwiperSlide key={i}>
                     <img
                       height={554}
-                      width={929}
+                      width={1500}
                       src={item}
                       alt="gallery"
                       className="w-full h-auto"
