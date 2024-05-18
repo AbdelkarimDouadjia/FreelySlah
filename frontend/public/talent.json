@@ -1,0 +1,179 @@
+[
+    {
+        "_id": "1",
+        "name": "Amina",
+        "talentTitle": "Web Developer",
+        "image": "/images/service1.png",
+        "category": "Technology & Development",
+        "employmentType": "Temporary",
+        "talentLocation": "Algiers",
+        "price": 20,
+        "rating":4.2
+    },
+    {
+        "_id": "2",
+        "name": "Omar",
+        "talentTitle": "HR Manager",
+        "image": "/images/service3.png",
+        "category": "Human Resources",
+        "employmentType": "Temporary",
+        "talentLocation": "Algiers",
+        "price": 20,
+        "rating":4.2
+    },
+    {
+        "_id": "3",
+        "name": "Yasmin",
+        "talentTitle": "UI Designer",
+        "image": "/images/service2.png",
+        "category": "Creative & Design",
+        "employmentType": "Temporary",
+        "talentLocation": "Algiers",
+        "price": 30,
+        "rating":4.2
+    },
+    {
+        "_id": "4",
+        "name": "Khalid",
+        "talentTitle": "Writer",
+        "image": "/images/service6.png",
+        "category": "Writing and Translation",
+        "employmentType": "Temporary",
+        "talentLocation": "Algiers",
+        "price": 35,
+        "rating":4.2
+    },
+    {
+        "_id": "5",
+        "name": "Fatima",
+        "talentTitle": "Graphic Designer",
+        "image": "/images/service4.png",
+        "category": "Creative & Design",
+        "employmentType": "Full-time",
+        "talentLocation": "Algiers",
+        "price": 30,
+        "rating":4.2
+    },
+    {
+        "_id": "6",
+        "name": "Samir",
+        "talentTitle": "Graphic Designer",
+        "image": "/images/service7.png",
+        "category": "Creative & Design",
+        "employmentType": "Full-time",
+        "talentLocation": "Algiers",
+        "price": 30,
+        "rating":4.2
+    },
+    {
+        "_id": "7",
+        "name": "Laila",
+        "talentTitle": "Graphic Designer",
+        "image": "/images/service5.png",
+        "category": "Creative & Design",
+        "employmentType": "Full-time",
+        "talentLocation": "Blida",
+        "price": 30,
+        "rating":4.2
+    },
+    {
+        "_id": "8",
+        "name": "Ahmed",
+        "talentTitle": "UI Designer",
+        "image": "/images/service9.png",
+        "category": "Creative & Design",
+        "employmentType": "Full-time",
+        "talentLocation": "Blida",
+        "price": 30,
+        "rating":4.2
+    },
+    {
+        "_id": "9",
+        "name": "Sana",
+        "talentTitle": "Translator",
+        "image": "/images/service8.png",
+        "category": "Writing and Translation",
+        "employmentType": "Part-time",
+        "talentLocation": "Blida",
+        "price": 35,
+        "rating":4.2
+    },
+    {
+        "_id": "10",
+        "name": "Mustafa",
+        "talentTitle": "Photographer",
+        "image": "/images/service11.png",
+        "category": "Arts & Entertainment",
+        "employmentType": "Part-time",
+        "talentLocation": "Blida",
+        "price": 35,
+        "rating":4.2
+    },
+    {
+        "_id": "11",
+        "name": "Rania",
+        "talentTitle": "Video Editor",
+        "image": "/images/service10.png",
+        "category": "Arts & Entertainment",
+        "employmentType": "Part-time",
+        "talentLocation": "Ain Defla",
+        "price": 20,
+        "rating":4.2
+    },
+    {
+        "_id": "12",
+        "name": "Faisal",
+        "talentTitle": "Web Developer",
+        "image": "/images/service13.png",
+        "category": "Technology & Development",
+        "employmentType": "Part-time",
+        "talentLocation": "Ain Defla",
+        "price": 40,
+        "rating":4.2
+    },
+    {
+        "_id": "13",
+        "name": "Huda",
+        "talentTitle": "App Developer",
+        "image": "/images/service12.png",
+        "category": "Technology & Development",
+        "employmentType": "Full-time",
+        "talentLocation": "Ain Defla",
+        "price": 35,
+        "rating":4.2
+    },
+    {
+        "_id": "14",
+        "name": "Jamal",
+        "talentTitle": "Writer",
+        "image": "/images/service16.png",
+        "category": "Writing and Translation",
+        "employmentType": "Full-time",
+        "talentLocation": "Ain Defla",
+        "price": 40,
+        "rating":4.2
+    },
+    {
+        "_id": "15",
+        "name": "Nour",
+        "talentTitle": "translator",
+        "image": "/images/service14.png",
+        "category": "Writing and Translation",
+        "employmentType": "Full-time",
+        "talentLocation": "Ain Defla",
+        "price": 35,
+        "rating":4.2
+    },
+    {
+        "_id": "16",
+        "name": "Tarek",
+        "talentTitle": "Animator",
+        "image": "/images/service15.png",
+        "category": "Arts & Entertainment",
+        "employmentType": "Full-time",
+        "talentLocation": "Ain Defla",
+        "price": 50,
+        "rating":4.2
+    }
+
+]
