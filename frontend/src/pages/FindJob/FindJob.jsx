@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import JobBanner from "./JobBanner";
 import Cards from "./Cards";
-import Job from "./Job";
+import Job from "./Job.jsx";
 import SideBar from "./Sidebar/SideBar";
 
 const FindJob = () => {

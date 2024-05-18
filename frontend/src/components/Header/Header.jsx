@@ -1,4 +1,12 @@
 import React from "react";
+import { useState, useEffect } from "react";
+import { IoHome, IoLogInOutline } from "react-icons/io5";
+import { MdOutlineDesignServices } from "react-icons/md";
+import { FaCode, FaCamera } from "react-icons/fa";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { LuPhoneCall } from "react-icons/lu";
+import { TbCategory, TbPointer } from "react-icons/ti";
+import logo from "../../assets/images/logo.png";
 
 const Header = () => {
   const [isSticky, setSticky] = useState(false);

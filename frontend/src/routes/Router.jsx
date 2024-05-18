@@ -20,6 +20,14 @@ import StepForm1 from "../pages/MultipStep/StepForm1.jsx";
 import HomeClient from "../pages/HomeClient/HomeClient.jsx";
 import Overview from "../components/section/overview.jsx";
 import TabSection from "../components/section/TabSection.jsx";
+import FindJob from "../pages/FindJob/FindJob.jsx";
+import FindTalent from "../pages/FindTalent/FindTalent.jsx";
+import Message from "../pages/Message/Message.jsx";
+import FindProduct from "../pages/FindProduct/FindProduct.jsx";
+import FindService from "../pages/FindService/FindService.jsx";
+import ContactUs from "../pages/Contact/ContactUs.jsx";
+import AboutUS from "../pages/AboutUS/AboutUs.jsx";
+
 
 const Router = () => {
   const Layout = () => {
@@ -63,6 +71,14 @@ const Router = () => {
         { path: "/homeclient", element: <HomeClient /> },
         { path: "/overview", element: <Overview /> },
         // { path: "/welcome", element: <MultiStep /> },
+
+        { path: "/findjob", element: <FindJob /> },
+        { path: "/findtalent", element: <FindTalent /> },
+        { path: "/message", element: <Message /> },
+        { path: "/findproduct", element: <FindProduct /> },
+        { path: "/findservice", element: <FindService /> },
+        { path: "/contactus", element: <ContactUs /> },
+        { path: "/aboutus", element: <AboutUS /> },
       ],
     },
     {
@@ -77,8 +93,7 @@ const Router = () => {
     {
       path: "/",
       element: <Layout3 />,
-      children: [
-      ],
+      children: [],
     },
 
     { path: "/stepform1", element: <StepForm1 /> },
