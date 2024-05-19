@@ -35,7 +35,10 @@ const FormFive5 = () => {
   const updateContext = myContext.userDetails;
 
   useEffect(() => {
-    if (updateContext.isSeller == false) {
+    if (
+      updateContext.isSeller == false ||
+      updateContext.freelancerType !== "service"
+    ) {
       updateContext.setStep(updateContext.currentPage + 1);
     }
   }, [updateContext]);

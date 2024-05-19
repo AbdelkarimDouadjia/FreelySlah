@@ -166,7 +166,30 @@ const userSchema = new Schema(
         ],
       },
     ],
-  },
+    //get from him his storeImg storeName storeLocation storeCat  storeDesc
+    userStore: {
+      storeImg: {
+        type: String,
+        required: false,
+      },
+      storeName: {
+        type: String,
+        required: false,
+      },
+      storeLocation: {
+        type: String,
+        required: false,
+      },
+      storeCat: {
+        type: String,
+        required: false,
+      },
+      storeDesc: {
+        type: String,
+        required: false,
+      },
+    },
+  }, // Add a closing bracket here
   {
     timestamps: true,
   }

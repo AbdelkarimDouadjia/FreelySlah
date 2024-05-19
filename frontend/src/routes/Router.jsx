@@ -20,6 +20,9 @@ import StepForm1 from "../pages/MultipStep/StepForm1.jsx";
 import HomeClient from "../pages/HomeClient/HomeClient.jsx";
 import Overview from "../components/section/overview.jsx";
 import TabSection from "../components/section/TabSection.jsx";
+import GigForm from "../components/section/GigForm.jsx";
+import CreateService from "../pages/Create Service/CreateService.jsx";
+import JobPostingPage from "../pages/MultipStep/JobPostingPage.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -50,7 +53,7 @@ const Router = () => {
         <Footer />
       </>
     );
-  }
+  };
 
   const router = createBrowserRouter([
     {
@@ -59,10 +62,14 @@ const Router = () => {
       children: [
         { path: "/", element: <Home /> },
         { path: "/home", element: <Home /> },
-        { path: "/service", element: <Service /> },
+        { path: "/gig/:id", element: <Service /> },
         { path: "/homeclient", element: <HomeClient /> },
         { path: "/overview", element: <Overview /> },
         // { path: "/welcome", element: <MultiStep /> },
+
+        { path: "/gigform", element: <GigForm /> },
+        { path: "/createservice", element: <CreateService /> },
+        { path: "/jobposting", element: <JobPostingPage /> },
       ],
     },
     {
@@ -77,8 +84,7 @@ const Router = () => {
     {
       path: "/",
       element: <Layout3 />,
-      children: [
-      ],
+      children: [],
     },
 
     { path: "/stepform1", element: <StepForm1 /> },

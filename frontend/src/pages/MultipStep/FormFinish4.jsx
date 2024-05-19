@@ -66,6 +66,7 @@ const FormFinish = () => {
 
   console.log(userProfile);
 
+
   const updateCurrentUser = (res) => {
     const updatedUserInfo = { ...userInfo, ...res };
     localStorage.setItem("currentUser", JSON.stringify(updatedUserInfo));
@@ -80,6 +81,7 @@ const FormFinish = () => {
   // In your finish function, make sure to call updateCurrentUser with the response data
   const finish = async () => {
     try {
+      const storeImg = await updateContext.storeImg;
       const img = await updateContext.userImg;
       res = await newRequest.post("/stepper/welcome", {
         _id: `${userInfo._id}`,
@@ -98,7 +100,14 @@ const FormFinish = () => {
         freelancerType: `${updateContext.freelancerType}`,
         city: `${updateContext.city}`,
         state: `${updateContext.state}`,
-        userProfile: userProfile,
+        userProfile: userProfile ? userProfile : [],
+        userStore: {
+          storeImg: `${storeImg ? storeImg : ""}`,
+          storeName: `${updateContext.userStoreName}`,
+          storeLocation: `${updateContext.userStoreLocation}`,
+          storeCat: `${updateContext.userStoreCategory}`,
+          storeDesc: `${updateContext.userStoreDescription}`,
+        },
         ...(img === null ? { img: `${userInfo.img}` } : { img: `${img}` }),
       });
       updateCurrentUser(res.data);

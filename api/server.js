@@ -12,7 +12,6 @@ import stepperRoute from "./routes/stepper.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-
 const app = express();
 dotenv.config();
 mongoose.set("strictQuery", true);
@@ -38,7 +37,6 @@ app.use("/api/conversations", conversationRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/stepper", stepperRoute);
-
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
