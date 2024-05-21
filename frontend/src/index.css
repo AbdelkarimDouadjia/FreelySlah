@@ -38,7 +38,10 @@
 @tailwind base;
 
 
-
+html, body {
+	background-color: #FCFCFC;
+  }
+  
 
 * {
 	margin: 0;
@@ -48,6 +51,23 @@
 
 body {
 	font-family: "DM Sans", sans-serif;
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: #555;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #121212;
+	border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #242424;
 }
 
 

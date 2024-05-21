@@ -16,7 +16,6 @@ export const Login = () => {
 
   const navigate = useNavigate();
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -113,7 +112,7 @@ export const Login = () => {
           {/* Login Header */}
           <div>
             <a
-              href="https://getanchor.co/"
+              href="/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#333] font-semibold text-sm"
