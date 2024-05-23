@@ -152,7 +152,7 @@ const FormSix6 = () => {
             <button
               className="px-5 py-2 bg-gray-300 text-gray-700 rounded-3xl hover:bg-gray-400"
               onClick={() =>
-                updateContext.setStep(updateContext.currentPage - 1)
+                updateContext.setStep(updateContext.currentPage - 2)
               }
             >
               Previous
