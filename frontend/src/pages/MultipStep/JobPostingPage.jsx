@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaDollarSign } from "react-icons/fa";
 import { GoClock } from "react-icons/go";
 import { IoIosAttach } from "react-icons/io";
+import newRequest from "../../utils/newRequest";
 
 const categories = {
   "Web Design": ["UI/UX Design", "Responsive Design"],
@@ -141,12 +142,25 @@ const JobPostingPage = () => {
     setShowEditScopeModal(false);
   };
 
+  const finish = async () => {
+    try {
+      await newRequest.post("/project", {});
+
+      toast.success("Job posted successfully");
+    } catch (error) {
+      toast.error("Failed to post job");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col items-center py-10">
       <div className="w-full max-w-4xl flex justify-between items-center mb-7 ">
         <h1 className="text-2xl font-semibold">Job details</h1>
         <div className="flex items-center justify-end ">
-          <button className="cursor-pointer  !py-2 !px-4 hover:text-white rounded-[60px] bg-[#0E9F6E] hover:bg-[#046c4e] text-white hover:border-none transition-all duration-300 ease-linear font-medium w-fit">
+          <button
+            onClick={finish}
+            className="cursor-pointer  !py-2 !px-4 hover:text-white rounded-[60px] !bg-[#0E9F6E] hover:!bg-[#046c4e] text-white hover:border-none transition-all duration-300 ease-linear font-medium w-fit"
+          >
             Post this job
           </button>
         </div>
@@ -291,6 +305,9 @@ const JobPostingPage = () => {
 
         {/* Attach a File */}
         <div className="p-5">
+          <label className="block text-gray-900 mb-3 text-lg font-medium">
+            Attach a File
+          </label>
           <div className="relative inline-block hover:bg-[#F9F9F9] cursor-pointer">
             <button className="flex items-center justify-center border border-[#108A00] rounded-3xl px-4 py-2 transition-all duration-150 ease-in-out hover:bg-[#F9F9F9]">
               <IoIosAttach className="text-[#108A00] text-xl mr-2" />
@@ -303,6 +320,9 @@ const JobPostingPage = () => {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
           </div>
+          <span className="block text-gray-500 text-sm mt-2 text-right">
+            Max file size: 5MB
+          </span>
         </div>
 
         {/* Edit Title Modal */}

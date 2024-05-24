@@ -1,89 +1,161 @@
 import React, { useState } from "react";
+import ServiceContext from "./ServiceContext.jsx";
 import Overview from "./steps/Overview";
 import Pricing from "./steps/Pricing";
 import DescriptionFAQ from "./steps/DescriptionFAQ";
 import Requirements from "./steps/Requirements";
 import Gallery from "./steps/Gallery";
 import Publish from "./steps/Publish";
+import { MdOutlineEdit, MdCheck } from "react-icons/md"; // Import check icon
 
 const CreateService = () => {
   const [step, setStep] = useState(1);
+  const [serviceTitle, setServiceTitle] = useState("");
+  const [serviceCategory, setServiceCategory] = useState("");
+  const [serviceSubCategory, setServiceSubCategory] = useState("");
+  const [serviceSearchTags, setServiceSearchTags] = useState([]);
+  const [pricingTiers, setPricingTiers] = useState([]);
+  const [serviceImages, setServiceImages] = useState([]);
+  const [coverImage, setCoverImage] = useState(null);
+  const [serviceRequirements, setServiceRequirements] = useState([]);
+  const [serviceDescription, setServiceDescription] = useState("");
+  const [maxProjects, setMaxProjects] = useState(0);
 
-  const nextStep = () => {
-    setStep(step + 1);
+  const validateSteps = (targetStep) => {
+    // Add your validation logic here
+    // For simplicity, we're assuming that all steps are valid.
+    // You can add detailed checks based on your requirements.
+    if (targetStep === 2 && !serviceTitle) return false;
+    if (targetStep === 3 && (!serviceTitle || !pricingTiers.length))
+      return false;
+    if (
+      targetStep === 4 &&
+      (!serviceTitle || !pricingTiers.length || !serviceImages.length)
+    )
+      return false;
+    if (
+      targetStep === 5 &&
+      (!serviceTitle ||
+        !pricingTiers.length ||
+        !serviceImages.length ||
+        !serviceRequirements.length)
+    )
+      return false;
+    if (
+      targetStep === 6 &&
+      (!serviceTitle ||
+        !pricingTiers.length ||
+        !serviceImages.length ||
+        !serviceRequirements.length ||
+        !serviceDescription)
+    )
+      return false;
+    return true;
   };
 
-  const prevStep = () => {
-    setStep(step - 1);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (step < 6) {
-      nextStep();
+  const handleStepClick = (targetStep) => {
+    if (validateSteps(targetStep)) {
+      setStep(targetStep);
     } else {
-      alert("Form submitted!");
-      // Handle form submission logic
+      alert("Please complete the required steps before proceeding.");
     }
   };
 
+  const serviceDetails = {
+    currentPage: step,
+    serviceTitle: serviceTitle,
+    serviceCategory: serviceCategory,
+    serviceSubCategory: serviceSubCategory,
+    serviceSearchTags: serviceSearchTags,
+    pricingTiers: pricingTiers,
+    serviceImages: serviceImages,
+    coverImage: coverImage,
+    serviceRequirements: serviceRequirements,
+    serviceDescription: serviceDescription,
+    maxProjects: maxProjects,
+
+    setServiceTitle,
+    setServiceCategory,
+    setServiceSubCategory,
+    setServiceSearchTags,
+    setPricingTiers,
+    setServiceImages,
+    setCoverImage,
+    setServiceRequirements,
+    setServiceDescription,
+    setMaxProjects,
+    setStep,
+  };
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
-      <div className="w-full max-w-4xl bg-white p-6 rounded-md shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center space-x-2 text-sm">
-            {Array.from({ length: 6 }, (_, i) => (
-              <span
-                key={i}
-                className={`font-bold ${
-                  step === i + 1 ? "text-green-500" : "text-gray-400"
-                }`}
-              >
-                {i + 1}{" "}
-                {
-                  [
-                    "Overview",
-                    "Pricing",
-                    "Description & FAQ",
-                    "Requirements",
-                    "Gallery",
-                    "Publish",
-                  ][i]
-                }
-              </span>
-            ))}
+    <>
+      <ServiceContext.Provider value={{ serviceDetails }}>
+        <div className="main">
+          <div className="min-h-screen bg-white flex flex-col items-center py-10">
+            {/* Step indicator */}
+            <div className="w-full max-w-4xl relative hidden xs-b:flex justify-between items-center mb-8">
+              <div className="absolute inset-0 flex !items-center !justify-center">
+                <div
+                  className="md-b:w-[95%] w-[88%] border-t-2 border-gray-300 mb-5"
+                  style={{ borderTopColor: step > 1 ? "#0E9F6E" : "gray" }} // Change color of the line
+                ></div>
+              </div>
+              {[
+                "Overview",
+                "Pricing",
+                "Gallery",
+                "Requirements",
+                "Description",
+                "Review",
+              ].map((label, i) => (
+                <div
+                  key={i}
+                  className="relative flex flex-col items-center cursor-pointer"
+                  onClick={() => handleStepClick(i + 1)} // Validate and set step on click
+                >
+                  <div
+                    className={`flex items-center justify-center w-7 h-7 rounded-full border-2 ${
+                      step === i + 1
+                        ? "border-[#0E9F6E] bg-[#0E9F6E] text-white"
+                        : step > i + 1
+                        ? "border-[#0E9F6E] bg-[#0E9F6E] text-white"
+                        : "border-gray-300 bg-white text-gray-500"
+                    }`}
+                  >
+                    {step > i + 1 ? (
+                      <MdCheck className="text-white" /> // Show check mark for completed steps
+                    ) : step === i + 1 ? (
+                      <MdOutlineEdit className="text-white" />
+                    ) : (
+                      i + 1
+                    )}
+                  </div>
+                  <span
+                    className={`mt-2 text-sm ${
+                      step === i + 1 || step > i + 1
+                        ? "text-[#0E9F6E]"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="w-full max-w-4xl bg-white shadow-md border border-[#D9D9D9] rounded-2xl px-9 py-11">
+              <div>
+                {step === 1 && <Overview />}
+                {step === 2 && <Pricing />}
+                {step === 3 && <Gallery />}
+                {step === 4 && <Requirements />}
+                {step === 5 && <DescriptionFAQ />}
+                {step === 6 && <Publish />}
+              </div>
+            </div>
           </div>
-          <button className="bg-white border border-gray-300 rounded px-4 py-2">
-            Save
-          </button>
         </div>
-        <form onSubmit={handleSubmit}>
-          {step === 1 && <Overview />}
-          {step === 2 && <Pricing />}
-          {step === 3 && <DescriptionFAQ />}
-          {step === 4 && <Requirements />}
-          {step === 5 && <Gallery />}
-          {step === 6 && <Publish />}
-          <div className="flex justify-between mt-4">
-            {step > 1 && (
-              <button
-                type="button"
-                onClick={prevStep}
-                className="!bg-green-700 text-black px-4 py-2 rounded"
-              >
-                Back
-              </button>
-            )}
-            <button
-              type="submit"
-              className="!bg-blue-500 text-black px-4 py-2 rounded"
-            >
-              {step < 6 ? "Next" : "Submit"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+      </ServiceContext.Provider>
+    </>
   );
 };
 

@@ -45,7 +45,7 @@ function NavbarF() {
   return (
     <>
       <header
-        className={`header-nav nav-homepage-style stricky main-menu animated bg-white border-b border-[#E9E9E9] py-[15px] px-0 max-[992px]:hidden lg-b:block  text-[15px] font-normal text-[#6B7177] leading-[28px] transition-all duration-300 ease-linear z-[99999] ${
+        className={`header-nav nav-homepage-style stricky main-menu animated bg-white border-b border-[#E9E9E9] py-[15px] px-0 max-[992px]:hidden lg-b:block  text-[15px] font-normal text-[#6B7177] leading-[28px] transition-all duration-300 ease-linear z-[99] ${
           sticky ? "slideInDown sticky top-0" : "slideIn"
         }`}
       >
@@ -56,7 +56,9 @@ function NavbarF() {
                 <div className="flex items-center ">
                   <Link
                     className="header-logo logo1 outline-none 2xl-b:pr-[30px] border-r border-[#E9E9E9] cursor-pointer text-[#222] pr-[5px]"
-                    to="/"
+                    to={
+                      !currentUser.isSeller ? "/homeclient" : "/homefreelancer"
+                    }
                   >
                     <span className="text-[#222] text-[20px] font-semibold mr-2">
                       FreelySlah
@@ -134,7 +136,7 @@ function NavbarF() {
                               <Link className="link" to="/mygigs">
                                 Gigs
                               </Link>
-                              <Link className="link" to="/add">
+                              <Link className="link" to="/createservice">
                                 Add new Gig
                               </Link>
                             </>
