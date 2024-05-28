@@ -12,7 +12,7 @@ import Breadcumb from "../components/Breadcumb/Breadcumb.jsx";
 import NavbarF from "../components/NavbarF/NavbarF.jsx";
 import Footer from "../components/section/Footer.jsx";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import MultiStep from "../pages/MultipStep/MultiStep.jsx";
+//import MultiStep from "../pages/MultipStep/MultiStep.jsx";
 // import { Routes, Route } from "react-router-dom";
 import StepForm from "../pages/MultipStep/StepForm.jsx";
 import T from "../pages/MultipStep/Test.jsx";
@@ -23,6 +23,10 @@ import TabSection from "../components/section/TabSection.jsx";
 import GigForm from "../components/section/GigForm.jsx";
 import CreateService from "../pages/Create Service/CreateService.jsx";
 import JobPostingPage from "../pages/MultipStep/JobPostingPage.jsx";
+import Settings from "../pages/Settings/Settings.jsx";
+import ContactInfo from "../pages/Settings/components/ContactInfo.jsx";
+import ProfileSettings from "../pages/Settings/components/ProfileSettings.jsx";
+import BillingPayments from "../pages/Settings/components/BillingPayments.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -70,13 +74,29 @@ const Router = () => {
         { path: "/gigform", element: <GigForm /> },
         { path: "/createservice", element: <CreateService /> },
         { path: "/jobposting", element: <JobPostingPage /> },
+        {
+          path: "/settings",
+          element: <Settings />,
+          children: [
+            { path: "contact-info", element: <ContactInfo /> },
+            { path: "profile-settings", element: <ProfileSettings /> },
+            { path: "billing-payments", element: <BillingPayments /> },
+        /*{ path: "tax-information", element: <TaxInformation /> },
+        
+        { path: "get-paid", element: <GetPaid /> },
+        { path: "my-teams", element: <MyTeams /> },
+        { path: "connected-services", element: <ConnectedServices /> },
+        { path: "password-security", element: <PasswordSecurity /> },
+        { path: "notification-settings", element: <NotificationSettings /> },*/
+          ],
+        },
       ],
     },
+
     {
       path: "/",
       element: <Layout2 />,
       children: [
-        { path: "/welcome", element: <MultiStep /> },
         { path: "/stepform", element: <StepForm /> },
         { path: "/t", element: <T /> },
       ],
@@ -87,7 +107,7 @@ const Router = () => {
       children: [],
     },
 
-    { path: "/stepform1", element: <StepForm1 /> },
+    { path: "/welcome", element: <StepForm1 /> },
 
     { path: "/login", element: <Login /> },
     { path: "/signup", element: <Signup /> },

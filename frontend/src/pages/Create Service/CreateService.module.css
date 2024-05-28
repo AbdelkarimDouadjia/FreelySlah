@@ -1,6 +1,6 @@
 .radioContainer {
 	display: flex;
-	justify-content: start;
+	justify-content: flex-start;
 	margin-top: 1.25rem;
 	/* 5 units in Tailwind (mt-5) */
 }

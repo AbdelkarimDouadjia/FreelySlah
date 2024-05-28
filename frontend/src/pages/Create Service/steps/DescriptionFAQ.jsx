@@ -1,11 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ServiceContext from "../ServiceContext";
 
 const DescriptionFAQ = () => {
+  useEffect(() => {
+    import("react-quill/dist/quill.snow.css");
+  }, []);
   const myContext = useContext(ServiceContext);
   const updateContext = myContext.serviceDetails;
   const [description, setDescription] = useState("");
