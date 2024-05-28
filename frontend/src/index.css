@@ -54,15 +54,15 @@ body {
 }
 
 ::-webkit-scrollbar {
-	width: 8px;
+	width: 15px;
 }
 
 ::-webkit-scrollbar-track {
-	background: #555;
+	background: #dbd9d9;
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #121212;
+	background: #0E9F6E;
 	border-radius: 5px;
 }
 
