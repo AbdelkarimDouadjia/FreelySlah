@@ -189,6 +189,7 @@ const FormFive5 = () => {
     setShowEditSkillModal(true);
   };*/
 
+  // Education section
   const handleAddEducation = () => {
     if (!school || !dataSchoolFrom || !dataSchoolTo) {
       toast.error("Please enter all required fields.");
@@ -980,6 +981,133 @@ const FormFive5 = () => {
           </div>
         )}
 
+        {/* Edit Education Modal */}
+        {showEditEducationModal && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center ">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-3xl font-semibold">Edit education</h3>
+                <button
+                  onClick={() => setShowEditEducationModal(false)}
+                  className="text-gray-600 hover:text-gray-900 !text-5xl"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="px-3 overflow-x-auto min-h-[400px]">
+                <div className="mb-7">
+                  <label>School</label>
+                  <input
+                    type="text"
+                    value={school}
+                    onChange={(e) => setSchool(e.target.value)}
+                    className="block p-4 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
+                   focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3]"
+                    placeholder="Ex: Djillali Bounama University"
+                    required
+                  />
+                </div>
+                <div className="flex justify-between flex-wrap w-full text-left mb-7">
+                  {/* Date Start Input */}
+                  <div className="w-[44%] mt-1 leading-normal">
+                    <label htmlFor="date_start">
+                      Dates Attended (Optional)
+                    </label>
+                    <select
+                      id="date_start"
+                      name="date_start"
+                      className="block w-full input focus:outline-none focus:border-[#2525258a]  focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] bg-[#ffffff]"
+                      value={dataSchoolFrom}
+                      onChange={(e) => setDataSchoolFrom(e.target.value)}
+                    >
+                      <option value="">from</option>
+                      {years.map((year, index) => (
+                        <option key={index} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="w-[44%] mt-1 leading-normal">
+                    <label
+                      htmlFor="date_end"
+                      className="text-[#344054] bg-[#ffffff] text-xs font-normal mb-1 inline-block"
+                    ></label>
+                    <select
+                      id="date_end"
+                      name="date_end"
+                      className="block w-full input focus:outline-none focus:border-[#2525258a] focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] bg-[#ffffff]"
+                      onChange={(e) => setDataSchoolTo(e.target.value)}
+                      value={dataSchoolTo}
+                    >
+                      <option value="">To (or expected graduation year)</option>
+                      {years.map((year, index) => (
+                        <option key={index} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex justify-between flex-wrap w-full text-left mb-7">
+                  <div className="w-[44%] mt-1 leading-normal">
+                    <label className="mb-4">Degree (Optional)</label>
+                    <input
+                      type="text"
+                      value={degree}
+                      onChange={(e) => setDegree(e.target.value)}
+                      className="block p-4 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
+                   focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3]"
+                      placeholder="Ex: Master of Philosofy (MPhil)"
+                    />
+                  </div>
+
+                  <div className="w-[44%] mt-1 leading-normal">
+                    <label>Area of Study (Optional)</label>
+                    <input
+                      type="text"
+                      value={areaOfStudy}
+                      onChange={(e) => setAreaOfStudy(e.target.value)}
+                      className="block p-4 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
+                   focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3]"
+                      placeholder="Ex: Computer Science"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col w-full text-left !h-24">
+                  <label htmlFor="descEducation">Description (Optional)</label>
+                  <textarea
+                    name="descEducation"
+                    id="descEducation"
+                    value={descEducation}
+                    onChange={(e) => setDescEducation(e.target.value)}
+                    className="block w-full !h-96 input focus:outline-none focus:border-[#2525258a] bg-white focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] !p-2 !h-24`}"
+                    placeholder="Description"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={() => setShowEditEducationModal(false)}
+                  className="px-4 py-2  mr-2 text-[#0E9F6E] "
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleEditEducation}
+                  className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Add Work Modal */}
         {showAddWorkModal && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center ">
@@ -1196,133 +1324,6 @@ const FormFive5 = () => {
                 </button>
                 <button
                   onClick={handleEditWork}
-                  className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Edit Education Modal */}
-        {showEditEducationModal && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center ">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-3xl font-semibold">Edit education</h3>
-                <button
-                  onClick={() => setShowEditEducationModal(false)}
-                  className="text-gray-600 hover:text-gray-900 !text-5xl"
-                >
-                  &times;
-                </button>
-              </div>
-              <div className="px-3 overflow-x-auto min-h-[400px]">
-                <div className="mb-7">
-                  <label>School</label>
-                  <input
-                    type="text"
-                    value={school}
-                    onChange={(e) => setSchool(e.target.value)}
-                    className="block p-4 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
-                   focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3]"
-                    placeholder="Ex: Djillali Bounama University"
-                    required
-                  />
-                </div>
-                <div className="flex justify-between flex-wrap w-full text-left mb-7">
-                  {/* Date Start Input */}
-                  <div className="w-[44%] mt-1 leading-normal">
-                    <label htmlFor="date_start">
-                      Dates Attended (Optional)
-                    </label>
-                    <select
-                      id="date_start"
-                      name="date_start"
-                      className="block w-full input focus:outline-none focus:border-[#2525258a]  focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] bg-[#ffffff]"
-                      value={dataSchoolFrom}
-                      onChange={(e) => setDataSchoolFrom(e.target.value)}
-                    >
-                      <option value="">from</option>
-                      {years.map((year, index) => (
-                        <option key={index} value={year}>
-                          {year}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="w-[44%] mt-1 leading-normal">
-                    <label
-                      htmlFor="date_end"
-                      className="text-[#344054] bg-[#ffffff] text-xs font-normal mb-1 inline-block"
-                    ></label>
-                    <select
-                      id="date_end"
-                      name="date_end"
-                      className="block w-full input focus:outline-none focus:border-[#2525258a] focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] bg-[#ffffff]"
-                      onChange={(e) => setDataSchoolTo(e.target.value)}
-                      value={dataSchoolTo}
-                    >
-                      <option value="">To (or expected graduation year)</option>
-                      {years.map((year, index) => (
-                        <option key={index} value={year}>
-                          {year}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex justify-between flex-wrap w-full text-left mb-7">
-                  <div className="w-[44%] mt-1 leading-normal">
-                    <label className="mb-4">Degree (Optional)</label>
-                    <input
-                      type="text"
-                      value={degree}
-                      onChange={(e) => setDegree(e.target.value)}
-                      className="block p-4 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
-                   focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3]"
-                      placeholder="Ex: Master of Philosofy (MPhil)"
-                    />
-                  </div>
-
-                  <div className="w-[44%] mt-1 leading-normal">
-                    <label>Area of Study (Optional)</label>
-                    <input
-                      type="text"
-                      value={areaOfStudy}
-                      onChange={(e) => setAreaOfStudy(e.target.value)}
-                      className="block p-4 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
-                   focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3]"
-                      placeholder="Ex: Computer Science"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col w-full text-left !h-24">
-                  <label htmlFor="descEducation">Description (Optional)</label>
-                  <textarea
-                    name="descEducation"
-                    id="descEducation"
-                    value={descEducation}
-                    onChange={(e) => setDescEducation(e.target.value)}
-                    className="block w-full !h-96 input focus:outline-none focus:border-[#2525258a] bg-white focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] !p-2 !h-24`}"
-                    placeholder="Description"
-                  ></textarea>
-                </div>
-              </div>
-
-              <div className="flex justify-end mt-4">
-                <button
-                  onClick={() => setShowEditEducationModal(false)}
-                  className="px-4 py-2  mr-2 text-[#0E9F6E] "
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleEditEducation}
                   className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
                 >
                   Save

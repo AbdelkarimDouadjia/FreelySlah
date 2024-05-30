@@ -23,7 +23,7 @@ export const Login = () => {
       localStorage.setItem("currentUser", JSON.stringify(res.data));
       // Show success notification
       toast.success("Logged in successfully", { position: "top-right" });
-      navigate("/stepform1");
+      navigate("/welcome");
     } catch (err) {
       setError(err.response.data);
       // Show error use state variable or error notification string
@@ -47,7 +47,7 @@ export const Login = () => {
       localStorage.setItem("currentUser", JSON.stringify(res1.data));
       // to show success notification
       toast.success("Logged in successfully", { position: "top-right" });
-      navigate("/stepform1");
+      navigate("/welcome");
     } catch (err) {
       console.log("could not login with google", err);
       setError(err.response.data);

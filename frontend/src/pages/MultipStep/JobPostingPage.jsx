@@ -166,6 +166,7 @@ const JobPostingPage = () => {
         </div>
       </div>
       <div className="w-full max-w-4xl bg-white shadow-md border border-[#D9D9D9] rounded-2xl">
+        {/* Project title */}
         <div className="border-b border-[#D9D9D9] p-5 ">
           <div className="flex justify-between">
             <input
@@ -188,6 +189,7 @@ const JobPostingPage = () => {
           </div>
         </div>
 
+        {/* Project Description */}
         <div className="border-b border-[#D9D9D9] p-5 ">
           <div className="flex justify-between">
             <p className="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-green-500 border-none  text-sm outline-none">

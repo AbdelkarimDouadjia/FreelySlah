@@ -27,6 +27,9 @@ import Settings from "../pages/Settings/Settings.jsx";
 import ContactInfo from "../pages/Settings/components/ContactInfo.jsx";
 import ProfileSettings from "../pages/Settings/components/ProfileSettings.jsx";
 import BillingPayments from "../pages/Settings/components/BillingPayments.jsx";
+import GetPaid from "../pages/Settings/components/GetPaid.jsx";
+import PasswordSecurity from "../pages/Settings/components/PasswordSecurity.jsx";
+import EditMyProfile from "../pages/Settings/EditMyProfile.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -74,6 +77,9 @@ const Router = () => {
         { path: "/gigform", element: <GigForm /> },
         { path: "/createservice", element: <CreateService /> },
         { path: "/jobposting", element: <JobPostingPage /> },
+        { path: "/editmyprofile", element: <EditMyProfile /> },
+        { path: "/service", element: <Service /> },
+
         {
           path: "/settings",
           element: <Settings />,
@@ -81,12 +87,11 @@ const Router = () => {
             { path: "contact-info", element: <ContactInfo /> },
             { path: "profile-settings", element: <ProfileSettings /> },
             { path: "billing-payments", element: <BillingPayments /> },
-        /*{ path: "tax-information", element: <TaxInformation /> },
-        
-        { path: "get-paid", element: <GetPaid /> },
+            { path: "get-paid", element: <GetPaid /> },
+            { path: "password-security", element: <PasswordSecurity /> },
+            /*{ path: "tax-information", element: <TaxInformation /> },
         { path: "my-teams", element: <MyTeams /> },
         { path: "connected-services", element: <ConnectedServices /> },
-        { path: "password-security", element: <PasswordSecurity /> },
         { path: "notification-settings", element: <NotificationSettings /> },*/
           ],
         },
@@ -116,7 +121,7 @@ const Router = () => {
     { path: "/navbarS", element: <NavbarS /> },
     { path: "/navbarT", element: <NavbarT /> },
     { path: "/tabsection", element: <Tabsection /> },
-    { path: "/service", element: <Service /> },
+    /*{ path: "/service", element: <Service /> },*/
     { path: "/breadcumb", element: <Breadcumb /> },
     { path: "/navbarF", element: <NavbarF /> },
   ]);

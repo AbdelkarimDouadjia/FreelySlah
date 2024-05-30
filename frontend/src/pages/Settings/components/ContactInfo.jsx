@@ -7,6 +7,7 @@ import "react-phone-input-2/lib/style.css";
 const ContactInfo = () => {
   const [isAccountEditing, setIsEditingAccount] = useState(false);
   const [isLocationEditing, setIsEditingLocation] = useState(false);
+  const [isPersonalEditing, setIsEditingPersonal] = useState(false); // Added state for Personal Details editing
 
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
@@ -14,6 +15,10 @@ const ContactInfo = () => {
   const [zipCode, setZipCode] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [displayName, setDisplayName] = useState("Karim Douadjia"); // Added state for display name
+  const [dateOfBirth, setDateOfBirth] = useState("1990-01-01"); // Added state for Date of Birth
+  const [gender, setGender] = useState("Male"); // Added state for Gender
+  const [occupation, setOccupation] = useState("Software Engineer"); // Added state for Occupation
   const [statesData, setStatesData] = useState([]);
   const [citiesData, setCitiesData] = useState([]);
   const [countriesData, setCountriesData] = useState([]);
@@ -25,6 +30,10 @@ const ContactInfo = () => {
   const [tempZipCode, setTempZipCode] = useState("");
   const [tempAddress, setTempAddress] = useState("");
   const [tempPhone, setTempPhone] = useState("");
+  const [tempDisplayName, setTempDisplayName] = useState(""); // Added temp state for display name
+  const [tempDateOfBirth, setTempDateOfBirth] = useState(""); // Added temp state for Date of Birth
+  const [tempGender, setTempGender] = useState(""); // Added temp state for Gender
+  const [tempOccupation, setTempOccupation] = useState(""); // Added temp state for Occupation
 
   useEffect(() => {
     setCountriesData(Country.getAllCountries());
@@ -49,6 +58,7 @@ const ContactInfo = () => {
   }, [tempState, tempCountry]);
 
   const handleEditAccountClick = () => {
+    setTempDisplayName(displayName); // Set temp display name
     setIsEditingAccount(true);
   };
 
@@ -80,6 +90,29 @@ const ContactInfo = () => {
     setIsEditingLocation(false);
   };
 
+  const handleUpdateAccountClick = () => {
+    setDisplayName(tempDisplayName); // Update display name
+    setIsEditingAccount(false);
+  };
+
+  const handleEditPersonalClick = () => {
+    setTempDateOfBirth(dateOfBirth);
+    setTempGender(gender);
+    setTempOccupation(occupation);
+    setIsEditingPersonal(true);
+  };
+
+  const handleCancelPersonalClick = () => {
+    setIsEditingPersonal(false);
+  };
+
+  const handleUpdatePersonalClick = () => {
+    setDateOfBirth(tempDateOfBirth);
+    setGender(tempGender);
+    setOccupation(tempOccupation);
+    setIsEditingPersonal(false);
+  };
+
   return (
     <div className="p-4">
       <h2 className="text-3xl tracking-tighter font-medium mb-4">
@@ -104,6 +137,21 @@ const ContactInfo = () => {
 
         {isAccountEditing ? (
           <div className="bg-white">
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="display-name"
+              >
+                Display Name
+              </label>
+              <input
+                className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
+                id="display-name"
+                type="text"
+                value={tempDisplayName}
+                onChange={(e) => setTempDisplayName(e.target.value)}
+              />
+            </div>
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
@@ -150,6 +198,7 @@ const ContactInfo = () => {
               <button
                 className="px-5 py-2 !bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e] mr-5"
                 type="button"
+                onClick={handleUpdateAccountClick}
               >
                 Update
               </button>
@@ -171,6 +220,12 @@ const ContactInfo = () => {
               </p>
             </div>
             <div className="flex items-center mb-5">
+              <p className="text-lg font-medium text-gray-800 mr-7">
+                Display Name:
+              </p>
+              <p className="text-lg font-medium text-gray-800">{displayName}</p>
+            </div>
+            <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">Name:</p>
               <p className="text-lg font-medium text-gray-800">
                 Abdelkarim Douadjia
@@ -185,6 +240,113 @@ const ContactInfo = () => {
             <button className="text-red-700 font-medium text-lg tracking-tighter">
               Close my account
             </button>
+          </div>
+        )}
+      </div>
+
+      {/* Personal Details Edit */}
+      <div className="bg-white shadow-sm border border-[#D9D9D9] rounded-2xl p-7">
+        <div className="full flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-medium tracking-tighter">
+            Personal Details
+          </h2>
+          <div className="flex items-center">
+            {!isPersonalEditing && (
+              <button
+                className="text-[#209211] flex items-center justify-center border rounded-[50%] border-[#E6E6E6] text-lg p-[5px] hover:bg-[#F9F9F9] mr-2"
+                onClick={handleEditPersonalClick}
+              >
+                <MdOutlineEdit />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {isPersonalEditing ? (
+          <div className="bg-white">
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="date-of-birth"
+              >
+                Date of Birth
+              </label>
+              <input
+                className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
+                id="date-of-birth"
+                type="date"
+                value={tempDateOfBirth}
+                onChange={(e) => setTempDateOfBirth(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="gender"
+              >
+                Gender
+              </label>
+              <select
+                className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
+                id="gender"
+                value={tempGender}
+                onChange={(e) => setTempGender(e.target.value)}
+              >
+                <option value="">Select a gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="occupation"
+              >
+                Occupation
+              </label>
+              <input
+                className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
+                id="occupation"
+                type="text"
+                value={tempOccupation}
+                onChange={(e) => setTempOccupation(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center mt-7">
+              <button
+                className="px-5 py-2 !bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e] mr-5"
+                type="button"
+                onClick={handleUpdatePersonalClick}
+              >
+                Update
+              </button>
+              <button
+                className="text-[#0E9F6E] font-medium hover:underline"
+                type="button"
+                onClick={handleCancelPersonalClick}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div className="flex items-center mb-5">
+              <p className="text-lg font-medium text-gray-800 mr-7">
+                Date of Birth:
+              </p>
+              <p className="text-lg font-medium text-gray-800">{dateOfBirth}</p>
+            </div>
+            <div className="flex items-center mb-5">
+              <p className="text-lg font-medium text-gray-800 mr-7">Gender:</p>
+              <p className="text-lg font-medium text-gray-800">{gender}</p>
+            </div>
+            <div className="flex items-center mb-5">
+              <p className="text-lg font-medium text-gray-800 mr-7">
+                Occupation:
+              </p>
+              <p className="text-lg font-medium text-gray-800">{occupation}</p>
+            </div>
           </div>
         )}
       </div>
