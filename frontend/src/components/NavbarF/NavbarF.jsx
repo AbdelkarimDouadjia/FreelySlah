@@ -15,9 +15,15 @@ import {
   IoChatbubbleOutline,
   IoSettingsOutline,
   IoLogOutOutline,
+  IoCheckmarkCircleOutline,
+  IoCloseCircleOutline,
+  IoInformationCircleOutline,
+  IoRefreshCircleOutline,
+  IoBriefcaseOutline as IoBriefcase,
 } from "react-icons/io5";
-
-
+import { GoPeople } from "react-icons/go";
+import { BsBoxSeam } from "react-icons/bs";
+import { IoIosArrowDown } from "react-icons/io";
 function NavbarF() {
   const navigate = useNavigate();
   const sticky = useStickyMenu(50);
@@ -26,30 +32,38 @@ function NavbarF() {
   const [notifications, setNotifications] = useState([
     {
       id: 1,
-      user: "Frankie Sullivan",
-      message: "This is looking great! Let's get started on it.",
-      date: "Sep 20, 2024",
-      time: "2:20pm",
-      link: "/your-post",
+      icon: <IoCheckmarkCircleOutline className="text-green-500" />,
+      message: "Delivery Successful to Toot",
+      details: "Order #34567 had been placed.",
+      time: "5 min",
     },
     {
       id: 2,
-      user: "Amélie Laurent",
-      message: "followed you",
-      date: "Sep 20, 2024",
-      time: "10:04am",
-      link: "/followers",
+      icon: <IoRefreshCircleOutline className="text-blue-500" />,
+      message: "Process refund from Micky",
+      details: "Reference number #10321",
+      time: "12 min",
     },
     {
       id: 3,
-      user: "Mikah DiStefano",
-      message: "uploaded 2 attachments",
-      date: "Sep 19, 2024",
-      time: "2:20pm",
-      attachments: [
-        { name: "Prototype recording 02.mp4", size: "16 MB", link: "#" },
-        { name: "Prototype recording 01.mp4", size: "14 MB", link: "#" },
-      ],
+      icon: <IoInformationCircleOutline className="text-blue-500" />,
+      message: "Survey Completed",
+      details: "134 Customers Answers finished...",
+      time: "17 min",
+    },
+    {
+      id: 4,
+      icon: <IoCloseCircleOutline className="text-red-500" />,
+      message: "Payment failed from Sandra",
+      details: "Reference number #10321",
+      time: "23 min",
+    },
+    {
+      id: 5,
+      icon: <IoCheckmarkCircleOutline className="text-green-500" />,
+      message: "Delivery Successful to Sandra",
+      details: "Order #34567 had been placed.",
+      time: "23 min",
     },
   ]);
 
@@ -71,6 +85,17 @@ function NavbarF() {
     };
   }, []);
 
+  const [searchFilterOpen, setSearchFilterOpen] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState("Talent");
+  const toggleSearchFilter = () => {
+    setSearchFilterOpen(!searchFilterOpen);
+  };
+
+  const selectFilter = (filter) => {
+    setSelectedFilter(filter);
+    setSearchFilterOpen(false);
+  };
+
   const handleLogout = async () => {
     try {
       await newRequest.post("/auth/logout");
@@ -85,7 +110,7 @@ function NavbarF() {
   return (
     <>
       <header
-        className={`header-nav nav-homepage-style stricky main-menu animated bg-white  border-[#E9E9E9] py-[15px] px-0 max-[992px]:hidden lg-b:block  text-[15px] font-normal text-[#6B7177] leading-[28px] transition-all duration-300 ease-linear z-[99] ${
+        className={`header-nav nav-homepage-style stricky main-menu animated bg-white  border-[#E9E9E9] py-[15px] border px-0 max-[992px]:hidden lg-b:block  text-[15px] font-normal text-[#6B7177] leading-[28px] transition-all duration-300 ease-linear z-[99] ${
           sticky ? "slideInDown sticky top-0" : "slideIn"
         }`}
       >
@@ -111,13 +136,53 @@ function NavbarF() {
               </div>
               <div className=" w-auto  max-w-full flex-initial !flex-shrink-0 px-3 mt-0 ">
                 <div className="flex  items-center">
-                  <a
-                    className="login-info bdrl1 pl15-lg pl30 pl-[15px] xl-b:pl-[30px] border-l border-[#E9E9E9]  text-[15px] text-[#222] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none "
-                    data-bs-toggle="modal"
-                    href="#exampleModalToggle"
-                  >
-                    <GoSearch className="text-[#222] text-[20px] cursor-pointer" />
-                  </a>
+                  <div className="relative mr-10">
+                    <div className="flex items-center border border-gray-300 rounded-3xl hover:bg-[#E9E9E9]   group2 text-[#333] ">
+                      <div className="px-2 py-1 outline-none w-[300px] hover:bg-[#F9F9F9] flex items-center justify-start group rounded-3xl  focus:bg-[#F9F9F9] focus:rounded-3xl  focus:shadow-md focus:border focus:border-[#A4A4A4] focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md">
+                        <GoSearch className="text-[#222] text-[20px] mx-2" />
+                        <input
+                          type="text"
+                          placeholder="Search"
+                          className="outline-none bg-transparent group-hover:bg-[#F9F9F9] w-full placeholder:text-[#333] "
+                        />
+                      </div>
+                      <div className="relative w-1/3">
+                        <button
+                          onClick={toggleSearchFilter}
+                          className="flex items-center justify-center px-2 border-l border-gray-300 hover:bg-[#F9F9F9] hover:rounded-3xl py-1 group-hover:border-l-0 group-hover:border-r-0 w-full group-hover:rounded-3xl group-focus:rounded-3xl group-focus:border-r-0 group-focus:border-l-0 focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md"
+                        >
+                          {selectedFilter} <IoIosArrowDown className="ml-2" />
+                        </button>
+                        {searchFilterOpen && (
+                          <div className="absolute right-0 mt-1 w-[150px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 text-base font-medium text-[#333]">
+                            <ul>
+                              <li
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center"
+                                onClick={() => selectFilter("Talent")}
+                              >
+                                <GoPeople className="mr-2 text-xl" />
+                                <span>Talent</span>
+                              </li>
+                              <li
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center"
+                                onClick={() => selectFilter("Projects")}
+                              >
+                                <IoBriefcase className="mr-2" />
+                                <span>Projects</span>
+                              </li>
+                              <li
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center"
+                                onClick={() => selectFilter("Product")}
+                              >
+                                <BsBoxSeam className="mr-2" />
+                                <span>Product</span>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                   {!currentUser?.isSeller && (
                     <Link
                       className={`mx-[15px] xl-b:mx-[30px] text-[15px]  text-[#222] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none`}
@@ -135,6 +200,7 @@ function NavbarF() {
                       Sign in
                     </Link>
                   )}
+                  {/* Notification */}
                   {currentUser && (
                     <div className="relative">
                       <div
@@ -157,57 +223,20 @@ function NavbarF() {
                             <ul className="mt-4">
                               {notifications.map((notification) => (
                                 <li key={notification.id} className="mb-2">
-                                  <Link
-                                    to={notification.link}
-                                    className="flex items-start"
-                                  >
+                                  <Link to="#" className="flex items-start">
                                     <div className="mr-2">
-                                      <img
-                                        className="w-8 h-8 rounded-full"
-                                        src="https://via.placeholder.com/150"
-                                        alt=""
-                                      />
+                                      {notification.icon}
                                     </div>
                                     <div>
-                                      <p className="text-sm text-gray-600">
-                                        <strong>{notification.user}</strong>{" "}
+                                      <p className="text-sm text-gray-800">
                                         {notification.message}
                                       </p>
+                                      <p className="text-xs text-gray-600">
+                                        {notification.details}
+                                      </p>
                                       <p className="text-xs text-gray-400">
-                                        {notification.date} at{" "}
                                         {notification.time}
                                       </p>
-                                      {notification.attachments && (
-                                        <div className="mt-2">
-                                          {notification.attachments.map(
-                                            (attachment, index) => (
-                                              <div
-                                                key={index}
-                                                className="flex items-center text-sm text-blue-500"
-                                              >
-                                                <svg
-                                                  className="w-4 h-4 mr-1"
-                                                  fill="none"
-                                                  stroke="currentColor"
-                                                  viewBox="0 0 24 24"
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                  <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth="2"
-                                                    d="M15 12V8a3 3 0 00-6 0v4m6 0a3 3 0 11-6 0m6 0L9 16.5M9 21v-4.5"
-                                                  ></path>
-                                                </svg>
-                                                <span>
-                                                  {attachment.name} (
-                                                  {attachment.size})
-                                                </span>
-                                              </div>
-                                            )
-                                          )}
-                                        </div>
-                                      )}
                                     </div>
                                   </Link>
                                 </li>
@@ -234,13 +263,14 @@ function NavbarF() {
                       Join
                     </Link>
                   )}
+                  {/* user img */}
                   {currentUser && (
                     <div
-                      className="user flex items-center gap-[10px] cursor-pointer relative mr-10 "
+                      className="user flex items-center gap-2 cursor-pointer relative mr-10"
                       onClick={() => setOpen(!open)}
                     >
                       <img
-                        className="w-8 h-8 rounded-[50%] object-cover"
+                        className="w-8 h-8 rounded-full object-cover"
                         src={
                           currentUser.img || "https://via.placeholder.com/150"
                         }
@@ -249,54 +279,75 @@ function NavbarF() {
                       <span>
                         {currentUser?.displayName || currentUser?.fname}
                       </span>
+                      {/* Dropdown user start from here */}
                       {open && (
-                        <div className="options absolute top-[50px] right-0 py-2 bg-white rounded-[10px] border border-[lightgray] flex flex-col gap-2 w-[200px] font-light z-50 shadow-lg">
-                          {currentUser?.isSeller && (
-                            <>
-                              <Link
-                                className="link px-4 py-2 hover:bg-[#e9e9e9] flex items-center text-[#333] text-lg font-medium"
-                                to="/mygigs"
-                              >
-                                <IoBriefcaseOutline className="mr-2" />
-                                <span>Gigs</span>
-                              </Link>
-                              <Link
-                                className="link px-4 py-2 hover:bg-[#e9e9e9] flex items-center text-[#333] text-lg font-medium"
-                                to="/createservice"
-                              >
-                                <IoAddCircleOutline className="mr-2" />
-                                <span>Add new Gig</span>
-                              </Link>
-                            </>
-                          )}
-                          <Link
-                            className="link px-4 py-2 hover:bg-[#e9e9e9] flex items-center text-[#333] text-lg font-medium"
-                            to="/orders"
-                          >
-                            <IoBagCheckOutline className="mr-2" />
-                            <span>Orders</span>
-                          </Link>
-                          <Link
-                            className="link px-4 py-2 hover:bg-[#e9e9e9] flex items-center text-[#333] text-lg font-medium"
-                            to="/messages"
-                          >
-                            <IoChatbubbleOutline className="mr-2" />
-                            <span>Messages</span>
-                          </Link>
-                          <Link
-                            className="link px-4 py-2 hover:bg-[#e9e9e9] flex items-center text-[#333] text-lg font-medium"
-                            to="/settings"
-                          >
-                            <IoSettingsOutline className="mr-2" />
-                            <span>Settings</span>
-                          </Link>
-                          <button
-                            className="link px-4 py-2 hover:bg-[#e9e9e9] flex items-center text-[#333] text-lg font-medium"
-                            onClick={handleLogout}
-                          >
-                            <IoLogOutOutline className="mr-2" />
-                            <span>Log out</span>
-                          </button>
+                        <div className="options absolute top-[50px] right-0 bg-white rounded-lg border border-gray-300 flex flex-col w-[250px] font-light z-50 shadow-md">
+                          <div className="flex items-center gap-3 p-4 border-b border-gray-200">
+                            <img
+                              className="w-12 h-12 rounded-full object-cover"
+                              src={
+                                currentUser.img ||
+                                "https://via.placeholder.com/150"
+                              }
+                              alt=""
+                            />
+                            <div className="flex flex-col overflow-hidden">
+                              <p className="font-medium text-gray-800 truncate">
+                                {currentUser?.displayName || currentUser?.fname}
+                              </p>
+                              <p className="text-sm text-gray-500 truncate">
+                                {currentUser?.email}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="py-2">
+                            {currentUser?.isSeller && (
+                              <>
+                                <Link
+                                  className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
+                                  to="/settings"
+                                >
+                                  <IoSettingsOutline className="mr-4 text-lg" />
+                                  <span>Account Settings</span>
+                                </Link>
+                                <Link
+                                  className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
+                                  to="/mygigs"
+                                >
+                                  <IoBriefcaseOutline className="mr-4 text-lg" />
+                                  <span>Manage Services</span>
+                                </Link>
+                                <Link
+                                  className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
+                                  to="/createservice"
+                                >
+                                  <IoAddCircleOutline className="mr-4 text-lg" />
+                                  <span>Create new Service</span>
+                                </Link>
+                              </>
+                            )}
+                            <Link
+                              className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
+                              to="/orders"
+                            >
+                              <IoBagCheckOutline className="mr-4 text-lg" />
+                              <span>Orders</span>
+                            </Link>
+                            <Link
+                              className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
+                              to="/messages"
+                            >
+                              <IoChatbubbleOutline className="mr-4 text-lg" />
+                              <span>Messages</span>
+                            </Link>
+                            <button
+                              className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium w-full text-left"
+                              onClick={handleLogout}
+                            >
+                              <IoLogOutOutline className="mr-4 text-lg" />
+                              <span>Log out</span>
+                            </button>
+                          </div>
                         </div>
                       )}
                     </div>
