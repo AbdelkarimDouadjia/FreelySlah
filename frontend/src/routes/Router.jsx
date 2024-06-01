@@ -30,6 +30,9 @@ import BillingPayments from "../pages/Settings/components/BillingPayments.jsx";
 import GetPaid from "../pages/Settings/components/GetPaid.jsx";
 import PasswordSecurity from "../pages/Settings/components/PasswordSecurity.jsx";
 import EditMyProfile from "../pages/Settings/EditMyProfile.jsx";
+import ManageProducts from "../pages/ManageProducts/ManageProducts.jsx";
+import ManageServices from "../pages/ManageServices/ManageServices.jsx";
+import ManageProjects from "../pages/ManageProjects/ManageProjects.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -79,6 +82,9 @@ const Router = () => {
         { path: "/jobposting", element: <JobPostingPage /> },
         { path: "/editmyprofile", element: <EditMyProfile /> },
         { path: "/service", element: <Service /> },
+        { path: "/manageproducts", element: <ManageProducts /> },
+        { path: "/manageservices", element: <ManageServices /> },
+        { path: "/manageprojects", element: <ManageProjects /> },
 
         {
           path: "/settings",

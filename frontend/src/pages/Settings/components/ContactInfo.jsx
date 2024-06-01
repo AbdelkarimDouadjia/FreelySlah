@@ -245,7 +245,7 @@ const ContactInfo = () => {
       </div>
 
       {/* Personal Details Edit */}
-      <div className="bg-white shadow-sm border border-[#D9D9D9] rounded-2xl p-7">
+      <div className="bg-white shadow-sm border border-[#D9D9D9] rounded-2xl p-7 mb-7">
         <div className="full flex justify-between items-center mb-4">
           <h2 className="text-2xl font-medium tracking-tighter">
             Personal Details

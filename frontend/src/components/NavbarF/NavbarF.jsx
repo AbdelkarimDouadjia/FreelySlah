@@ -7,7 +7,6 @@ import MobileNavigation from "./MobileNavigation.jsx";
 import { GoSearch } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { RiNotification3Line } from "react-icons/ri";
-import { motion } from "framer-motion";
 import {
   IoBriefcaseOutline,
   IoAddCircleOutline,
@@ -28,7 +27,9 @@ function NavbarF() {
   const navigate = useNavigate();
   const sticky = useStickyMenu(50);
   const [open, setOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
+
+  const [openDropdown, setOpenDropdown] = useState(null); // state to manage which dropdown is open
+
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -66,7 +67,6 @@ function NavbarF() {
       time: "23 min",
     },
   ]);
-
   const [currentUser, setCurrentUser] = useState(() => {
     return JSON.parse(localStorage.getItem("currentUser"));
   });
@@ -87,9 +87,6 @@ function NavbarF() {
 
   const [searchFilterOpen, setSearchFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("Talent");
-  const toggleSearchFilter = () => {
-    setSearchFilterOpen(!searchFilterOpen);
-  };
 
   const selectFilter = (filter) => {
     setSelectedFilter(filter);
@@ -105,6 +102,25 @@ function NavbarF() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  // Close dropdowns if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (event.target.closest(".dropdown") === null) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleLinkClick = () => {
+    setOpenDropdown(null);
+    setOpen(false);
   };
 
   return (
@@ -136,9 +152,9 @@ function NavbarF() {
               </div>
               <div className=" w-auto  max-w-full flex-initial !flex-shrink-0 px-3 mt-0 ">
                 <div className="flex  items-center">
-                  <div className="relative mr-10">
-                    <div className="flex items-center border border-gray-300 rounded-3xl hover:bg-[#E9E9E9]   group2 text-[#333] ">
-                      <div className="px-2 py-1 outline-none w-[300px] hover:bg-[#F9F9F9] flex items-center justify-start group rounded-3xl  focus:bg-[#F9F9F9] focus:rounded-3xl  focus:shadow-md focus:border focus:border-[#A4A4A4] focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md">
+                  <div className="relative mr-1">
+                    <div className="hidden xl:flex items-center border border-gray-300 rounded-3xl hover:bg-[#E9E9E9]   group2 text-[#333] transition-all duration-500 ease-linear ">
+                      <div className="px-2 py-1 outline-none xl-b:w-[200px] lg-b:w-[150px] hover:bg-[#F9F9F9] flex items-center justify-start group rounded-3xl  focus:bg-[#F9F9F9] focus:rounded-3xl  focus:shadow-md focus:border focus:border-[#A4A4A4] focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md">
                         <GoSearch className="text-[#222] text-[20px] mx-2" />
                         <input
                           type="text"
@@ -148,8 +164,17 @@ function NavbarF() {
                       </div>
                       <div className="relative w-1/3">
                         <button
-                          onClick={toggleSearchFilter}
-                          className="flex items-center justify-center px-2 border-l border-gray-300 hover:bg-[#F9F9F9] hover:rounded-3xl py-1 group-hover:border-l-0 group-hover:border-r-0 w-full group-hover:rounded-3xl group-focus:rounded-3xl group-focus:border-r-0 group-focus:border-l-0 focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md"
+                          onClick={() => {
+                            setOpenDropdown(
+                              openDropdown === "searchFilter"
+                                ? null
+                                : "searchFilter"
+                            );
+                            setSearchFilterOpen(!searchFilterOpen);
+                          }}
+                          className="flex items-center justify-center px-2 before:content-[''] before:absolute before:left-0 before:h-[23px] before:w-[1px] before:bg-[#E9E9E9] before:top-1/2  before:mr-2  before:-translate-y-1/2 
+
+                         hover:bg-[#F9F9F9] hover:rounded-3xl py-1 group-hover:border-l-0 group-hover:border-r-0 w-full group-hover:rounded-3xl group-focus:rounded-3xl group-focus:border-r-0 group-focus:border-l-0 focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md z-10"
                         >
                           {selectedFilter} <IoIosArrowDown className="ml-2" />
                         </button>
@@ -185,7 +210,7 @@ function NavbarF() {
                   </div>
                   {!currentUser?.isSeller && (
                     <Link
-                      className={`mx-[15px] xl-b:mx-[30px] text-[15px]  text-[#222] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none`}
+                      className={`mx-[15px] xl-b:mx-[15px] text-[15px]  text-[#222] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none`}
                       to="/become-seller"
                     >
                       <span className="hidden xl-b:inline-block">Become a</span>{" "}
@@ -194,7 +219,7 @@ function NavbarF() {
                   )}
                   {!currentUser && (
                     <Link
-                      className={`mx-[15px] xl-b:mx-[30px] text-[15px]  text-[#222] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none `}
+                      className={`mx-[10px] xl-b:mx-[10px] text-[15px]  text-[#222] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none `}
                       to="/login"
                     >
                       Sign in
@@ -203,55 +228,60 @@ function NavbarF() {
                   {/* Notification */}
                   {currentUser && (
                     <div className="relative">
-                      <div
-                        className={`mx-[5px] xl-b:mx-[10px] text-[15px]  text-[#222] font-medium transition-all duration-500 ease-linear cursor-pointer outline-none hover:text-[#1F4B3F] hover:bg-[#e9e9e955] rounded-[50%] p-1 `}
-                        onClick={() => setShowNotifications(!showNotifications)}
+                      <button
+                        onClick={() =>
+                          setOpenDropdown(
+                            openDropdown === "notifications"
+                              ? null
+                              : "notifications"
+                          )
+                        }
+                        className="relative mx-[10px] xl:mx-[10px] text-[#6B7177] hover:text-[#1DBF73] font-semibold leading-[16px] text-[14px] md-b:text-[16px] py-[12px] dropdown"
                       >
-                        <RiNotification3Line className="text-[#222] text-[20px] cursor-pointer hover:text-[#1F4B3F] hover:bg-[#e9e9e955] rounded-[50%]" />
-                      </div>
-                      {showNotifications && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          className="absolute right-0 mt-2 w-[300px] bg-white border border-gray-200 rounded-lg shadow-lg z-50"
-                        >
-                          <div className="p-4">
-                            <h4 className="font-semibold text-gray-800">
+                        <RiNotification3Line className="text-xl" />
+                        {notifications.length > 0 && (
+                          <span className="absolute top-0 right-0 w-[20px] h-[20px] bg-[#EB5A46] text-white rounded-full text-center text-[12px] leading-[20px]">
+                            {notifications.length}
+                          </span>
+                        )}
+                      </button>
+                      {openDropdown === "notifications" && (
+                        <div className="absolute right-0 mt-1 w-[300px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 text-base font-medium text-[#333] dropdown">
+                          <div className="p-3 border-b border-gray-200 flex justify-between items-center">
+                            <h3 className="text-lg font-semibold">
                               Notifications
-                            </h4>
-                            <ul className="mt-4">
-                              {notifications.map((notification) => (
-                                <li key={notification.id} className="mb-2">
-                                  <Link to="#" className="flex items-start">
-                                    <div className="mr-2">
-                                      {notification.icon}
-                                    </div>
-                                    <div>
-                                      <p className="text-sm text-gray-800">
-                                        {notification.message}
-                                      </p>
-                                      <p className="text-xs text-gray-600">
-                                        {notification.details}
-                                      </p>
-                                      <p className="text-xs text-gray-400">
-                                        {notification.time}
-                                      </p>
-                                    </div>
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                            <div className="text-center mt-4">
-                              <Link
-                                to="/notifications"
-                                className="text-blue-500 hover:underline"
-                              >
-                                View all notifications
-                              </Link>
-                            </div>
+                            </h3>
+                            <button
+                              onClick={() => setNotifications([])}
+                              className="text-sm text-[#1DBF73] hover:text-[#159e63] focus:outline-none"
+                            >
+                              Clear All
+                            </button>
                           </div>
-                        </motion.div>
+                          <ul>
+                            {notifications.map((notification) => (
+                              <li
+                                key={notification.id}
+                                className="px-4 py-2 border-b border-gray-200 flex items-start"
+                              >
+                                <span className="mr-2 text-3xl  transform translate-y-4">
+                                  {notification.icon}
+                                </span>
+                                <div>
+                                  <p className="font-semibold">
+                                    {notification.message}
+                                  </p>
+                                  <p className="text-sm text-gray-600">
+                                    {notification.details}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {notification.time} ago
+                                  </p>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       )}
                     </div>
                   )}
@@ -266,8 +296,11 @@ function NavbarF() {
                   {/* user img */}
                   {currentUser && (
                     <div
-                      className="user flex items-center gap-2 cursor-pointer relative mr-10"
-                      onClick={() => setOpen(!open)}
+                      className="user flex items-center gap-2 cursor-pointer relative mr-10 hover:bg-[#F9F9F9] rounded-full p-2 border-[1px] border-[#E9E9E9]"
+                      onClick={() => {
+                        setOpen(!open);
+
+                      }}
                     >
                       <img
                         className="w-8 h-8 rounded-full object-cover"
@@ -276,9 +309,14 @@ function NavbarF() {
                         }
                         alt=""
                       />
-                      <span>
+                      <div className="flex items-center justify-between">
                         {currentUser?.displayName || currentUser?.fname}
-                      </span>
+                        <IoIosArrowDown
+                          className={`${
+                            open ? "rotate-180 " : ""
+                          } ml-2 transition-all duration-300 ease-linear`}
+                        />
+                      </div>
                       {/* Dropdown user start from here */}
                       {open && (
                         <div className="options absolute top-[50px] right-0 bg-white rounded-lg border border-gray-300 flex flex-col w-[250px] font-light z-50 shadow-md">
@@ -301,15 +339,16 @@ function NavbarF() {
                             </div>
                           </div>
                           <div className="py-2">
+                            <Link
+                              className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
+                              to="/settings"
+                              onClick={handleLinkClick}
+                            >
+                              <IoSettingsOutline className="mr-4 text-lg" />
+                              <span>Account Settings</span>
+                            </Link>
                             {currentUser?.isSeller && (
                               <>
-                                <Link
-                                  className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
-                                  to="/settings"
-                                >
-                                  <IoSettingsOutline className="mr-4 text-lg" />
-                                  <span>Account Settings</span>
-                                </Link>
                                 <Link
                                   className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
                                   to="/mygigs"
