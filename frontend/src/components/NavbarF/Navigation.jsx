@@ -7,12 +7,12 @@ const navigation = [
     id: 1,
     name: "Find Work",
     children: [
-      { id: 1, name: "Find Work", path: "/" },
-      { id: 2, name: "Saved Jobs", path: "/" },
+      { id: 1, name: "Find Work", path: "/homefreelancer" },
+      { id: 2, name: "Saved Projects", path: "/savedprojects" },
       { id: 3, name: "Proposals", path: "/" },
-      { id: 4, name: "Profile", path: "/" },
+      { id: 4, name: "Profile", path: "/editmyprofile" },
       { id: 5, name: "My Status", path: "/" },
-      { id: 6, name: "My Project Dashboard", path: "/" },
+      { id: 6, name: "My Projects Dashboard", path: "/manageservices" },
     ],
   },
   {
@@ -28,7 +28,7 @@ const navigation = [
     id: 3,
     name: "Reports",
     children: [
-      { id: 1, name: "Overview", path: "/dashboard" },
+      { id: 1, name: "Overview", path: "/overview" },
       { id: 2, name: "My Reports", path: "/proposal" },
       { id: 3, name: "Billings & Earnings", path: "/saved" },
       { id: 4, name: "Connects History", path: "/message" },
@@ -65,7 +65,7 @@ const Navigation = () => {
               </a>
             ) : (
               <Link
-                href={item.path}
+                to={item.path}
                 className={`list-item cursor-pointer border-0  m-0 !py-[18px] relative capitalize text-[#222] font-medium rounded-[60px] text-center 2xl-b: max-[1199px]:px-[8px] max-[1399px]:px-[11px] before:content-none before:h-[2px] before:absolute before:-top-[7px] before:w-0 before:transition-all before:duration-500 before:ease-linear`}
               >
                 <span className="title">{item.name}</span>
@@ -83,7 +83,7 @@ const Navigation = () => {
                     key={i2}
                     className={`menu-active border-l-2 border-l-transparent py-1 px-[30px]  transition-all duration-500 ease-linear relative list-none hover:bg-[#F0EFEC] hover:border-l-[#5BBB7B] cursor-pointer`}
                   >
-                    <Link href={item2.path}>
+                    <Link to={item2.path}>
                       <span className="title">{item2.name}</span>
                     </Link>
                   </li>

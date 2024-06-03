@@ -18,6 +18,7 @@ import StepForm from "../pages/MultipStep/StepForm.jsx";
 import T from "../pages/MultipStep/Test.jsx";
 import StepForm1 from "../pages/MultipStep/StepForm1.jsx";
 import HomeClient from "../pages/HomeClient/HomeClient.jsx";
+import HomeFreelancer from "../pages/HomeFreelancer/HomeFreelancer.jsx";
 import Overview from "../components/section/overview.jsx";
 import TabSection from "../components/section/TabSection.jsx";
 import GigForm from "../components/section/GigForm.jsx";
@@ -33,6 +34,12 @@ import EditMyProfile from "../pages/Settings/EditMyProfile.jsx";
 import ManageProducts from "../pages/ManageProducts/ManageProducts.jsx";
 import ManageServices from "../pages/ManageServices/ManageServices.jsx";
 import ManageProjects from "../pages/ManageProjects/ManageProjects.jsx";
+import Project from "../pages/Project/Project.jsx";
+import ShopCart from "../pages/Shop/ShopCart/ShopCart.jsx";
+import ShopCheckOut from "../pages/Shop/ShopCheckOut/ShopCheckOut.jsx";
+import ShopOrder from "../pages/Shop/ShopOrder/ShopOrder.jsx";
+import Invoice from "../pages/Shop/Invoice/Invoice.jsx";
+import SavedProjects from "../pages/SavedProjects/SavedProjects.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -74,17 +81,23 @@ const Router = () => {
         { path: "/home", element: <Home /> },
         { path: "/gig/:id", element: <Service /> },
         { path: "/homeclient", element: <HomeClient /> },
+        { path: "/homefreelancer", element: <HomeFreelancer /> },
         { path: "/overview", element: <Overview /> },
         // { path: "/welcome", element: <MultiStep /> },
 
         { path: "/gigform", element: <GigForm /> },
         { path: "/createservice", element: <CreateService /> },
-        { path: "/jobposting", element: <JobPostingPage /> },
+        { path: "/createproject", element: <JobPostingPage /> },
         { path: "/editmyprofile", element: <EditMyProfile /> },
         { path: "/service", element: <Service /> },
         { path: "/manageproducts", element: <ManageProducts /> },
         { path: "/manageservices", element: <ManageServices /> },
         { path: "/manageprojects", element: <ManageProjects /> },
+        { path: "/project", element: <Project /> },
+        { path: "/shopcart", element: <ShopCart /> },
+        { path: "/shopcheckout", element: <ShopCheckOut /> },
+        { path: "/shoporder", element: <ShopOrder /> },
+        { path: "/savedprojects", element: <SavedProjects /> },
 
         {
           path: "/settings",
@@ -119,6 +132,8 @@ const Router = () => {
     },
 
     { path: "/welcome", element: <StepForm1 /> },
+
+    { path: "/invoice", element: <Invoice /> },
 
     { path: "/login", element: <Login /> },
     { path: "/signup", element: <Signup /> },

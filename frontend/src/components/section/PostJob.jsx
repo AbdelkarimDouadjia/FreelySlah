@@ -27,11 +27,11 @@ const PostJob = () => {
             <div className="flex-shrink-0 w-full max-w-full px-3 mt-0 lg-b:flex-initial lg-b:flex-shrink-0 lg-b:w-1/4 flex justify-end">
               <div className="mb-4 lg-b:text-right">
                 <Link
-                  to="/jobposting"
+                  to="/createproject"
                   className="cursor-pointer flex items-center justify-center mt-[20px] !py-3 !px-4 hover:text-white rounded-[60px] bg-[#0E9F6E] hover:bg-[#046c4e] text-white hover:border-none transition-all duration-300 ease-linear font-medium w-fit"
                 >
                   <FaPlus className="text-2xl mr-[11px] font-light" />
-                  Post a Job
+                  Post a Project
                 </Link>
               </div>
             </div>

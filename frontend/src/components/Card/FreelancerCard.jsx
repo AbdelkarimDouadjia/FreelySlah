@@ -77,7 +77,7 @@ const FreelancerCard = (props) => {
               }
             >
               View Profile
-              <i className="fal fa-arrow-right-long" />
+              {/* <i className="fal fa-arrow-right-long" /> */}
               <FaArrowRight className="text-base font-light ml-[10px] -rotate-45" />
             </Link>
           </div>

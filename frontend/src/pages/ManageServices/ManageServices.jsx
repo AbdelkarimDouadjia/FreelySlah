@@ -16,7 +16,7 @@ const ManageServices = () => {
       key: "1",
       id: "1",
       title: "Service One",
-      picture: "https://via.placeholder.com/50",
+      picture: "/src/assets/images/listings/s1.jpg",
       category: "Web & App Design",
       subcategory: "Mobile App",
       time: "2 hours ago",

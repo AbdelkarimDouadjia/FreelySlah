@@ -7,6 +7,7 @@ import MobileNavigation from "./MobileNavigation.jsx";
 import { GoSearch } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { RiNotification3Line } from "react-icons/ri";
+import { HiOutlineSupport } from "react-icons/hi";
 import {
   IoBriefcaseOutline,
   IoAddCircleOutline,
@@ -20,6 +21,9 @@ import {
   IoRefreshCircleOutline,
   IoBriefcaseOutline as IoBriefcase,
 } from "react-icons/io5";
+import { BiUser } from "react-icons/bi";
+import { HiOutlineUserCircle } from "react-icons/hi2";
+import { BiUserCircle } from "react-icons/bi";
 import { GoPeople } from "react-icons/go";
 import { BsBoxSeam } from "react-icons/bs";
 import { IoIosArrowDown } from "react-icons/io";
@@ -27,6 +31,7 @@ function NavbarF() {
   const navigate = useNavigate();
   const sticky = useStickyMenu(50);
   const [open, setOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
 
   const [openDropdown, setOpenDropdown] = useState(null); // state to manage which dropdown is open
 
@@ -136,13 +141,21 @@ function NavbarF() {
               <div className="!pr-0 max-w-full px-3 mr-0 !flex-initial !flex-shrink-0 !w-auto">
                 <div className="flex items-center ">
                   <Link
-                    className="header-logo logo1 outline-none 2xl-b:pr-[30px] border-r border-[#E9E9E9] cursor-pointer text-[#222] pr-[5px]"
+                    className="header-logo logo1 outline-none 2xl-b:pr-[30px] border-r border-[#E9E9E9] cursor-pointer text-[#222] !pr-[8px] flex justify-between items-center"
                     to={
                       !currentUser.isSeller ? "/homeclient" : "/homefreelancer"
                     }
                   >
-                    <span className="text-[#222] text-[20px] font-semibold mr-2">
-                      FreelySlah
+                    {/* <img
+                      src="/src/assets/logo.svg"
+                      alt="logo"
+                      className="w-9 h-auto mr-4"
+                    /> */}
+                    <span className=" -ml-1 text-[20px] font-bold !text-xl !text-[#022C22] playfair-display-regular relative">
+                      <span className="playfair-display-regular">freely</span>{" "}
+                      <span className="!text-base z-10 relative text-[#022C22] -ml-[2px] dancing-script-regular  bg-[#BEF264] w-full h-full">
+                        Slah
+                      </span>
                     </span>
                   </Link>
                   <div className="home1_style ml-4">
@@ -153,8 +166,8 @@ function NavbarF() {
               <div className=" w-auto  max-w-full flex-initial !flex-shrink-0 px-3 mt-0 ">
                 <div className="flex  items-center">
                   <div className="relative mr-1">
-                    <div className="hidden xl:flex items-center border border-gray-300 rounded-3xl hover:bg-[#E9E9E9]   group2 text-[#333] transition-all duration-500 ease-linear ">
-                      <div className="px-2 py-1 outline-none xl-b:w-[200px] lg-b:w-[150px] hover:bg-[#F9F9F9] flex items-center justify-start group rounded-3xl  focus:bg-[#F9F9F9] focus:rounded-3xl  focus:shadow-md focus:border focus:border-[#A4A4A4] focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md">
+                    <div className="hidden xl:flex items-center border border-gray-300 rounded-3xl hover:bg-[#E9E9E9]   group2 text-[#333] transition-all duration-500 ease-linear 2xl-b:mr-6 ">
+                      <div className="px-2 py-[6px] outline-none xl-b:w-[200px] lg-b:w-[150px] 2xl-b:w-[300px]  hover:bg-[#F9F9F9] flex items-center justify-start group rounded-3xl  focus:bg-[#F9F9F9] focus:rounded-3xl  focus:shadow-md focus:border focus:border-[#A4A4A4] focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md focus-within:py-1">
                         <GoSearch className="text-[#222] text-[20px] mx-2" />
                         <input
                           type="text"
@@ -172,9 +185,9 @@ function NavbarF() {
                             );
                             setSearchFilterOpen(!searchFilterOpen);
                           }}
-                          className="flex items-center justify-center px-2 before:content-[''] before:absolute before:left-0 before:h-[23px] before:w-[1px] before:bg-[#E9E9E9] before:top-1/2  before:mr-2  before:-translate-y-1/2 
+                          className="flex items-center justify-center px-2 before:content-[''] before:absolute before:left-0 before:h-[23px] before:w-[1px] before:bg-[#E9E9E9] before:top-1/2  before:mr-2  before:-translate-y-1/2 before:z-[1]
 
-                         hover:bg-[#F9F9F9] hover:rounded-3xl py-1 group-hover:border-l-0 group-hover:border-r-0 w-full group-hover:rounded-3xl group-focus:rounded-3xl group-focus:border-r-0 group-focus:border-l-0 focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md z-10"
+                        hover:bg-[#F9F9F9] hover:rounded-3xl py-1 group-hover:border-l-0 group-hover:border-r-0 w-full group-hover:rounded-3xl group-focus:rounded-3xl group-focus:border-r-0 group-focus:border-l-0 focus-within:border-2 focus-within:border-[#A4A4A4] focus-within:rounded-3xl focus-within:shadow-md z-10 group-focus-within:before:hidden "
                         >
                           {selectedFilter} <IoIosArrowDown className="ml-2" />
                         </button>
@@ -236,7 +249,7 @@ function NavbarF() {
                               : "notifications"
                           )
                         }
-                        className="relative mx-[10px] xl:mx-[10px] text-[#6B7177] hover:text-[#1DBF73] font-semibold leading-[16px] text-[14px] md-b:text-[16px] py-[12px] dropdown"
+                        className="relative mx-[10px] xl:mx-[18px] text-[#6B7177] hover:text-[#1DBF73] font-semibold leading-[16px] text-[14px] md-b:text-[16px] py-[12px] dropdown"
                       >
                         <RiNotification3Line className="text-xl" />
                         {notifications.length > 0 && (
@@ -299,7 +312,6 @@ function NavbarF() {
                       className="user flex items-center gap-2 cursor-pointer relative mr-10 hover:bg-[#F9F9F9] rounded-full p-2 border-[1px] border-[#E9E9E9]"
                       onClick={() => {
                         setOpen(!open);
-
                       }}
                     >
                       <img
@@ -321,16 +333,23 @@ function NavbarF() {
                       {open && (
                         <div className="options absolute top-[50px] right-0 bg-white rounded-lg border border-gray-300 flex flex-col w-[250px] font-light z-50 shadow-md">
                           <div className="flex items-center gap-3 p-4 border-b border-gray-200">
-                            <img
-                              className="w-12 h-12 rounded-full object-cover"
-                              src={
-                                currentUser.img ||
-                                "https://via.placeholder.com/150"
-                              }
-                              alt=""
-                            />
+                            <div className="relative rounded-full w-1/3">
+                              <img
+                                className="w-12 h-12 rounded-full object-cover"
+                                src={
+                                  currentUser.img ||
+                                  "https://via.placeholder.com/150"
+                                }
+                                alt=""
+                              />
+                              <span
+                                className={`absolute top-[0px] left-[1px] w-[11px] h-[11px] rounded-full border-[2.5px] !border-white ${
+                                  isOnline ? "bg-green-500" : "bg-red-500"
+                                }`}
+                              ></span>
+                            </div>
                             <div className="flex flex-col overflow-hidden">
-                              <p className="font-medium text-gray-800 truncate">
+                              <p className="font-medium text-gray-800 truncate text-lg ">
                                 {currentUser?.displayName || currentUser?.fname}
                               </p>
                               <p className="text-sm text-gray-500 truncate">
@@ -339,45 +358,63 @@ function NavbarF() {
                             </div>
                           </div>
                           <div className="py-2">
-                            <Link
-                              className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
-                              to="/settings"
-                              onClick={handleLinkClick}
-                            >
-                              <IoSettingsOutline className="mr-4 text-lg" />
-                              <span>Account Settings</span>
-                            </Link>
                             {currentUser?.isSeller && (
                               <>
                                 <Link
                                   className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
-                                  to="/mygigs"
+                                  to="/editmyprofile"
+                                >
+                                  <BiUser className="mr-4 text-xl" />
+                                  <span>Profile</span>
+                                </Link>
+                              </>
+                            )}
+
+                            {currentUser?.isSeller && (
+                              <>
+                                <Link
+                                  className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium "
+                                  to="/manageservices"
                                 >
                                   <IoBriefcaseOutline className="mr-4 text-lg" />
                                   <span>Manage Services</span>
                                 </Link>
-                                <Link
+                                {/* <Link
                                   className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
                                   to="/createservice"
                                 >
                                   <IoAddCircleOutline className="mr-4 text-lg" />
                                   <span>Create new Service</span>
-                                </Link>
+                                </Link> */}
                               </>
                             )}
-                            <Link
+                            {/* <Link
                               className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
                               to="/orders"
                             >
                               <IoBagCheckOutline className="mr-4 text-lg" />
                               <span>Orders</span>
-                            </Link>
-                            <Link
+                            </Link> */}
+                            {/* <Link
                               className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
                               to="/messages"
                             >
                               <IoChatbubbleOutline className="mr-4 text-lg" />
                               <span>Messages</span>
+                            </Link> */}
+                            <Link
+                              className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium"
+                              to="/settings"
+                            >
+                              <IoSettingsOutline className="mr-4 text-lg" />
+                              <span>Settings</span>
+                            </Link>
+                            <Link
+                              className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium border-t border-gray-200"
+                              to="/support"
+                            >
+                              <HiOutlineSupport className="mr-4 text-xl" />
+                              <span>Support</span>
                             </Link>
                             <button
                               className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium w-full text-left"

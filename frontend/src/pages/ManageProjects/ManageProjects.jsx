@@ -85,7 +85,7 @@ const ManageProjects = () => {
       key: "id",
     },
     {
-      title: "Name",
+      title: "Project Title",
       dataIndex: "name",
       key: "name",
     },
@@ -120,7 +120,8 @@ const ManageProjects = () => {
           <Button
             type="link"
             icon={<AiOutlineEdit />}
-            onClick={() => handleEdit(record)}
+            //onClick={() => handleEdit(record)}
+            href="/createproject"
             className="text-green-500 border border-green-500 mr-2 hover:!bg-green-500 hover:!text-white"
           />
           <Button
@@ -145,7 +146,8 @@ const ManageProjects = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={handleAddProject}
+            //onClick={handleAddProject}
+            href="/createproject"
             className="!border-[#0E9F6E] px-5 py-5 flex justify-center items-center !bg-[#0E9F6E] text-white rounded-3xl hover:!bg-[#046c4e] font-[500] outline-none text-[16px]"
           >
             Create Project
