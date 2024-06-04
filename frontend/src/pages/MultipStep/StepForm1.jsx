@@ -10,7 +10,7 @@ import MultiStep from "./MultiStep";
 import FormFreelancer from "./FormFreelancer.jsx";
 import { useNavigate } from "react-router-dom";
 import FormFive5 from "./FormFive5.jsx";
-
+import FormSix6 from "./FormSix6.jsx";
 
 const StepForm1 = () => {
   const userInfo = JSON.parse(localStorage.getItem("currentUser"));
@@ -47,6 +47,11 @@ const StepForm1 = () => {
   const [userSkills, setSkills] = useState([]);
   const [userEducation, setEducation] = useState([]);
   const [workExperience, setWorkExperience] = useState([]);
+  const [userStoreName, setStoreName] = useState(null);
+  const [userStoreDescription, setStoreDescription] = useState(null);
+  const [userStoreCategory, setStoreCategory] = useState(null);
+  const [userStoreLocation, setStoreLocation] = useState(null);
+  const [storeImg, setStoreImg] = useState(null);
 
   const userDetails = {
     currentPage: step,
@@ -71,6 +76,12 @@ const StepForm1 = () => {
     workExperience: workExperience,
     city: city,
     state: state,
+    userStoreName: userStoreName,
+    userStoreDescription: userStoreDescription,
+    userStoreCategory: userStoreCategory,
+    userStoreLocation: userStoreLocation,
+    storeImg: storeImg,
+
     setUserName,
     setDisplayName,
     setPhone,
@@ -93,6 +104,11 @@ const StepForm1 = () => {
     setEducation,
     setWorkExperience,
     setState,
+    setStoreName,
+    setStoreDescription,
+    setStoreCategory,
+    setStoreLocation,
+    setStoreImg,
   };
 
   return (
@@ -103,11 +119,12 @@ const StepForm1 = () => {
         {/* <ProgressBar /> */}
         {step === 0 && <MultiStep />}
         {step === 1 && <FormFreelancer />}
-        {step === 2 && <FormOne1 />}
-        {step === 3 && <FormFive5 />}
-        {step === 4 && <FormTwo2 />}
-        {step === 5 && <FormThree3 />}
-        {step === 6 && <FormFinish4 />}
+        {step === 2 && <FormFive5 />}
+        {step === 3 && <FormSix6 />}
+        {step === 4 && <FormOne1 />}
+        {step === 5 && <FormTwo2 />}
+        {step === 6 && <FormThree3 />}
+        {step === 7 && <FormFinish4 />}
       </div>
     </AppContext.Provider>
   );

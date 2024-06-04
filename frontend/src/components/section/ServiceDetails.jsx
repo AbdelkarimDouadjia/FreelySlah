@@ -22,9 +22,29 @@ import ServiceContactWidget from "./ServiceContactWidget.jsx";
 // import usescren fro ract
 import useScreen from "./useScreen.js";
 import { FaArrowRightLong } from "react-icons/fa6";
+import PropTypes from "prop-types";
 
-export default function ServiceDetails() {
+export default function ServiceDetails(props) {
   const isMatchedScreen = useScreen(1216);
+ /* const [currentUser, setCurrentUser] = useState(() => {
+    return JSON.parse(localStorage.getItem("currentUser"));
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setCurrentUser(JSON.parse(localStorage.getItem("currentUser")));
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("currentUserUpdated", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("currentUserUpdated", handleStorageChange);
+    };
+  }, []);*/
+  const data = props.data;
+
   //const { id } = useParams();
 
   //const data = product1.find((item) => item.id == id);
@@ -40,13 +60,15 @@ export default function ServiceDetails() {
                   <div className="mb-[30px] pb-[30px] border-b border-[#e9e9e9] flex flex-wrap -mx-3">
                     <div className="col-xl-12  shrink-0 w-full max-w-full px-3 min-[1200px]: flex-initial min-[1200px]:shrink-0 min-[1200px]:w-full">
                       <div className="relative">
-                        {/*data ? (
-                          <h2>{data.title}</h2>
-                        ) : ( */}
-                        <h2 className="text-[32px] font-bold text-[#222] leading-[1.3125] mb-[8px] max-[575.98px]:text-[20px]">
-                          I will design website UI UX in adobe xd or figma
-                        </h2>
-                        {/*})*/}
+                        {data ? (
+                          <h2 className="text-[32px] font-bold text-[#222] leading-[1.3125] mb-[8px] max-[575.98px]:text-[20px]">
+                            {data.title}
+                          </h2>
+                        ) : (
+                          <h2 className="text-[32px] font-bold text-[#222] leading-[1.3125] mb-[8px] max-[575.98px]:text-[20px]">
+                            I will design website UI UX in adobe xd or figma
+                          </h2>
+                        )}
                         <div className="mt-[30px] flex flex-wrap ">
                           <a
                             className="mr-2 max-[767.98px]:mb-[5px] flex items-center cursor-pointer text-[#222] transition-all duration-300 ease-in"
@@ -57,7 +79,7 @@ export default function ServiceDetails() {
                                 width={40}
                                 height={40}
                                 className="text-transparent rounded-[50%]"
-                                src="/src/assets//images/avatar/Image.jpg"
+                                src="/src/assets/images/avatar/Image.jpg"
                                 alt="Freelancer Photo"
                               />
                               <span className="bg-[#5bbb7b] border-2 border-white absolute rounded-[50%] left-[30px] top-0 h-[9px] w-[9px] max-[575.98px]:right-0"></span>
@@ -413,3 +435,11 @@ export default function ServiceDetails() {
     </>
   );
 }
+
+ServiceDetails.propTypes = {
+  data: PropTypes.object,
+};
+
+ServiceDetails.defaultProps = {
+  data: {},
+};

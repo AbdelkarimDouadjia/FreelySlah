@@ -12,14 +12,34 @@ import Breadcumb from "../components/Breadcumb/Breadcumb.jsx";
 import NavbarF from "../components/NavbarF/NavbarF.jsx";
 import Footer from "../components/section/Footer.jsx";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import MultiStep from "../pages/MultipStep/MultiStep.jsx";
+//import MultiStep from "../pages/MultipStep/MultiStep.jsx";
 // import { Routes, Route } from "react-router-dom";
 import StepForm from "../pages/MultipStep/StepForm.jsx";
 import T from "../pages/MultipStep/Test.jsx";
 import StepForm1 from "../pages/MultipStep/StepForm1.jsx";
 import HomeClient from "../pages/HomeClient/HomeClient.jsx";
+import HomeFreelancer from "../pages/HomeFreelancer/HomeFreelancer.jsx";
 import Overview from "../components/section/overview.jsx";
 import TabSection from "../components/section/TabSection.jsx";
+import GigForm from "../components/section/GigForm.jsx";
+import CreateService from "../pages/Create Service/CreateService.jsx";
+import JobPostingPage from "../pages/MultipStep/JobPostingPage.jsx";
+import Settings from "../pages/Settings/Settings.jsx";
+import ContactInfo from "../pages/Settings/components/ContactInfo.jsx";
+import ProfileSettings from "../pages/Settings/components/ProfileSettings.jsx";
+import BillingPayments from "../pages/Settings/components/BillingPayments.jsx";
+import GetPaid from "../pages/Settings/components/GetPaid.jsx";
+import PasswordSecurity from "../pages/Settings/components/PasswordSecurity.jsx";
+import EditMyProfile from "../pages/Settings/EditMyProfile.jsx";
+import ManageProducts from "../pages/ManageProducts/ManageProducts.jsx";
+import ManageServices from "../pages/ManageServices/ManageServices.jsx";
+import ManageProjects from "../pages/ManageProjects/ManageProjects.jsx";
+import Project from "../pages/Project/Project.jsx";
+import ShopCart from "../pages/Shop/ShopCart/ShopCart.jsx";
+import ShopCheckOut from "../pages/Shop/ShopCheckOut/ShopCheckOut.jsx";
+import ShopOrder from "../pages/Shop/ShopOrder/ShopOrder.jsx";
+import Invoice from "../pages/Shop/Invoice/Invoice.jsx";
+import SavedProjects from "../pages/SavedProjects/SavedProjects.jsx";
 import FindJob from "../pages/FindJob/FindJob.jsx";
 import FindTalent from "../pages/FindTalent/FindTalent.jsx";
 import Message from "../pages/Message/Message.jsx";
@@ -68,11 +88,40 @@ const Router = () => {
       children: [
         { path: "/", element: <Home /> },
         { path: "/home", element: <Home /> },
-        { path: "/service", element: <Service /> },
+        { path: "/gig/:id", element: <Service /> },
         { path: "/homeclient", element: <HomeClient /> },
+        { path: "/homefreelancer", element: <HomeFreelancer /> },
         { path: "/overview", element: <Overview /> },
         // { path: "/welcome", element: <MultiStep /> },
-        { path: "/product", element: <Product /> },
+
+        { path: "/gigform", element: <GigForm /> },
+        { path: "/createservice", element: <CreateService /> },
+        { path: "/createproject", element: <JobPostingPage /> },
+        { path: "/editmyprofile", element: <EditMyProfile /> },
+        { path: "/service", element: <Service /> },
+        { path: "/manageproducts", element: <ManageProducts /> },
+        { path: "/manageservices", element: <ManageServices /> },
+        { path: "/manageprojects", element: <ManageProjects /> },
+        { path: "/project", element: <Project /> },
+        { path: "/shopcart", element: <ShopCart /> },
+        { path: "/shopcheckout", element: <ShopCheckOut /> },
+        { path: "/shoporder", element: <ShopOrder /> },
+        { path: "/savedprojects", element: <SavedProjects /> },
+
+        {
+          path: "/settings",
+          element: <Settings />,
+          children: [
+            { path: "contact-info", element: <ContactInfo /> },
+            { path: "profile-settings", element: <ProfileSettings /> },
+            { path: "billing-payments", element: <BillingPayments /> },
+            { path: "get-paid", element: <GetPaid /> },
+            { path: "password-security", element: <PasswordSecurity /> },
+            /*{ path: "tax-information", element: <TaxInformation /> },
+        { path: "my-teams", element: <MyTeams /> },
+        { path: "connected-services", element: <ConnectedServices /> },
+        { path: "notification-settings", element: <NotificationSettings /> },*/
+            { path: "/product", element: <Product /> },
 
         { path: "/findjob", element: <FindJob /> },
         { path: "/findtalent", element: <FindTalent /> },
@@ -83,12 +132,14 @@ const Router = () => {
         { path: "/contactus", element: <ContactUs /> },
         { path: "/aboutus", element: <AboutUS /> },
       ],
+        },
+      ],
     },
+
     {
       path: "/",
       element: <Layout2 />,
       children: [
-        { path: "/welcome", element: <MultiStep /> },
         { path: "/stepform", element: <StepForm /> },
         { path: "/t", element: <T /> },
       ],
@@ -99,7 +150,9 @@ const Router = () => {
       children: [],
     },
 
-    { path: "/stepform1", element: <StepForm1 /> },
+    { path: "/welcome", element: <StepForm1 /> },
+
+    { path: "/invoice", element: <Invoice /> },
 
     { path: "/login", element: <Login /> },
     { path: "/signup", element: <Signup /> },
@@ -108,7 +161,7 @@ const Router = () => {
     { path: "/navbarS", element: <NavbarS /> },
     { path: "/navbarT", element: <NavbarT /> },
     { path: "/tabsection", element: <Tabsection /> },
-    { path: "/service", element: <Service /> },
+    /*{ path: "/service", element: <Service /> },*/
     { path: "/breadcumb", element: <Breadcumb /> },
     { path: "/navbarF", element: <NavbarF /> },
   ]);

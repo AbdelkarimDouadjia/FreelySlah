@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import newRequest from "../../utils/newRequest";
+import newRequest from "../../utils/newRequest.js";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,7 +23,7 @@ export const Login = () => {
       localStorage.setItem("currentUser", JSON.stringify(res.data));
       // Show success notification
       toast.success("Logged in successfully", { position: "top-right" });
-      navigate("/stepform1");
+      navigate("/welcome");
     } catch (err) {
       setError(err.response.data);
       // Show error use state variable or error notification string
@@ -47,7 +47,7 @@ export const Login = () => {
       localStorage.setItem("currentUser", JSON.stringify(res1.data));
       // to show success notification
       toast.success("Logged in successfully", { position: "top-right" });
-      navigate("/stepform1");
+      navigate("/welcome");
     } catch (err) {
       console.log("could not login with google", err);
       setError(err.response.data);

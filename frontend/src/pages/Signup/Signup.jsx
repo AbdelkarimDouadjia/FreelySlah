@@ -19,7 +19,6 @@ const Signup = () => {
     img: "",
     country: "",
     isSeller: false,
-    desc: "",
   });
 
   const navigate = useNavigate();

@@ -14,8 +14,8 @@ function PopularServiceCard(props) {
 
   return (
     <>
-      <div className="listing-style overflow-hidden relative bg-white rounded border border-[#e9e9e9] mb-[30px] transition-all duration-300 ease-linear ">
-        <div className="list-thumb overflow-hidden relative text-transparent transition-all duration-300 ease-linear w-full align-middle">
+      <div className="listing-style overflow-hidden relative bg-white  border border-[#e9e9e9] mb-[30px] transition-all duration-300 ease-linear rounded-2xl">
+        <div className="list-thumb overflow-hidden relative text-transparent transition-all duration-300 ease-linear w-full align-middle ">
           <img
             height={247}
             width={331}

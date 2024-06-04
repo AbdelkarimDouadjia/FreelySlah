@@ -22,6 +22,7 @@
 	}, [userInfo, navigate]);
 
 	useEffect(() => {
+		console.log(updateContext.freelancerType);
 		if (updateContext.isSeller == false) {
 		updateContext.setStep(updateContext.currentPage + 1);
 		}

@@ -58,7 +58,7 @@ export const product = [
     img2: "/src/assets/images/listings/s11.jpg",
     category: "Design & Creative",
     title:
-      "I will build a fully responsive design in HTML,CSS, bootstrap, and javascript",
+      "I will build responsive design in HTML,CSS, bootstrap, and javascript",
     rating: 4.82,
     review: 94,
     author: {

@@ -4,27 +4,41 @@ import "./styles.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import upload from "../../utils/upload";
+import CircularProgress from "../../pages/Create Service/steps/CircularProgress";
 
 const FormOne = () => {
   const myContext = useContext(AppContext);
   const updateContext = myContext.userDetails;
   const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const upload1 = async (file) => {
     const url = await upload(file);
     return url;
   };
 
-  const next = () => {
-    if (updateContext.userName == null) {
+  const next = async () => {
+    if (uploading) {
+      toast.warning("Image is still uploading. Please wait.");
+    } else if (updateContext.userName == null) {
       toast.error("Please enter your User Name");
     } else if (updateContext.userDisplayName == null) {
       toast.error("Please enter your Display Name correctly");
     } else if (updateContext.userDescription == null) {
       toast.error("Please enter your Description correctly");
     } else {
-      if (file) updateContext.setImg(upload1(file));
-      //   updateContext.setFile(url);
+      if (file) {
+        try {
+          setUploading(true);
+          const url = await upload1(file);
+          updateContext.setImg(url);
+          toast.success("Image has been successfully uploaded.");
+        } catch (error) {
+          toast.error("Error uploading image. Please try again.");
+        } finally {
+          setUploading(false);
+        }
+      }
       updateContext.setStep(updateContext.currentPage + 1);
     }
   };
@@ -33,8 +47,6 @@ const FormOne = () => {
 
   const inputClassName =
     "block p-4 w-full input focus:outline-none focus:border-[#0e9f6e] focus-within:outline-none focus-within:border-[#0e9f6e] placeholder:text-sm placeholder:text-[#BEB5C3]";
-  //   const inputClassName =
-  //     "block p-4 w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50  focus:ring-blue-500 focus:border-blue-500";
   const labelClassName =
     "mb-2 text-[10px]  font-semibold text-gray-900  dark:text-[#333]";
 
@@ -68,13 +80,13 @@ const FormOne = () => {
                   </span>
                 )}
                 <div
-                  className={`absolute h-full w-full rounded-full flex items-center justify-center   transition-all duration-100 ${
-                    userInfo.img ? "opacity-100  " : "opacity-0 bg-slate-400 "
+                  className={`absolute h-full w-full rounded-full flex items-center justify-center transition-all duration-100 ${
+                    userInfo.img ? "opacity-100" : "opacity-0 bg-slate-400"
                   }`}
                 >
                   <span
-                    className={` flex items-center justify-center  relative ${
-                      userInfo.img ? "opacity-0" : "opacity-100 "
+                    className={`flex items-center justify-center relative ${
+                      userInfo.img ? "opacity-0" : "opacity-100"
                     }`}
                   >
                     <svg
@@ -104,7 +116,7 @@ const FormOne = () => {
               </div>
             </div>
             <div className="flex justify-between flex-wrap w-full">
-              <div className="w-full text-center md-b:w-[48%] md-b:text-left ">
+              <div className="w-full text-center md-b:w-[48%] md-b:text-left">
                 <label className={labelClassName} htmlFor="userName">
                   Please enter a username
                 </label>
@@ -119,7 +131,7 @@ const FormOne = () => {
                 />
               </div>
 
-              <div className="w-full text-center md-b:w-[48%] md-b:text-left ">
+              <div className="w-full text-center md-b:w-[48%] md-b:text-left">
                 <label className={labelClassName} htmlFor="displayName">
                   Please enter your display Name
                 </label>
@@ -149,13 +161,18 @@ const FormOne = () => {
             </div>
             <div className="w-full flex flex-wrap justify-between">
               <button
-                className=" text-white !bg-[#0E9F6E]  hover:!bg-[#046c4e] font-semibold rounded-md py-2 px-4 w-full tracking-[0.05em]"
+                className="text-white !bg-[#0E9F6E] hover:!bg-[#046c4e] font-semibold rounded-md py-2 px-4 w-full tracking-[0.05em]"
                 type="button"
                 onClick={next}
               >
                 Next
               </button>
             </div>
+            {uploading && (
+              <div className="flex justify-center mt-4">
+                <CircularProgress />
+              </div>
+            )}
             {/* Handle notifications */}
             <ToastContainer />
           </form>
