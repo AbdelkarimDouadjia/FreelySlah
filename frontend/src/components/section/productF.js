@@ -1,0 +1,193 @@
+export const productF = [
+  {
+    id: 1,
+    img: "/images/product/bag1.jpg",
+    category: "Bag",
+    productTitle: "bag1",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "24h",
+    location: "ainDefla",
+  },
+  {
+    id: 2,
+    img: "/images/product/bag2.jpg",
+
+    category: "Bag",
+    productTitle: "bag2",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "3d",
+    location: "ainDefla",
+  },
+  {
+    id: 3,
+    img: "/images/product/bag3.jpg",
+
+    category: "Bag",
+    productTitle: "bag3",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "7d",
+    location: "ainDefla",
+  },
+  {
+    id: 4,
+    img: "/images/product/bag4.jpg",
+
+    category: "Bag",
+    productTitle: "bag4",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "3d",
+    location: "ainDefla",
+  },
+  {
+    id: 5,
+    img: "/images/product/bag5.jpg",
+
+    category: "Bag",
+    productTitle: "bag5",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "24h",
+    location: "ainDefla",
+  },
+  {
+    id: 6,
+    img: "/images/product/bag6.jpg",
+
+    category: "Bag",
+    productTitle: "bag6",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "3d",
+    location: "ainDefla",
+  },
+  {
+    id: 7,
+    img: "/images/product/bag7.jpg",
+
+    category: "Bag",
+    productTitle: "bag7",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "7d",
+    location: "ainDefla",
+  },
+  {
+    id: 8,
+    img: "/images/product/bag1.jpg",
+
+    category: "Bag",
+    productTitle: "bag1",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "3d",
+    location: "ainDefla",
+  },
+  {
+    id: 9,
+    img: "/images/product/bag1.jpg",
+
+    category: "Bag",
+    productTitle: "bag1",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "24h",
+    location: "ainDefla",
+  },
+  {
+    id: 10,
+    img: "/images/product/bag2.jpg",
+
+    category: "Bag",
+    productTitle: "bag2",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "3d",
+    location: "ainDefla",
+  },
+  {
+    id: 11,
+    img: "/images/product/bag3.jpg",
+
+    category: "Bag",
+    productTitle: "bag3",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "7d",
+    location: "ainDefla",
+  },
+  {
+    id: 12,
+    img: "/images/product/bag4.jpg",
+
+    category: "Bag",
+    productTitle: "bag4",
+    rating: 4.82,
+    review: 94,
+    author: {
+      img: "/images/service9.png",
+      name: "Ahmed",
+    },
+    price: 983,
+    deliveryTime: "3d",
+    location: "ainDefla",
+  },
+];

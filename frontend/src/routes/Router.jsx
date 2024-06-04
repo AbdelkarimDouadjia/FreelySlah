@@ -27,7 +27,8 @@ import FindProduct from "../pages/FindProduct/FindProduct.jsx";
 import FindService from "../pages/FindService/FindService.jsx";
 import ContactUs from "../pages/Contact/ContactUs.jsx";
 import AboutUS from "../pages/AboutUS/AboutUs.jsx";
-
+import Store from "../pages/Store/Store.jsx";
+import Product from "../pages/Product/Product.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -58,7 +59,7 @@ const Router = () => {
         <Footer />
       </>
     );
-  }
+  };
 
   const router = createBrowserRouter([
     {
@@ -71,12 +72,14 @@ const Router = () => {
         { path: "/homeclient", element: <HomeClient /> },
         { path: "/overview", element: <Overview /> },
         // { path: "/welcome", element: <MultiStep /> },
+        { path: "/product", element: <Product /> },
 
         { path: "/findjob", element: <FindJob /> },
         { path: "/findtalent", element: <FindTalent /> },
         { path: "/message", element: <Message /> },
         { path: "/findproduct", element: <FindProduct /> },
         { path: "/findservice", element: <FindService /> },
+        { path: "/store", element: <Store /> },
         { path: "/contactus", element: <ContactUs /> },
         { path: "/aboutus", element: <AboutUS /> },
       ],

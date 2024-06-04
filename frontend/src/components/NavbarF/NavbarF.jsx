@@ -142,7 +142,7 @@ function NavbarF() {
                           <Link className="link" to="/orders">
                             Orders
                           </Link>
-                          <Link className="link" to="/messages">
+                          <Link className="link" to="/message">
                             Messages
                           </Link>
                           <Link

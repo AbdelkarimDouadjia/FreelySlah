@@ -9,8 +9,7 @@ const ServiceContactWidget = () => {
         <div className="wrapper items-center flex ">
           <div className="thumb mb-[25px] relative ">
             <img
-              height={90}
-              width={90}
+              style={{ width: "90px", height: "90px" }}
               className="text-transparent rounded-[50%] mx-auto align-middle	"
               src="/src/assets/images/avatar/Image (12).jpg"
               alt="img"
@@ -43,7 +42,7 @@ const ServiceContactWidget = () => {
             <a className="text-[#222] font-medium text-left cursor-pointer outline-none transition-all duration-300 ease-linear">
               Rate
               <br />
-              <span className="font-normal text-sm">$90 / hr</span>
+              <span className="font-normal text-sm">90 DA/hr</span>
             </a>
             <a className="text-[#222] font-medium text-left cursor-pointer outline-none transition-all duration-300 ease-linear">
               Job Success

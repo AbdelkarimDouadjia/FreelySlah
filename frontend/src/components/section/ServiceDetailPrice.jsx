@@ -34,7 +34,7 @@ const ServiceDetailPrice = () => {
             {getTab === 0 && (
               <div className="price-content ">
                 <div className="price font-bold text-[28px] text-[#222] leading-[36px] mb-[10px] ">
-                  $50
+                  500 DA
                 </div>
                 <div className="text-[17px] font-medium text-[#222] leading-[1.3125] mb-2 mt-0">
                   High-converting Landing Pages
@@ -68,7 +68,7 @@ const ServiceDetailPrice = () => {
                 </div>
                 <div className="grid">
                   <a className="ud-btn btn-thm bg-[#5bbb7b] border-2 border-[#5bbb7b] text-white max-[339px]:py-[13px] max-[339px]:px-[25px]  py-[18px]  flex cursor-pointer hover:text-white hover:border-2 hover:border-[#1f4b3f] font-extrabold items-center justify-center">
-                    Continue $50
+                    Continue 500 DA
                     <FaArrowRightLong className="ml-[10px] text-base -rotate-45 font-light" />
                   </a>
                 </div>
@@ -77,7 +77,7 @@ const ServiceDetailPrice = () => {
             {getTab === 1 && (
               <div className="price-content ">
                 <div className="price font-bold text-[28px] text-[#222] leading-[36px] mb-[10px] ">
-                  $100
+                  1000 DA
                 </div>
                 <div className="text-[17px] font-medium text-[#222] leading-[1.3125] mb-2 mt-0">
                   High-converting Landing Pages
@@ -111,7 +111,7 @@ const ServiceDetailPrice = () => {
                 </div>
                 <div className="grid">
                   <a className="ud-btn btn-thm bg-[#5bbb7b] border-2 border-[#5bbb7b] text-white max-[339px]:py-[13px] max-[339px]:px-[25px]  py-[18px] flex cursor-pointer hover:text-white hover:border-2 hover:border-[#1f4b3f] font-extrabold items-center justify-center">
-                    Continue $100
+                    Continue 1000 DA
                     <FaArrowRightLong className="ml-[10px] text-base -rotate-45 font-light" />
                   </a>
                 </div>
@@ -120,7 +120,7 @@ const ServiceDetailPrice = () => {
             {getTab === 2 && (
               <div className="price-content ">
                 <div className="price font-bold text-[28px] text-[#222] leading-[36px] mb-[10px] ">
-                  $250
+                  2500 DA
                 </div>
                 <div className="text-[17px] font-medium text-[#222] leading-[1.3125] mb-2 mt-0">
                   High-converting Landing Pages
@@ -154,7 +154,7 @@ const ServiceDetailPrice = () => {
                 </div>
                 <div className="grid">
                   <a className="ud-btn btn-thm bg-[#5bbb7b] border-2 border-[#5bbb7b] text-white max-[339px]:py-[13px] max-[339px]:px-[25px] py-[18px] cursor-pointer hover:text-white hover:border-2 hover:border-[#1f4b3f] font-extrabold flex items-center justify-center">
-                    Continue $250
+                    Continue 2500 DA
                     <FaArrowRightLong className="ml-[10px] text-base -rotate-45 font-light" />
                   </a>
                 </div>

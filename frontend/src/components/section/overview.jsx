@@ -45,29 +45,29 @@ const Overview = () => {
           <h2 className="text-lg font-semibold text-green-600">
             Work in progress
           </h2>
-          <p className="text-2xl font-bold">$0.00</p>
+          <p className="text-2xl font-bold">0.00 DA</p>
         </div>
         <div
           className="p-4 border rounded shadow-sm text-center cursor-pointer"
           onClick={() => setSelectedBlock("inReview")}
         >
           <h2 className="text-lg font-semibold text-gray-600">In review</h2>
-          <p className="text-2xl font-bold">$0.00</p>
+          <p className="text-2xl font-bold">0.00 DA</p>
         </div>
         <div
           className="p-4 border rounded shadow-sm text-center cursor-pointer"
           onClick={() => setSelectedBlock("pending")}
         >
           <h2 className="text-lg font-semibold text-yellow-600">Pending</h2>
-          <p className="text-2xl font-bold">$0.00</p>
+          <p className="text-2xl font-bold">0.00 DA</p>
         </div>
         <div
           className="p-4 border rounded shadow-sm text-center cursor-pointer"
           onClick={() => setSelectedBlock("available")}
         >
           <h2 className="text-lg font-semibold text-gray-800">Available</h2>
-          <p className="text-2xl font-bold">$0.00</p>
-          <p className="text-sm text-gray-600">Last payment: $0.00</p>
+          <p className="text-2xl font-bold">0.00 DA</p>
+          <p className="text-sm text-gray-600">Last payment: 0.00 DA</p>
         </div>
       </div>
       <div>{renderCards()}</div>

@@ -1,11 +1,11 @@
 import React from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 
-const ServiceDetailComment = () => {
+const ProductDetailComment = () => {
   return (
     <>
-      <div className="bsp_reveiw_wrt mb-[20px]">
-        <h6 className="text-[17px] font-medium text-[#222] leading-[1.3125] mt-0 mb-2">
+      <div className="bsp_reveiw_wrt mb-40 ml-24 mr-24 w-[700px] ">
+        <h6 className="text-[25px] font-medium text-[#222] leading-[1.3125] mt-0 mb-2">
           Add a Review
         </h6>
         <p className="text-[#222] font-normal mt-0 mx-0 mb-[15px] leading-[1.85] ">
@@ -84,4 +84,4 @@ const ServiceDetailComment = () => {
   );
 };
 
-export default ServiceDetailComment;
+export default ProductDetailComment;

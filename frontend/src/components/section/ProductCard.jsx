@@ -4,7 +4,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function PopularServiceCard(props) {
+function ProductCard(props) {
   const data = props.data;
   //const style = props.style;
   const isContentExpanded = false;
@@ -17,8 +17,7 @@ function PopularServiceCard(props) {
       <div className="listing-style overflow-hidden relative bg-white rounded border border-[#e9e9e9] mb-[30px] transition-all duration-300 ease-linear ">
         <div className="list-thumb overflow-hidden relative text-transparent transition-all duration-300 ease-linear w-full align-middle">
           <img
-            height={247}
-            width={331}
+            style={{ width: "331px", height: "260px" }}
             className="w-full hover:scale-110 transform transition-all duration-300 ease-linear hover:rotate-3"
             src={data.img}
             alt="thumbnail"
@@ -45,7 +44,7 @@ function PopularServiceCard(props) {
               href={`/service-single/${data.id}`}
               className="transition-all duration-300 cursor-pointer text-[#222] "
             >
-              {data.title.slice(0, 40) + "..."}
+              {data.productTitle.slice(0, 40)}
             </Link>
           </h5>
           <div className="items-center flex ">
@@ -65,7 +64,7 @@ function PopularServiceCard(props) {
                 <img
                   height={30}
                   width={30}
-                  className="rounded-circle wa text-transparent transition-all duration-300 ease-linear w-auto rounded-[50%]  align-middle "
+                  className="rounded-circle wa text-transparent max-w-[50px] transition-all duration-300 ease-linear w-auto rounded-[50%]  align-middle "
                   src={data.author.img}
                   alt="Freelancer Photo"
                 />
@@ -76,10 +75,10 @@ function PopularServiceCard(props) {
               </span>
             </Link>
             <div className="budget">
-              <p className="m-0 text-[#6b7177] leading-[1.85] font-normal text-[14px]">
+              <p className="m-0 text-[#6b7177] leading-[1.85] font-sm text-[12px]">
                 Starting at
-                <span className="font-medium text-[14px] text-[#222] ml-1 ">
-                  {data.price}DA
+                <span className="font-medium text-[15px] text-[#222] ml-1 ">
+                  {data.price} DA
                 </span>
               </p>
             </div>
@@ -90,13 +89,13 @@ function PopularServiceCard(props) {
   );
 }
 
-PopularServiceCard.propTypes = {
+ProductCard.propTypes = {
   data: PropTypes.object,
   style: PropTypes.string,
 };
 
-PopularServiceCard.defaultProps = {
+ProductCard.defaultProps = {
   style: "",
 };
 
-export default PopularServiceCard;
+export default ProductCard;

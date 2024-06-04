@@ -183,7 +183,7 @@ export default function ServiceDetails() {
                               scope="col"
                             >
                               <span className="max-[575.98px]:text-[20px] mt-0 mb-2 text-[32px] font-bold text-[#222] leading-[1.3125] ">
-                                $29{" "}
+                                290 DA{" "}
                                 <small className="font-normal text-[15px] text-[#697488] leading-[1.3125] ">
                                   / monthly
                                 </small>
@@ -206,7 +206,7 @@ export default function ServiceDetails() {
                               scope="col"
                             >
                               <span className="max-[575.98px]:text-[20px] mt-0 mb-2 text-[32px] font-bold text-[#222] leading-[1.3125] ">
-                                $49{" "}
+                                490 DA{" "}
                                 <small className="font-normal text-[15px] text-[#697488] leading-[1.3125] ">
                                   / monthly
                                 </small>
@@ -227,7 +227,7 @@ export default function ServiceDetails() {
                               scope="col"
                             >
                               <span className="max-[575.98px]:text-[20px] mt-0 mb-2 text-[32px] font-bold text-[#222] leading-[1.3125] ">
-                                $89{" "}
+                                890 DA{" "}
                                 <small className="font-normal text-[15px] text-[#697488] leading-[1.3125] ">
                                   / monthly
                                 </small>
@@ -328,13 +328,13 @@ export default function ServiceDetails() {
                               Total
                             </th>
                             <td className="px-2 py-[30px] font-normal border-b-0 bg-inherit">
-                              $29
+                              290 DA
                             </td>
                             <td className="px-2 py-[30px] font-normal border-b-0 bg-inherit">
-                              $49
+                              490 DA
                             </td>
                             <td className="px-2 py-[30px] font-normal border-b-0 bg-inherit">
-                              $89
+                              890 DA
                             </td>
                           </tr>
                           <tr className="bgc-thm3 border-t border-[#e9e9e9] ">

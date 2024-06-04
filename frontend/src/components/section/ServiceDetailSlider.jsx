@@ -8,7 +8,6 @@ import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
-
 const gigImages = [
   "/src/assets/images/listings/s0.jpg",
   "/src/assets/images/listings/s1.jpg",

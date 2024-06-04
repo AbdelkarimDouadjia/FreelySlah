@@ -1,20 +1,64 @@
-import React from "react";
+// MessageContainer.js
+import React, { useState, useRef } from "react";
 import MessageInput from "./MessageInput";
 import Messages from "./Messages";
 import { TiMessages } from "react-icons/ti";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import useOutsideAlerter from "./useOutsideAlerter"; // Make sure the path is correct
 
 const MessageContainer = () => {
-  const noChatSelected = false; // This will determine if a chat is selected or not
+  const noChatSelected = false;
+  const [menuVisible, setMenuVisible] = useState(false);
+  const menuRef = useRef(null); // Create a ref for the menu
+
+  useOutsideAlerter(menuRef, () => setMenuVisible(false)); // Hook to handle outside clicks
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
+
   return (
     <div className="md:min-w-[450px] flex flex-col h-full">
       {noChatSelected ? (
         <NoChatSelected />
       ) : (
         <>
-          {/* Header */}
-          <div className="bg-[#0E9F6E] px-4 py-2 mb-2">
-            <span className="text-gray-900 font-bold">To : </span>{" "}
-            <span className="text-white font-bold">Jhon</span>
+          <div className="bg-[#5BBB7B] px-6 py-2 flex justify-between items-center">
+            <div className="flex items-center gap-2 lg:gap-3">
+              <div className="w-12 h-12 lg:w-12 lg:h-12 rounded-full overflow-hidden">
+                <img
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                  alt="Jhon"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl">
+                Louiza
+              </span>
+            </div>
+
+            <button onClick={toggleMenu} className="text-white mb-2">
+              <BsThreeDotsVertical size={30} />
+            </button>
+            {menuVisible && (
+              <ul
+                ref={menuRef}
+                className="absolute right-20 mt-24 w-48 bg-white rounded shadow-lg"
+              >
+                <li
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-black"
+                  onClick={() => alert("Visiting Profile...")}
+                >
+                  Visit Profile
+                </li>
+                <li
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-black"
+                  onClick={() => alert("Deleting Conversation...")}
+                >
+                  Delete Conversation
+                </li>
+              </ul>
+            )}
           </div>
           <Messages />
           <MessageInput />

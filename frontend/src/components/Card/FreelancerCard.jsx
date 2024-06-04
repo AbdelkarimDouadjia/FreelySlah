@@ -1,9 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import {
-  FaArrowRight,
-} from "react-icons/fa6";
+import { FaArrowRight } from "react-icons/fa6";
 
 const FreelancerCard = (props) => {
   const data = props.data;
@@ -58,7 +56,7 @@ const FreelancerCard = (props) => {
               Rate
               <br />
               <span className="font-normal text-sm">
-                ${data.hourlyRate} / hr
+                {data.hourlyRate}DA/hr
               </span>
             </a>
             <a className="text-[#222] font-medium text-left cursor-pointer transition-all duration-300 ease-linear">

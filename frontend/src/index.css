@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
+@tailwind components;
+@tailwind utilities;
+@tailwind base;
+
 .btn-thm:before,
 .btn-transparent2:before,
 .btn-transparent:before,
@@ -33,13 +37,9 @@
 }
 
 
-@tailwind components;
-@tailwind utilities;
-@tailwind base;
-
 
 html, body {
-	background-color: #FCFCFC;
+	background-color: #FCFCFC !important;
   }
   
 
@@ -52,27 +52,6 @@ html, body {
 body {
 	font-family: "DM Sans", sans-serif;
 }
-
-::-webkit-scrollbar {
-	width: 15px;
-}
-
-::-webkit-scrollbar-track {
-	background: #dbd9d9;
-}
-
-::-webkit-scrollbar-thumb {
-	background: #0E9F6E;
-	border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-	background: #242424;
-}
-
-
-
-
 /* @layer base {
 	section {
 		@apply py-[75px]
