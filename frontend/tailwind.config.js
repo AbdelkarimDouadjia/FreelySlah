@@ -54,12 +54,12 @@ export default {
       },
     },
   },
-  plugins: [
+  /*  plugins: [
     require("daisyui"),
     {
       daisyui: {
         themes: ["light"], // Add your desired themes here
       },
     },
-  ],
+  ],*/
 };

@@ -1,0 +1,73 @@
+.becomeseller {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px 90px;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+}
+
+.becomeseller .container {
+  width: 1400px;
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
+
+.becomeseller .container .item {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.becomeseller .container .item:first-child {
+  flex: 3;
+}
+
+.becomeseller .container .item:last-child {
+  background-color: black;
+}
+
+.becomeseller .container .item h1 {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.becomeseller .container .item p {
+  font-size: 18px;
+  font-weight: 300;
+  color: rgb(61, 61, 61);
+  line-height: 28px;
+  letter-spacing: 1px;
+}
+
+.becomeseller .container .item .title {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.becomeseller .container .item .title img {
+  width: 35px;
+  height: 35px;
+}
+
+.becomeseller .container .item video {
+  width: 720px;
+}
+
+.becomeseller button {
+  width: fit-content;
+  height: 50px;
+  border: none;
+  background-color: #1dbf73;
+  color: white;
+  align-self: flex-end;
+  cursor: pointer;
+  font-weight: 400;
+  font-size: large;
+  border-radius: 1px;
+}

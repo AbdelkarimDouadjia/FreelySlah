@@ -49,6 +49,7 @@ import ContactUs from "../pages/Contact/ContactUs.jsx";
 import AboutUS from "../pages/AboutUS/AboutUs.jsx";
 import Store from "../pages/Store/Store.jsx";
 import Product from "../pages/Product/Product.jsx";
+import BecomeSeller from "../pages/BecomeSeller/BecomeSeller.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -107,6 +108,17 @@ const Router = () => {
         { path: "/shopcheckout", element: <ShopCheckOut /> },
         { path: "/shoporder", element: <ShopOrder /> },
         { path: "/savedprojects", element: <SavedProjects /> },
+        { path: "/product", element: <Product /> },
+
+        { path: "/findjob", element: <FindJob /> },
+        { path: "/findtalent", element: <FindTalent /> },
+        { path: "/message", element: <Message /> },
+        { path: "/findproduct", element: <FindProduct /> },
+        { path: "/findservice", element: <FindService /> },
+        { path: "/store", element: <Store /> },
+        { path: "/contactus", element: <ContactUs /> },
+        { path: "/aboutus", element: <AboutUS /> },
+        { path: "/becomeseller", element: <BecomeSeller /> },
 
         {
           path: "/settings",
@@ -121,17 +133,7 @@ const Router = () => {
         { path: "my-teams", element: <MyTeams /> },
         { path: "connected-services", element: <ConnectedServices /> },
         { path: "notification-settings", element: <NotificationSettings /> },*/
-            { path: "/product", element: <Product /> },
-
-        { path: "/findjob", element: <FindJob /> },
-        { path: "/findtalent", element: <FindTalent /> },
-        { path: "/message", element: <Message /> },
-        { path: "/findproduct", element: <FindProduct /> },
-        { path: "/findservice", element: <FindService /> },
-        { path: "/store", element: <Store /> },
-        { path: "/contactus", element: <ContactUs /> },
-        { path: "/aboutus", element: <AboutUS /> },
-      ],
+          ],
         },
       ],
     },
