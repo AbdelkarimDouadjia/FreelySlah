@@ -367,11 +367,6 @@ function NavbarF() {
                                   <BiUser className="mr-4 text-xl" />
                                   <span>Profile</span>
                                 </Link>
-                              </>
-                            )}
-
-                            {currentUser?.isSeller && (
-                              <>
                                 <Link
                                   className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium "
                                   to="/manageservices"
@@ -386,6 +381,18 @@ function NavbarF() {
                                   <IoAddCircleOutline className="mr-4 text-lg" />
                                   <span>Create new Service</span>
                                 </Link> */}
+                              </>
+                            )}
+
+                            {!currentUser?.isSeller && (
+                              <>
+                                <Link
+                                  className="link px-4 py-3 hover:bg-gray-100 flex items-center text-black text-base font-medium "
+                                  to="/manageprojects"
+                                >
+                                  <IoBriefcaseOutline className="mr-4 text-lg" />
+                                  <span>Manage Projects</span>
+                                </Link>
                               </>
                             )}
                             {/* <Link
