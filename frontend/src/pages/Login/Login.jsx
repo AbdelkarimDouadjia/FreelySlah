@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,8 +8,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "@firebase/auth";
 import { app } from "../../firebase.js";
+import { AuthContext } from "../../context/AuthContext.jsx";
 
 export const Login = () => {
+  const { updateUser } = useContext(AuthContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -19,8 +22,13 @@ export const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await newRequest.post("/auth/login", { email, password });
-      localStorage.setItem("currentUser", JSON.stringify(res.data));
+      const res = await newRequest.post("/auth/login", {
+        email,
+        password,
+        isOnline: true,
+      });
+      //localStorage.setItem("currentUser", JSON.stringify(res.data));
+      updateUser(res.data);
       // Show success notification
       toast.success("Logged in successfully", { position: "top-right" });
       navigate("/welcome");
@@ -43,8 +51,11 @@ export const Login = () => {
         name: displayName,
         img: photoURL,
         country: "DZ",
+        isOnline: true,
       });
-      localStorage.setItem("currentUser", JSON.stringify(res1.data));
+      //localStorage.setItem("currentUser", JSON.stringify(res1.data));
+      updateUser(res1.data);
+
       // to show success notification
       toast.success("Logged in successfully", { position: "top-right" });
       navigate("/welcome");
@@ -117,7 +128,12 @@ export const Login = () => {
               rel="noopener noreferrer"
               className="text-[#333] font-semibold text-sm"
             >
-              FreelySlah
+              <span className=" -ml-1 text-[20px] font-bold !text-xl !text-[#022C22] playfair-display-regular relative">
+                <span className="playfair-display-regular">freely</span>{" "}
+                <span className="!text-base z-10 relative text-[#022C22] -ml-[2px] dancing-script-regular  bg-[#BEF264] w-full h-full">
+                  Slah
+                </span>
+              </span>
             </a>
           </div>
           <div>

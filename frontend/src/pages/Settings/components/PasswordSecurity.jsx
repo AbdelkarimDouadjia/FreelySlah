@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { MdOutlineEdit, MdOutlineCheck } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "../../Create Service/CreateService.module.css";
+import { AuthContext } from "../../../context/AuthContext";
+import newRequest from "../../../utils/newRequest";
+import { useNavigate } from "react-router-dom";
 
 const PasswordSecurity = () => {
+  const { currentUser, updateUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const [error, setError] = useState(null);
+
   const [showEditPasswordModal, setShowEditPasswordModal] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -18,18 +25,31 @@ const PasswordSecurity = () => {
     setShowEditPasswordModal(true);
   };
 
-  const handleEditPassword = () => {
+  const handleEditPassword = async (e) => {
+    e.preventDefault();
+
     if (newPassword !== confirmPassword) {
       toast.error("New password and confirm password do not match");
       return;
     }
-    if (!oldPassword || !newPassword) {
-      toast.error("Please fill in all fields");
-      return;
+
+    const formData = new FormData(e.target);
+    const { password } = Object.fromEntries(formData);
+
+    try {
+      const res = await newRequest.put(`/users/${currentUser._id}`, {
+        password,
+      });
+      updateUser(res.data);
+      // Implement your password update logic here
+      setShowEditPasswordModal(false);
+      navigate("/settings/password-security");
+      toast.success("Password updated successfully");
+    } catch (err) {
+      console.log(err);
+      setError(err.response.data.message);
+      toast.error(error);
     }
-    // Implement your password update logic here
-    toast.success("Password updated successfully");
-    setShowEditPasswordModal(false);
   };
 
   const handlePasswordChange = (e) => {
@@ -73,8 +93,8 @@ const PasswordSecurity = () => {
                 <a href="#" className="text-blue-600 underline">
                   Google Sign-in
                 </a>{" "}
-                to login. We will only ask for your FreelySlah password if we need
-                to verify your identity.
+                to login. We will only ask for your FreelySlah password if we
+                need to verify your identity.
               </p>
             </div>
             <div className="flex items-center">
@@ -92,7 +112,10 @@ const PasswordSecurity = () => {
       {/* Edit Password Modal */}
       {showEditPasswordModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
+          <form
+            onSubmit={handleEditPassword}
+            className="bg-white rounded-xl shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]"
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-3xl font-semibold">Edit Password</h3>
               <button
@@ -103,7 +126,7 @@ const PasswordSecurity = () => {
               </button>
             </div>
             <div className="px-3 overflow-x-auto min-h-fit">
-              <div className="mb-7">
+              {/* <div className="mb-7">
                 <label className="text-[#333] font-medium text-xl mb-3">
                   Old Password
                 </label>
@@ -114,7 +137,7 @@ const PasswordSecurity = () => {
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
                 />
-              </div>
+              </div> */}
               <div className="mb-7">
                 <div className="flex justify-between items-center">
                   <label className="text-[#333] font-medium text-xl mb-3">
@@ -140,6 +163,7 @@ const PasswordSecurity = () => {
                    focus-within:outline-none focus-within:border placeholder:text-sm placeholder:text-[#BEB5C3] text-gray-600"
                   value={newPassword}
                   onChange={handlePasswordChange}
+                  name="password"
                 />
                 <div className="mt-2 flex items-center">
                   <span
@@ -191,13 +215,14 @@ const PasswordSecurity = () => {
                 Cancel
               </button>
               <button
-                onClick={handleEditPassword}
-                className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
+                //onClick={handleEditPassword}
+                className="px-5 py-2 !bg-[#0E9F6E] !text-white rounded-3xl hover:!bg-[#046c4e]"
+                type="submit"
               >
                 Save
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
       <ToastContainer />

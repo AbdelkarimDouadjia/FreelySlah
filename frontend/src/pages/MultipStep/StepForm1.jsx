@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./styles.module.css";
 import AppContext from "./Context";
 import FormOne1 from "./FormOne1";
@@ -11,19 +11,20 @@ import FormFreelancer from "./FormFreelancer.jsx";
 import { useNavigate } from "react-router-dom";
 import FormFive5 from "./FormFive5.jsx";
 import FormSix6 from "./FormSix6.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
 
 const StepForm1 = () => {
-  const userInfo = JSON.parse(localStorage.getItem("currentUser"));
+  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // if userInfo has no description then navigate to login page
+  // if currentUser has no description then navigate to login page
   useEffect(() => {
-    if (userInfo.desc !== null && userInfo.isSeller === true) {
+    if (currentUser.desc !== null && currentUser.isSeller === true) {
       navigate("/");
-    } else if (userInfo.desc === null && userInfo.isSeller === false) {
+    } else if (currentUser.desc === null && currentUser.isSeller === false) {
       navigate("/");
     }
-  }, [userInfo, navigate]);
+  }, [currentUser, navigate]);
 
   const [step, setStep] = useState(0);
   const [username, setUserName] = useState(null);

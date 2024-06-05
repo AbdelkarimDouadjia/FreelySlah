@@ -1,25 +1,29 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-import Header from "../components/Header/Header.jsx";
-import Footer from "../components/Footer/Footer.jsx";
-import Routers from "../routes/Routers.jsx";
+import React, { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import NavbarF from "../components/NavbarF/NavbarF";
+import Footer from "../components/section/Footer.jsx";
 
-const Layout = () => {
-  const location = useLocation();
-  const path = location.pathname;
-
-  // Determine if Header and Footer should be hidden
-  const noHeaderFooter = ["/login", "/signup"].includes(path);
-
+function RequireAuth() {
+  const { currentUser } = useContext(AuthContext);
+  if (!currentUser) return <Navigate to="/login" />;
+  else {
+    return (
+      <>
+        <NavbarF />
+        <Outlet />
+        <Footer />
+      </>
+    );
+  }
+  /*
   return (
     <>
-      {/**  {!noHeaderFooter && <Header />}*/}
-      <main>
-        <Routers />
-      </main>
-      {/** {!noHeaderFooter && <Footer />}*/}
+      <NavbarF />
+      <Outlet />
+      <Footer />
     </>
-  );
-};
+  );*/
+}
 
-export default Layout;
+export default RequireAuth;

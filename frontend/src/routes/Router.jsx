@@ -50,6 +50,9 @@ import AboutUS from "../pages/AboutUS/AboutUs.jsx";
 import Store from "../pages/Store/Store.jsx";
 import Product from "../pages/Product/Product.jsx";
 import BecomeSeller from "../pages/BecomeSeller/BecomeSeller.jsx";
+import Proposals from "../pages/Proposals/Proposals.jsx";
+import ProjectProgress from "../pages/ProjectProgress/ProjectProgress.jsx";
+import RequireAuth from "../layout/Layout.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -90,8 +93,7 @@ const Router = () => {
         { path: "/", element: <Home /> },
         { path: "/home", element: <Home /> },
         { path: "/gig/:id", element: <Service /> },
-        { path: "/homeclient", element: <HomeClient /> },
-        { path: "/homefreelancer", element: <HomeFreelancer /> },
+
         { path: "/overview", element: <Overview /> },
         // { path: "/welcome", element: <MultiStep /> },
 
@@ -118,7 +120,10 @@ const Router = () => {
         { path: "/store", element: <Store /> },
         { path: "/contactus", element: <ContactUs /> },
         { path: "/aboutus", element: <AboutUS /> },
-        { path: "/becomeseller", element: <BecomeSeller /> },
+        { path: "/become-seller", element: <BecomeSeller /> },
+        { path: "/proposals", element: <Proposals /> },
+        { path: "/projectprogress", element: <ProjectProgress /> },
+        
 
         {
           path: "/settings",
@@ -144,6 +149,7 @@ const Router = () => {
       children: [
         { path: "/stepform", element: <StepForm /> },
         { path: "/t", element: <T /> },
+        { path: "/welcome", element: <StepForm1 /> },
       ],
     },
     {
@@ -151,8 +157,6 @@ const Router = () => {
       element: <Layout3 />,
       children: [],
     },
-
-    { path: "/welcome", element: <StepForm1 /> },
 
     { path: "/invoice", element: <Invoice /> },
 
@@ -166,6 +170,15 @@ const Router = () => {
     /*{ path: "/service", element: <Service /> },*/
     { path: "/breadcumb", element: <Breadcumb /> },
     { path: "/navbarF", element: <NavbarF /> },
+
+    {
+      path: "/",
+      element: <RequireAuth />,
+      children: [
+        { path: "/homefreelancer", element: <HomeFreelancer /> },
+        { path: "/homeclient", element: <HomeClient /> },
+      ],
+    },
   ]);
 
   return (

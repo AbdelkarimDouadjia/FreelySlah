@@ -4,6 +4,7 @@ import "./App.css";
 //import Routers from "./routes/Routers.jsx";
 // import Routers from "./routes/Routers.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GlobalProvider } from "./context/GlobalContext.jsx";
 
 import Router from "./routes/Router.jsx";
 
@@ -13,7 +14,9 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <Router />
+        <GlobalProvider>
+          <Router />
+        </GlobalProvider>
       </QueryClientProvider>
     </>
   );

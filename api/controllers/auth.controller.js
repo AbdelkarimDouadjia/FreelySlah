@@ -3,13 +3,20 @@ import createError from "../utils/createError.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+// Function to generate a unique username
+const generateUsername = (name) => {
+  return (
+    name.split(" ").join("").toLowerCase() +
+    Math.random().toString(36).slice(-8)
+  );
+};
+
 export const register = async (req, res, next) => {
   try {
     const hash = bcrypt.hashSync(req.body.password, 10);
     const newUser = new User({
       ...req.body,
-      //make the username unique
-      username: req.body.username + Math.random().toString(36).slice(-5),
+      username: generateUsername(req.body.username),
       password: hash,
     });
 
@@ -19,6 +26,7 @@ export const register = async (req, res, next) => {
     next(err);
   }
 };
+
 export const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -34,13 +42,20 @@ export const login = async (req, res, next) => {
         id: user._id,
         isSeller: user.isSeller,
       },
-      process.env.JWT_KEY
+      process.env.JWT_KEY,
+      { expiresIn: "1h" } // Add token expiration
     );
+
+    user.isOnline = true;
+    await user.save();
 
     const { password, ...info } = user._doc;
     res
       .cookie("accessToken", token, {
         httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // Secure in production
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 3600000, // 1 hour expiration
       })
       .status(200)
       .send(info);
@@ -52,8 +67,9 @@ export const login = async (req, res, next) => {
 export const logout = async (req, res) => {
   res
     .clearCookie("accessToken", {
-      sameSite: "none",
-      secure: true,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Secure in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     })
     .status(200)
     .send("User has been logged out.");
@@ -61,42 +77,36 @@ export const logout = async (req, res) => {
 
 export const google = async (req, res, next) => {
   try {
-    // login with google
-
-    // check if user exists
     const user = await User.findOne({ email: req.body.email });
-    
 
     if (user) {
-      //handle login user
+      // Handle login for existing user
       const token = jwt.sign(
         {
           id: user._id,
         },
-        process.env.JWT_KEY
+        process.env.JWT_KEY,
+        { expiresIn: "1h" } // Add token expiration
       );
       const { password, ...rest } = user._doc;
-      const expiryDate = new Date(Date.now() + 3600000); // 1 hour
       res
         .cookie("accessToken", token, {
           httpOnly: true,
-          expires: expiryDate,
+          secure: process.env.NODE_ENV === "production", // Secure in production
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          maxAge: 3600000, // 1 hour expiration
         })
         .status(200)
         .send(rest);
     } else {
-      // create new user
-
-      const generatedPassword =
-        Math.random().toString(36).slice(-8) +
-        Math.random().toString(36).slice(-8); // 16 digits
+      // Create new user
+      const generatedPassword = Math.random().toString(36).slice(-16);
       const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+      const nameParts = req.body.name.trim().split(" ");
       const newUser = new User({
-        username:
-          req.body.name.split(" ").join("").toLowerCase() +
-          Math.random().toString(36).slice(-8),
-        fname: req.body.name.split(" ")[0],
-        lname: req.body.name.split(" ")[1],
+        username: generateUsername(req.body.name),
+        fname: nameParts.length > 1 ? nameParts[0] : req.body.name,
+        lname: nameParts.length > 1 ? nameParts[1] : req.body.name,
         email: req.body.email,
         password: hashedPassword,
         img: req.body.img,
@@ -107,18 +117,19 @@ export const google = async (req, res, next) => {
         {
           id: newUser._id,
         },
-        process.env.JWT_KEY
+        process.env.JWT_KEY,
+        { expiresIn: "1h" } // Add token expiration
       );
       const { password, ...rest } = newUser._doc;
-      const expiryDate = new Date(Date.now() + 3600000); // 1 hour
       res
         .cookie("accessToken", token, {
           httpOnly: true,
-          expires: expiryDate,
+          secure: process.env.NODE_ENV === "production", // Secure in production
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          maxAge: 3600000, // 1 hour expiration
         })
         .status(200)
         .send(rest);
-
     }
   } catch (err) {
     next(err);

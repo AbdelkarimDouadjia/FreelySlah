@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MdOutlineEdit } from "react-icons/md";
@@ -8,12 +8,16 @@ import {
   FaDribbble,
   FaTwitter,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../context/AuthContext";
+import newRequest from "../../../utils/newRequest";
 
 const ProfileSettings = () => {
-  const [idType, setIdType] = useState("");
-  const [idNumber, setIdNumber] = useState("");
-  const [issuedDate, setIssuedDate] = useState("");
-  const [expiredDate, setExpiredDate] = useState("");
+  const { currentUser, updateUser } = useContext(AuthContext);
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
   const [isEditing, setIsEditing] = useState(false);
   const [experienceLevel, setExperienceLevel] = useState("intermediate");
   const [linkedAccounts, setLinkedAccounts] = useState({
@@ -23,27 +27,35 @@ const ProfileSettings = () => {
     Twitter: false,
   });
 
-  const handleUpdate = () => {
-    if (!idType) {
-      toast.error("Please select your ID Type");
-    } else if (!idNumber) {
-      toast.error("Please enter your ID Number");
-    } else if (!issuedDate) {
-      toast.error("Please enter your Issued Date");
-    } else if (!expiredDate) {
-      toast.error("Please enter your Expired Date");
-    } else {
-      toast.success("Information updated successfully!");
-      setIsEditing(false);
-      // Handle the form submission logic
-    }
-  };
-
   const toggleAccount = (account) => {
     setLinkedAccounts((prev) => ({
       ...prev,
       [account]: !prev[account],
     }));
+  };
+
+  const handleIDSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const { userIdType, userIdNumber, userIssuedD, userExpiredD } =
+      Object.fromEntries(formData);
+    console.log(userIdType, userIdNumber, userIssuedD, userExpiredD);
+    try {
+      const res = await newRequest.put(`/users/${currentUser._id}`, {
+        userIdType,
+        userIdNumber,
+        userIssuedD,
+        userExpiredD,
+      });
+      updateUser(res.data);
+      setIsEditing(false);
+      navigate("/settings/profile-settings");
+      toast.success("Information updated successfully!");
+    } catch (err) {
+      console.log(err);
+      setError(err.response.data.message);
+      toast.error(error);
+    }
   };
 
   return (
@@ -71,7 +83,7 @@ const ProfileSettings = () => {
         </div>
 
         {isEditing ? (
-          <div className="bg-white">
+          <form onSubmit={handleIDSubmit} className="bg-white">
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
@@ -82,13 +94,13 @@ const ProfileSettings = () => {
               <select
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="id-type"
-                value={idType}
-                onChange={(e) => setIdType(e.target.value)}
+                name="userIdType"
+                defaultValue={currentUser.userIdType}
               >
                 <option value="">Select ID Type</option>
-                <option value="passport">Passport</option>
-                <option value="driver_license">Driver&apos;s License</option>
-                <option value="national_id">National ID</option>
+                <option value="Passport">Passport</option>
+                <option value="Driver License">Driver&apos;s License</option>
+                <option value="National ID">National ID</option>
               </select>
             </div>
             <div className="mb-4">
@@ -102,8 +114,8 @@ const ProfileSettings = () => {
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="id-number"
                 type="text"
-                value={idNumber}
-                onChange={(e) => setIdNumber(e.target.value)}
+                name="userIdNumber"
+                defaultValue={currentUser.userIdNumber}
               />
             </div>
             <div className="mb-4">
@@ -117,8 +129,8 @@ const ProfileSettings = () => {
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="issued-date"
                 type="date"
-                value={issuedDate}
-                onChange={(e) => setIssuedDate(e.target.value)}
+                name="userIssuedD"
+                defaultValue={currentUser.userIssuedD}
               />
             </div>
             <div className="mb-4">
@@ -132,15 +144,14 @@ const ProfileSettings = () => {
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="expired-date"
                 type="date"
-                value={expiredDate}
-                onChange={(e) => setExpiredDate(e.target.value)}
+                name="userExpiredD"
+                defaultValue={currentUser.userExpiredD}
               />
             </div>
             <div className="flex items-center mt-7">
               <button
                 className="px-5 py-2 !bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e] mr-5"
-                type="button"
-                onClick={handleUpdate}
+                type="submit"
               >
                 Update
               </button>
@@ -152,13 +163,13 @@ const ProfileSettings = () => {
                 Cancel
               </button>
             </div>
-          </div>
+          </form>
         ) : (
           <div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">ID Type:</p>
               <p className="text-lg font-medium text-gray-800">
-                {idType || "N/A"}
+                {currentUser.userIdType || "N/A"}
               </p>
             </div>
             <div className="flex items-center mb-5">
@@ -166,7 +177,7 @@ const ProfileSettings = () => {
                 ID Number:
               </p>
               <p className="text-lg font-medium text-gray-800">
-                {idNumber || "N/A"}
+                {currentUser.userIdNumber || "N/A"}
               </p>
             </div>
             <div className="flex items-center mb-5">
@@ -174,7 +185,7 @@ const ProfileSettings = () => {
                 Issued Date:
               </p>
               <p className="text-lg font-medium text-gray-800">
-                {issuedDate || "N/A"}
+                {currentUser.userIssuedD || "N/A"}
               </p>
             </div>
             <div className="flex items-center mb-5">
@@ -182,7 +193,7 @@ const ProfileSettings = () => {
                 Expired Date:
               </p>
               <p className="text-lg font-medium text-gray-800">
-                {expiredDate || "N/A"}
+                {currentUser.userExpiredD || "N/A"}
               </p>
             </div>
           </div>

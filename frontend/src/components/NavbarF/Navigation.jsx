@@ -1,8 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
+import PropTypes from "prop-types";
 
-const navigation = [
+const clientNavigation = [
+  // client-specific navigation items
+  {
+    id: 1,
+    name: "Client Dashboard",
+    children: [
+      { id: 1, name: "Overview", path: "/client/overview" },
+      { id: 2, name: "My Projects", path: "/client/projects" },
+      { id: 3, name: "Messages", path: "/client/messages" },
+    ],
+  },
+  // other client-specific sections
+];
+
+const freelancerNavigation = [
   {
     id: 1,
     name: "Find Work",
@@ -43,30 +58,29 @@ const navigation = [
   },
 ];
 
-const Navigation = () => {
+const Navigation = (props) => {
+  const navigation =
+    props.role === "client" ? clientNavigation : freelancerNavigation;
+
   return (
     <>
-      <ul
-        className={`ace-responsive-menu ui-navigation max-[768px]:float-left w-full list-none m-0 p-0 bg-transparent md-b:w-auto  `}
-      >
+      <ul className="ace-responsive-menu ui-navigation max-[768px]:float-left w-full list-none m-0 p-0 bg-transparent md-b:w-auto">
         {navigation.map((item, i) => (
           <li
             key={i}
             className={`visible_list menu-active border-0 inline-block m-0 p-0 text-left list-none max-[768px]:border-b max-[768px]:border-[#242424]  max-[768px]:float-none ${
-              item.id == 1 ? "home-menu-parent" : ""
-            } `}
+              item.id === 1 ? "home-menu-parent" : ""
+            }`}
           >
             {item.children ? (
-              <a
-                className={`cursor-pointer border-0  m-0 !py-[18px] relative capitalize text-[#222] font-medium rounded-[60px] text-center 2xl-b: max-[1199px]:px-[8px] max-[1399px]:px-[11px] before:content-none before:h-[2px] before:absolute before:-top-[7px] before:w-0 before:transition-all before:duration-500 before:ease-linear !flex justify-center items-center hover:text-[#5BBB7B]`}
-              >
+              <a className="cursor-pointer border-0 m-0 !py-[18px] relative capitalize text-[#222] font-medium rounded-[60px] text-center 2xl-b: max-[1199px]:px-[8px] max-[1399px]:px-[11px] before:content-none before:h-[2px] before:absolute before:-top-[7px] before:w-0 before:transition-all before:duration-500 before:ease-linear !flex justify-center items-center hover:text-[#5BBB7B]">
                 <span className="title">{item.name}</span>{" "}
                 {item.children && <IoIosArrowDown />}
               </a>
             ) : (
               <Link
                 to={item.path}
-                className={`list-item cursor-pointer border-0  m-0 !py-[18px] relative capitalize text-[#222] font-medium rounded-[60px] text-center 2xl-b: max-[1199px]:px-[8px] max-[1399px]:px-[11px] before:content-none before:h-[2px] before:absolute before:-top-[7px] before:w-0 before:transition-all before:duration-500 before:ease-linear`}
+                className="list-item cursor-pointer border-0 m-0 !py-[18px] relative capitalize text-[#222] font-medium rounded-[60px] text-center 2xl-b: max-[1199px]:px-[8px] max-[1399px]:px-[11px] before:content-none before:h-[2px] before:absolute before:-top-[7px] before:w-0 before:transition-all before:duration-500 before:ease-linear"
               >
                 <span className="title">{item.name}</span>
               </Link>
@@ -74,14 +88,14 @@ const Navigation = () => {
 
             {item.children && (
               <ul
-                className={`sub-menu  bg-white rounded-[12px] !shadow-na py-[15px] px-0 z-[9999] w-[260px] hidden list-none clear-both m-0 max-[768px]:static absolute  ${
-                  item.id == 1 ? "home-menu" : ""
-                } `}
+                className={`sub-menu bg-white rounded-[12px] !shadow-na py-[15px] px-0 z-[9999] w-[260px] hidden list-none clear-both m-0 max-[768px]:static absolute ${
+                  item.id === 1 ? "home-menu" : ""
+                }`}
               >
                 {item.children?.map((item2, i2) => (
                   <li
                     key={i2}
-                    className={`menu-active border-l-2 border-l-transparent py-1 px-[30px]  transition-all duration-500 ease-linear relative list-none hover:bg-[#F0EFEC] hover:border-l-[#5BBB7B] cursor-pointer`}
+                    className="menu-active border-l-2 border-l-transparent py-1 px-[30px] transition-all duration-500 ease-linear relative list-none hover:bg-[#F0EFEC] hover:border-l-[#5BBB7B] cursor-pointer"
                   >
                     <Link to={item2.path}>
                       <span className="title">{item2.name}</span>
@@ -95,6 +109,10 @@ const Navigation = () => {
       </ul>
     </>
   );
+};
+
+Navigation.propTypes = {
+  role: PropTypes.string,
 };
 
 export default Navigation;

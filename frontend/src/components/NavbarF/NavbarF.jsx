@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import Navigation from "./Navigation.jsx";
@@ -27,7 +27,10 @@ import { BiUserCircle } from "react-icons/bi";
 import { GoPeople } from "react-icons/go";
 import { BsBoxSeam } from "react-icons/bs";
 import { IoIosArrowDown } from "react-icons/io";
+import { AuthContext } from "../../context/AuthContext.jsx";
 function NavbarF() {
+  const { currentUser, updateUser } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const sticky = useStickyMenu(50);
   const [open, setOpen] = useState(false);
@@ -72,23 +75,6 @@ function NavbarF() {
       time: "23 min",
     },
   ]);
-  const [currentUser, setCurrentUser] = useState(() => {
-    return JSON.parse(localStorage.getItem("currentUser"));
-  });
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setCurrentUser(JSON.parse(localStorage.getItem("currentUser")));
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("currentUserUpdated", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("currentUserUpdated", handleStorageChange);
-    };
-  }, []);
 
   const [searchFilterOpen, setSearchFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("Talent");
@@ -101,8 +87,9 @@ function NavbarF() {
   const handleLogout = async () => {
     try {
       await newRequest.post("/auth/logout");
-      localStorage.setItem("currentUser", null);
-      setCurrentUser(null); // Update state to reflect logout
+      //localStorage.setItem("currentUser", null);
+      //setCurrentUser(null); // Update state to reflect logout
+      updateUser(null);
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -123,11 +110,11 @@ function NavbarF() {
     };
   }, []);
 
-  const handleLinkClick = () => {
+  /*  const handleLinkClick = () => {
     setOpenDropdown(null);
     setOpen(false);
   };
-
+*/
   return (
     <>
       <header
@@ -143,7 +130,10 @@ function NavbarF() {
                   <Link
                     className="header-logo logo1 outline-none 2xl-b:pr-[30px] border-r border-[#E9E9E9] cursor-pointer text-[#222] !pr-[8px] flex justify-between items-center"
                     to={
-                      !currentUser.isSeller ? "/homeclient" : "/homefreelancer"
+                      currentUser &&
+                      (!currentUser.isSeller
+                        ? "/homeclient"
+                        : "/homefreelancer")
                     }
                   >
                     {/* <img
@@ -158,9 +148,13 @@ function NavbarF() {
                       </span>
                     </span>
                   </Link>
-                  <div className="home1_style ml-4">
-                    <Navigation />
-                  </div>
+                  {currentUser && (
+                    <div className="home1_style ml-4">
+                      <Navigation
+                        role={currentUser?.isSeller ? "seller" : "client"}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className=" w-auto  max-w-full flex-initial !flex-shrink-0 px-3 mt-0 ">
@@ -344,7 +338,9 @@ function NavbarF() {
                               />
                               <span
                                 className={`absolute top-[0px] left-[1px] w-[11px] h-[11px] rounded-full border-[2.5px] !border-white ${
-                                  isOnline ? "bg-green-500" : "bg-red-500"
+                                  currentUser.isOnline
+                                    ? "bg-green-500"
+                                    : "bg-red-500"
                                 }`}
                               ></span>
                             </div>
@@ -441,7 +437,7 @@ function NavbarF() {
           </div>
         </nav>
       </header>
-      <MobileNavigation />
+      {/* <MobileNavigation /> */}
     </>
   );
 }
