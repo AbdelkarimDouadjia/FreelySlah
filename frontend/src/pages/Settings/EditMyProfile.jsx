@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
 import { MdKeyboardArrowRight } from "react-icons/md";
@@ -10,7 +10,7 @@ import { Tooltip } from "react-tooltip";
 import { IoLink } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiImageOn } from "react-icons/ci";
 import CircularProgress from "../Create Service/steps/CircularProgress.jsx";
 import upload from "../../utils/upload.js";
@@ -18,8 +18,14 @@ import styles from "../Create Service/CreateService.module.css";
 
 import { product } from "../../components/section/product";
 import PopularServiceCard from "../../components/section/PopularServiceCard.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
+import newRequest from "../../utils/newRequest.js";
 
 const EditMyProfile = () => {
+  const { currentUser, updateUser } = useContext(AuthContext);
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("Overview");
 
   // Generate an array of years from 1950 to current year
@@ -253,24 +259,79 @@ const EditMyProfile = () => {
   };
 
   // Manage Skills
-  const [skills, setSkills] = useState(["Framer", "CSS", "PHP", "Web Design"]);
+  const [skills, setSkills] = useState([]);
   const [showEditSkillsModal, setShowEditSkillsModal] = useState(false);
   const [newSkill, setNewSkill] = useState("");
 
-  const handleAddSkill = () => {
-    if (newSkill.trim()) {
-      setSkills([...skills, newSkill.trim()]);
-      setNewSkill("");
-      toast.success("Skill added successfully");
+
+  useEffect(() => {
+    if (
+      currentUser &&
+      currentUser.userProfile &&
+      currentUser.userProfile.length > 0
+    ) {
+      const userSkills = currentUser.userProfile[0].userSkills.map(
+        (skillObj) => skillObj.skill
+      );
+      setSkills(userSkills);
     }
-    setShowEditSkillsModal(false);
-  };
+  }, [currentUser]);
 
-  const handleDeleteSkill = (skillToDelete) => {
-    setSkills(skills.filter((skill) => skill !== skillToDelete));
-    toast.success("Skill deleted successfully");
-  };
+  const handleAddSkill = async (e) => {
+    e.preventDefault();
+    if (newSkill.trim()) {
+      const updatedSkills = [...skills, newSkill.trim()];
 
+      try {
+        const userUpdated = {
+          ...currentUser,
+          userProfile: [
+            {
+              ...currentUser.userProfile[0],
+              userSkills: updatedSkills.map((skill) => ({ skill })),
+            },
+          ],
+        };
+
+        const res = await newRequest.put(`/users/${currentUser._id}`, userUpdated);
+        updateUser(res.data);
+
+        setSkills(updatedSkills);
+        setNewSkill("");
+        setShowEditSkillsModal(false);
+        toast.success("Skill added successfully");
+      } catch (err) {
+        console.log(err);
+        setError(err.response?.data?.message);
+        toast.error(error);
+      }
+    }
+  };
+  const handleDeleteSkill = async (skillToDelete) => {
+    const updatedSkills = skills.filter((skill) => skill !== skillToDelete);
+
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userSkills: updatedSkills.map((skill) => ({ skill })),
+          },
+        ],
+      };
+
+      const res = await newRequest.put(`/users/${currentUser._id}`, userUpdated);
+      updateUser(res.data);
+
+      setSkills(updatedSkills);
+      toast.success("Skill deleted successfully");
+    } catch (err) {
+      console.log(err);
+      setError(err.response?.data?.message);
+      toast.error(error);
+    }
+  };
   //Work & Experience
   const [showAddWorkModal, setShowAddWorkModal] = useState(false);
   const [showEditWorkModal, setShowEditWorkModal] = useState(false);
@@ -510,10 +571,24 @@ const EditMyProfile = () => {
     useState(occupationTitle);
 
   // Function to handle occupation title update
-  const handleEditOccupationTitle = () => {
-    setOccupationTitle(tempOccupationTitle);
-    toast.success("Occupation title updated successfully");
-    setShowEditOccupationTitleModal(false);
+  const handleEditOccupationTitle = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const { userOccupation } = Object.fromEntries(formData);
+
+    try {
+      const res = await newRequest.put(`/users/${currentUser._id}`, {
+        userOccupation,
+      });
+      updateUser(res.data);
+      setShowEditOccupationTitleModal(false);
+      navigate("/editmyprofile");
+      toast.success("Occupation title updated successfully");
+    } catch (err) {
+      console.log(err);
+      setError(err.response.data.message);
+      toast.error(error);
+    }
   };
 
   // budget section
@@ -541,16 +616,26 @@ const EditMyProfile = () => {
   //profile description
   const [showEditProfileDescriptionModal, setShowEditProfileDescriptionModal] =
     useState(false);
-  const [profileDescription, setProfileDescription] = useState(
-    "But no matter how capable you are or how much qualified you are, you will not get a job if you fail to convince your potential client with your profile overview. That is why here we are going to provide you with two different sample profile overviews on web developer jobs so that you can learn and write your own fascinating profile overview."
-  );
-  const [tempProfileDescription, setTempProfileDescription] =
-    useState(profileDescription);
 
-  const handleEditProfileDescription = () => {
-    setProfileDescription(tempProfileDescription);
-    toast.success("Profile description updated successfully");
-    setShowEditProfileDescriptionModal(false);
+  const handleEditProfileDescription = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const { desc } = Object.fromEntries(formData);
+
+    try {
+      const res = await newRequest.put(`/users/${currentUser._id}`, {
+        desc,
+      });
+      updateUser(res.data);
+      setShowEditProfileDescriptionModal(false);
+      navigate("/editmyprofile");
+      toast.success("Profile description updated successfully");
+    } catch (err) {
+      console.log(err);
+      setError(err.response.data.message);
+      toast.error(error);
+    }
   };
 
   // Hours per week section
@@ -574,7 +659,7 @@ const EditMyProfile = () => {
   const [uploading, setUploading] = useState(false);
 
   // Online/offline status state
-  const [isOnline, setIsOnline] = useState(true);
+  const [isOnline, setIsOnline] = useState(currentUser.isOnline);
 
   const handleImageUploadProfile = async (e) => {
     const file = e.target.files[0];
@@ -589,21 +674,25 @@ const EditMyProfile = () => {
     }
   };
 
-  const handleSaveProfileImage = async () => {
-    if (!newProfileImage) {
-      toast.error("Please select an image to upload.");
-      return;
-    }
+  const handleSaveProfileImage = async (e) => {
+    e.preventDefault();
 
     try {
       setUploading(true);
       const imageUrl = await upload(newProfileImage);
-      setProfileImage(imageUrl);
+      const res = await newRequest.put(`/users/${currentUser._id}`, {
+        isOnline,
+        img: imageUrl,
+      });
+      updateUser(res.data);
       setShowEditProfileModal(false);
       setNewProfileImage(null);
-      toast.success("Profile image updated successfully!");
-    } catch (error) {
-      console.error("Error uploading image:", error);
+      navigate("/editmyprofile");
+      toast.success("updated profile successfully");
+    } catch (err) {
+      console.log("Error uploading image:", err);
+      setError(err.response.data.message);
+      toast.error(error);
       toast.error("Error uploading image. Please try again.");
     } finally {
       setUploading(false);
@@ -622,13 +711,13 @@ const EditMyProfile = () => {
                     <input
                       type="text"
                       className="flex-1 z-10 w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-green-500 border-none outline-none text-xl font-medium overflow-ellipsis whitespace-nowrap"
-                      value={occupationTitle}
+                      defaultValue={currentUser.userOccupation}
+                      value={currentUser.userOccupation}
                       readOnly
                     />
                   </h3>
                   <button
                     onClick={() => {
-                      setTempOccupationTitle(occupationTitle);
                       setShowEditOccupationTitleModal(true);
                     }}
                     className="text-[#0E9F6E] flex items-center justify-center border rounded-[50%] border-[#E6E6E6] text-lg p-[5px] hover:bg-[#F9F9F9] mr-2"
@@ -652,10 +741,9 @@ const EditMyProfile = () => {
                 </div>
               </div>
               <div className="flex items-start flex-wrap mb-4">
-                <p className="text-gray-600 flex-1">{profileDescription}</p>
+                <p className="text-gray-600 flex-1">{currentUser.desc}</p>
                 <button
                   onClick={() => {
-                    setTempProfileDescription(profileDescription);
                     setShowEditProfileDescriptionModal(true);
                   }}
                   className="mx-2 text-[#0E9F6E] flex items-center justify-center border rounded-[50%] border-[#E6E6E6] text-lg p-[5px] hover:bg-[#F9F9F9] mr-2"
@@ -965,13 +1053,13 @@ const EditMyProfile = () => {
             <div className="flex items-center">
               <div className="relative">
                 <img
-                  src={profileImage}
+                  src={currentUser.img || "/src/assets/images/avatar/Image.jpg"}
                   alt="Profile"
                   className="w-28 h-28 rounded-full mr-4"
                 />
                 <span
                   className={`absolute top-[8px] left-[8px] w-4 h-4 rounded-full border-[3px] !border-white ${
-                    isOnline ? "bg-green-500" : "bg-red-500"
+                    currentUser.isOnline ? "bg-green-500" : "bg-red-500"
                   }`}
                 ></span>
                 <button
@@ -982,10 +1070,16 @@ const EditMyProfile = () => {
                 </button>
               </div>
               <div>
-                <h2 className="text-4xl font-semibold mb-4">Abdelkarim D.</h2>
+                <h2 className="text-4xl font-semibold mb-4">
+                  {currentUser.fname} {currentUser.lname[0]}.
+                </h2>
                 <div className="text-gray-600 flex items-center">
                   <i className="fas fa-map-marker-alt mr-2"></i>
-                  <span>Ain Defla, Algeria – 4:42 pm local time</span>
+                  <span>
+                    {currentUser.state} {currentUser.country} – 4:42 pm local
+                    time
+                  </span>
+                  {/* <span>Ain Defla, Algeria – 4:42 pm local time</span> */}
                 </div>
               </div>
             </div>
@@ -1638,10 +1732,13 @@ const EditMyProfile = () => {
         </div>
       )}
 
-      {/* Edit Skills Modal */}
+      {/* Edit Skills Modal Done */}
       {showEditSkillsModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50 ">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
+          <form
+            onSubmit={handleAddSkill}
+            className="bg-white rounded-xl shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]"
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-3xl font-semibold">Add Skill</h3>
               <button
@@ -1657,6 +1754,8 @@ const EditMyProfile = () => {
                   type="text"
                   className="block p-2 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
                    focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3] text-gray-600"
+                  //defaultValue={skills}
+                  name="userSkills"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                 />
@@ -1671,13 +1770,13 @@ const EditMyProfile = () => {
                 Cancel
               </button>
               <button
-                onClick={handleAddSkill}
-                className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
+                type="submit"
+                className="px-5 py-2 !bg-[#0E9F6E] !text-white rounded-3xl hover:!bg-[#046c4e]"
               >
                 Add
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
 
@@ -2130,10 +2229,13 @@ const EditMyProfile = () => {
         </div>
       )}
 
-      {/* Edit Occupation Title Modal */}
+      {/* Edit Occupation Title Modal Done */}
       {showEditOccupationTitleModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
+          <form
+            onSubmit={handleEditOccupationTitle}
+            className="bg-white rounded-xl shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]"
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-3xl font-semibold">Edit Occupation Title</h3>
               <button
@@ -2152,8 +2254,8 @@ const EditMyProfile = () => {
                   type="text"
                   className="block p-4 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
                   focus-within:outline-none focus-within:border placeholder:text-sm placeholder:text-[#BEB5C3] text-gray-600"
-                  value={tempOccupationTitle}
-                  onChange={(e) => setTempOccupationTitle(e.target.value)}
+                  name="userOccupation"
+                  defaultValue={currentUser.userOccupation}
                 />
               </div>
             </div>
@@ -2166,13 +2268,13 @@ const EditMyProfile = () => {
                 Cancel
               </button>
               <button
-                onClick={handleEditOccupationTitle}
-                className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
+                type="submit"
+                className="px-5 py-2 !bg-[#0E9F6E] !text-white rounded-3xl hover:!bg-[#046c4e]"
               >
                 Save
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
 
@@ -2241,7 +2343,10 @@ const EditMyProfile = () => {
       {/* Edit Profile Description Modal */}
       {showEditProfileDescriptionModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
+          <form
+            onSubmit={handleEditProfileDescription}
+            className="bg-white rounded-xl shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]"
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-3xl font-semibold">
                 Edit Profile Description
@@ -2259,8 +2364,8 @@ const EditMyProfile = () => {
                   className="block p-2 input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
                      focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3] text-gray-600 w-full h-24 hover:border-[#DEBE1A]
                     focus:border-[#DEBE1A] border-[1px] border-[#E6E6E6]"
-                  value={tempProfileDescription}
-                  onChange={(e) => setTempProfileDescription(e.target.value)}
+                  name="desc"
+                  defaultValue={currentUser.desc}
                 />
               </div>
             </div>
@@ -2272,13 +2377,13 @@ const EditMyProfile = () => {
                 Cancel
               </button>
               <button
-                onClick={handleEditProfileDescription}
-                className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
+                type="submit"
+                className="px-5 py-2 !bg-[#0E9F6E] !text-white rounded-3xl hover:!bg-[#046c4e]"
               >
                 Save
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
 
@@ -2375,10 +2480,13 @@ const EditMyProfile = () => {
         </div>
       )}
 
-      {/* Edit Profile Image Modal */}
+      {/* Edit Profile Image Modal Done */}
       {showEditProfileModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
+          <form
+            onSubmit={handleSaveProfileImage}
+            className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]"
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-3xl font-semibold">Edit Profile Image</h3>
               <button
@@ -2425,6 +2533,8 @@ const EditMyProfile = () => {
                     type="checkbox"
                     checked={isOnline}
                     onChange={() => setIsOnline(!isOnline)}
+                    name="isOnline"
+                    defaultValue={isOnline}
                   />
                   <span className="slider round"></span>
                 </label>
@@ -2437,15 +2547,15 @@ const EditMyProfile = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={handleSaveProfileImage}
-                  className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
+                  className="px-5 py-2 !bg-[#0E9F6E] !text-white rounded-3xl hover:!bg-[#046c4e]"
+                  type="submit"
                   disabled={uploading}
                 >
                   Save
                 </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       )}
       <ToastContainer />

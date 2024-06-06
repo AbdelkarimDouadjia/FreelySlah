@@ -5,9 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import newRequest from "../../utils/newRequest";
+import { AuthContext } from "../../context/AuthContext";
 
 const FormFinish = () => {
-  const userInfo = JSON.parse(localStorage.getItem("currentUser"));
+  const { currentUser, updateUser } = useContext(AuthContext);
+  const userInfo = currentUser;
+
   const navigate = useNavigate();
 
   // If the user is not found in the local storage, redirect to the login page
@@ -22,19 +25,7 @@ const FormFinish = () => {
   const updateContext = myContext.userDetails;
 
   const name = updateContext.userName;
-  console.log(updateContext);
 
-  let res = updateContext;
-
-  useEffect(() => {
-    // Update currentUser in localStorage when userName is updated
-    if (res && res.data) {
-      const updatedUserInfo = { ...userInfo, ...res.data };
-      localStorage.setItem("currentUser", JSON.stringify(updatedUserInfo));
-    }
-  }, [res, userInfo]);
-
-  // Set the userProfile variable to the user profile
   const userProfile =
     [
       {
@@ -64,26 +55,12 @@ const FormFinish = () => {
       },
     ] || [];
 
-  console.log(userProfile);
-
-
-  const updateCurrentUser = (res) => {
-    const updatedUserInfo = { ...userInfo, ...res };
-    localStorage.setItem("currentUser", JSON.stringify(updatedUserInfo));
-
-    // Emit a custom event to notify other components of the update
-    const event = new CustomEvent("currentUserUpdated", {
-      detail: updatedUserInfo,
-    });
-    window.dispatchEvent(event);
-  };
-
-  // In your finish function, make sure to call updateCurrentUser with the response data
-  const finish = async () => {
+  const finish = async (e) => {
+    e.preventDefault();
     try {
       const storeImg = await updateContext.storeImg;
       const img = await updateContext.userImg;
-      res = await newRequest.post("/stepper/welcome", {
+      const dataFinal = {
         _id: `${userInfo._id}`,
         username: `${updateContext.userName}`,
         displayName: `${updateContext.userDisplayName}`,
@@ -109,8 +86,14 @@ const FormFinish = () => {
           storeDesc: `${updateContext.userStoreDescription}`,
         },
         ...(img === null ? { img: `${userInfo.img}` } : { img: `${img}` }),
-      });
-      updateCurrentUser(res.data);
+      };
+      updateUser({ ...currentUser, ...dataFinal });
+
+      await newRequest.post("/stepper/welcome", dataFinal);
+      currentUser.isSeller
+        ? navigate("/homefreelancer")
+        : navigate("/homeclient");
+
       toast.success("welcome", { position: "top-right" });
     } catch (err) {
       setError(err.response.data);
@@ -121,7 +104,7 @@ const FormFinish = () => {
   return (
     <>
       <div className="scroll flex flex-col items-center justify-center gap-3 bg-[#F9F9F9] min-h-[84vh]">
-        <form className="px-4 md-b:max-w-[700px] text-center" onSubmit={finish}>
+        <form onSubmit={finish} className="px-4 md-b:max-w-[700px] text-center">
           <div className="w-full flex items-center justify-center my-5 overflow-hidden ">
             <img
               className="done mx-auto w-40 h-40 z-20"
@@ -142,10 +125,7 @@ const FormFinish = () => {
             start using the FreelySlah ✨
           </h4>
 
-          <button
-            className="border mt-8 w-fit font-bold px-7 py-[5px] text-lg   border-[#1DBF73] !bg-[#0E9F6E]  hover:!bg-[#046c4e] text-white rounded-md   "
-            type="submit"
-          >
+          <button className="border mt-8 w-fit font-bold px-7 py-[5px] text-lg   border-[#1DBF73] !bg-[#0E9F6E]  hover:!bg-[#046c4e] text-white rounded-md   ">
             Finish
           </button>
           {/* Handle notifications */}

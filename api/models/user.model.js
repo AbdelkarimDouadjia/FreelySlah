@@ -8,6 +8,10 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
+    isOnline: {
+      type: Boolean,
+      default: false,
+    },
     displayName: {
       type: String,
       required: false,

@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { MdOutlineEdit } from "react-icons/md";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { State, City, Country } from "country-state-city";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { AuthContext } from "../../../context/AuthContext";
+import newRequest from "../../../utils/newRequest";
+import { useNavigate } from "react-router-dom";
 
 const ContactInfo = () => {
+  const { currentUser, updateUser } = useContext(AuthContext);
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
   const [isAccountEditing, setIsEditingAccount] = useState(false);
   const [isLocationEditing, setIsEditingLocation] = useState(false);
   const [isPersonalEditing, setIsEditingPersonal] = useState(false); // Added state for Personal Details editing
@@ -24,7 +34,7 @@ const ContactInfo = () => {
   const [countriesData, setCountriesData] = useState([]);
 
   // Temporary state for editing
-  const [tempCountry, setTempCountry] = useState("");
+  const [tempCountry, setTempCountry] = useState(currentUser.country);
   const [tempState, setTempState] = useState("");
   const [tempCity, setTempCity] = useState("");
   const [tempZipCode, setTempZipCode] = useState("");
@@ -70,9 +80,6 @@ const ContactInfo = () => {
     setTempCountry(country);
     setTempState(state);
     setTempCity(city);
-    setTempZipCode(zipCode);
-    setTempAddress(address);
-    setTempPhone(phone);
     setIsEditingLocation(true);
   };
 
@@ -90,10 +97,10 @@ const ContactInfo = () => {
     setIsEditingLocation(false);
   };
 
-  const handleUpdateAccountClick = () => {
+  /*const handleUpdateAccountClick = () => {
     setDisplayName(tempDisplayName); // Update display name
     setIsEditingAccount(false);
-  };
+  };*/
 
   const handleEditPersonalClick = () => {
     setTempDateOfBirth(dateOfBirth);
@@ -105,13 +112,75 @@ const ContactInfo = () => {
   const handleCancelPersonalClick = () => {
     setIsEditingPersonal(false);
   };
-
+  /*
   const handleUpdatePersonalClick = () => {
     setDateOfBirth(tempDateOfBirth);
     setGender(tempGender);
     setOccupation(tempOccupation);
     setIsEditingPersonal(false);
   };
+  */
+
+  const handleAccountSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const { displayName, email, fname, lname } = Object.fromEntries(formData);
+    console.log(displayName, email, fname, lname);
+    try {
+      const res = await newRequest.put(`/users/${currentUser._id}`, {
+        displayName,
+        fname,
+        lname,
+        email,
+      });
+      updateUser(res.data);
+      setIsEditingAccount(false);
+      navigate("/settings/contact-info");
+      toast.success("Information updated successfully!");
+    } catch (err) {
+      console.log(err);
+      setError(err.response.data.message);
+    }
+  };
+
+  const handlePersonalSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const { dob, gender, userOccupation } = Object.fromEntries(formData);
+    console.log(dob, gender, userOccupation);
+    try {
+      const res = await newRequest.put(`/users/${currentUser._id}`, {
+        dob,
+        userOccupation,
+        gender,
+      });
+      updateUser(res.data);
+      setIsEditingPersonal(false);
+      navigate("/settings/contact-info");
+      toast.success("Information updated successfully!");
+    } catch (err) {
+      console.log(err);
+      setError(err.response.data.message);
+    }
+  };
+
+const handleDeleteAccount = async () => {
+  const isConfirmed = window.confirm(
+    "Are you sure you want to delete your account?"
+  );
+  if (!isConfirmed) {
+    return;
+  }
+
+  try {
+    await newRequest.delete(`/users/${currentUser._id}`);
+    updateUser(null);
+    navigate("/login");
+  } catch (err) {
+    console.log(err);
+    setError(err.response.data.message);
+  }
+};
 
   return (
     <div className="p-4">
@@ -136,7 +205,7 @@ const ContactInfo = () => {
         </div>
 
         {isAccountEditing ? (
-          <div className="bg-white">
+          <form onSubmit={handleAccountSubmit} className="bg-white">
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
@@ -148,8 +217,8 @@ const ContactInfo = () => {
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="display-name"
                 type="text"
-                value={tempDisplayName}
-                onChange={(e) => setTempDisplayName(e.target.value)}
+                name="displayName"
+                defaultValue={currentUser.displayName}
               />
             </div>
             <div className="mb-4">
@@ -163,7 +232,8 @@ const ContactInfo = () => {
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="first-name"
                 type="text"
-                value="Abdelkarim"
+                name="fname"
+                defaultValue={currentUser.fname}
               />
             </div>
             <div className="mb-4">
@@ -176,8 +246,9 @@ const ContactInfo = () => {
               <input
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="last-name"
+                name="lname"
                 type="text"
-                value="Douadjia"
+                defaultValue={currentUser.lname}
               />
             </div>
             <div className="mb-4">
@@ -191,14 +262,14 @@ const ContactInfo = () => {
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="email"
                 type="email"
-                value="abdelkarim.douadjia@gmail.com"
+                name="email"
+                defaultValue={currentUser.email}
               />
             </div>
             <div className="flex items-center mt-7">
               <button
                 className="px-5 py-2 !bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e] mr-5"
-                type="button"
-                onClick={handleUpdateAccountClick}
+                type="submit"
               >
                 Update
               </button>
@@ -210,34 +281,39 @@ const ContactInfo = () => {
                 Cancel
               </button>
             </div>
-          </div>
+          </form>
         ) : (
           <div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">User ID:</p>
               <p className="text-lg font-medium text-gray-800">
-                karim_douadjia
+                {currentUser.username}
               </p>
             </div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">
                 Display Name:
               </p>
-              <p className="text-lg font-medium text-gray-800">{displayName}</p>
+              <p className="text-lg font-medium text-gray-800">
+                {currentUser.displayName}
+              </p>
             </div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">Name:</p>
               <p className="text-lg font-medium text-gray-800">
-                Abdelkarim Douadjia
+                {currentUser.fname} {currentUser.lname}
               </p>
             </div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">Email:</p>
               <p className="text-lg font-medium text-gray-800">
-                a*****a@gmail.com
+                {currentUser.email}
               </p>
             </div>
-            <button className="text-red-700 font-medium text-lg tracking-tighter">
+            <button
+              className="text-red-700 font-medium text-lg tracking-tighter"
+              onClick={handleDeleteAccount}
+            >
               Close my account
             </button>
           </div>
@@ -263,7 +339,7 @@ const ContactInfo = () => {
         </div>
 
         {isPersonalEditing ? (
-          <div className="bg-white">
+          <form onSubmit={handlePersonalSubmit} className="bg-white">
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
@@ -275,8 +351,8 @@ const ContactInfo = () => {
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="date-of-birth"
                 type="date"
-                value={tempDateOfBirth}
-                onChange={(e) => setTempDateOfBirth(e.target.value)}
+                name="dob"
+                defaultValue={currentUser.dob}
               />
             </div>
             <div className="mb-4">
@@ -289,8 +365,8 @@ const ContactInfo = () => {
               <select
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="gender"
-                value={tempGender}
-                onChange={(e) => setTempGender(e.target.value)}
+                defaultValue={currentUser.gender}
+                name="gender"
               >
                 <option value="">Select a gender</option>
                 <option value="Male">Male</option>
@@ -308,15 +384,14 @@ const ContactInfo = () => {
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="occupation"
                 type="text"
-                value={tempOccupation}
-                onChange={(e) => setTempOccupation(e.target.value)}
+                name="userOccupation"
+                defaultValue={currentUser.userOccupation}
               />
             </div>
             <div className="flex items-center mt-7">
               <button
                 className="px-5 py-2 !bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e] mr-5"
-                type="button"
-                onClick={handleUpdatePersonalClick}
+                type="submit"
               >
                 Update
               </button>
@@ -328,24 +403,30 @@ const ContactInfo = () => {
                 Cancel
               </button>
             </div>
-          </div>
+          </form>
         ) : (
           <div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">
                 Date of Birth:
               </p>
-              <p className="text-lg font-medium text-gray-800">{dateOfBirth}</p>
+              <p className="text-lg font-medium text-gray-800">
+                {currentUser.dob}
+              </p>
             </div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">Gender:</p>
-              <p className="text-lg font-medium text-gray-800">{gender}</p>
+              <p className="text-lg font-medium text-gray-800">
+                {currentUser.gender}
+              </p>
             </div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">
                 Occupation:
               </p>
-              <p className="text-lg font-medium text-gray-800">{occupation}</p>
+              <p className="text-lg font-medium text-gray-800">
+                {currentUser.userOccupation}
+              </p>
             </div>
           </div>
         )}
@@ -410,6 +491,7 @@ const ContactInfo = () => {
                 id="country"
                 value={tempCountry}
                 onChange={(e) => setTempCountry(e.target.value)}
+                defaultValue={currentUser.country}
               >
                 <option value="">Select Country</option>
                 {countriesData.map((country) => (
@@ -451,9 +533,10 @@ const ContactInfo = () => {
               <select
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="city"
-                value={tempCity}
+                //value={tempCity}
                 onChange={(e) => setTempCity(e.target.value)}
                 disabled={!tempState}
+                defaultValue={currentUser.country}
               >
                 <option value="">Select City</option>
                 {citiesData.map((city) => (
@@ -534,19 +617,19 @@ const ContactInfo = () => {
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">Country:</p>
               <p className="text-lg font-medium text-gray-800">
-                {country || "N/A"}
+                {currentUser.country || "N/A"}
               </p>
             </div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">State:</p>
               <p className="text-lg font-medium text-gray-800">
-                {state || "N/A"}
+                {currentUser.state || "N/A"}
               </p>
             </div>
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">City:</p>
               <p className="text-lg font-medium text-gray-800">
-                {city || "N/A"}
+                {currentUser.city || "N/A"}
               </p>
             </div>
             <div className="flex items-center mb-5">
@@ -560,12 +643,13 @@ const ContactInfo = () => {
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">Phone:</p>
               <p className="text-lg font-medium text-gray-800">
-                {phone || "N/A"}
+                {currentUser.phone || "N/A"}
               </p>
             </div>
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
