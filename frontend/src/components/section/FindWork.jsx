@@ -17,7 +17,7 @@ export default function FindWork() {
                 height={176}
                 style={{ height: "fit-content !important" }}
                 className="mb-[30px] text-transparent align-middle mx-auto"
-                src="/src/assets/images/about/home20-vector-1.png"
+                src="https://freeio-app-nextjs.vercel.app/_next/image?url=%2Fimages%2Fabout%2Fhome20-vector-1.png&w=384&q=75"
                 alt=" image "
               />
               <h2 className="mb-[30px] text-[20px] xs-b:text-[32px] font-bold text-[#222] leading-[1.3125] mt-0">
@@ -43,7 +43,7 @@ export default function FindWork() {
                 width={270}
                 height={180}
                 className="mb-[30px] text-transparent align-middle mx-auto"
-                src="/src/assets/images/about/home20-vector-2.png"
+                src="https://freeio-app-nextjs.vercel.app/_next/image?url=%2Fimages%2Fabout%2Fhome19-vector-4.png&w=384&q=75"
                 alt=" image "
               />
               <h2 className="mb-[30px] text-[20px] xs-b:text-[32px] font-bold text-[#222] leading-[1.3125] mt-0">

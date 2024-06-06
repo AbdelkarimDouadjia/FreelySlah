@@ -54,6 +54,8 @@ import Proposals from "../pages/Proposals/Proposals.jsx";
 import ProjectProgress from "../pages/ProjectProgress/ProjectProgress.jsx";
 import RequireAuth from "../layout/Layout.jsx";
 
+
+
 const Router = () => {
   const Layout = () => {
     return (
@@ -123,6 +125,7 @@ const Router = () => {
         { path: "/become-seller", element: <BecomeSeller /> },
         { path: "/proposals", element: <Proposals /> },
         { path: "/projectprogress", element: <ProjectProgress /> },
+
         
 
         {

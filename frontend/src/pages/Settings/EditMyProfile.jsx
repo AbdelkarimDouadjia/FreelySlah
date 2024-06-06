@@ -661,6 +661,8 @@ const EditMyProfile = () => {
   // Online/offline status state
   const [isOnline, setIsOnline] = useState(currentUser.isOnline);
 
+  
+
   const handleImageUploadProfile = async (e) => {
     const file = e.target.files[0];
     if (
@@ -1076,7 +1078,7 @@ const EditMyProfile = () => {
                 <div className="text-gray-600 flex items-center">
                   <i className="fas fa-map-marker-alt mr-2"></i>
                   <span>
-                    {currentUser.state} {currentUser.country} – 4:42 pm local
+                    {currentUser.state}, {currentUser.country} – 4:42 pm local
                     time
                   </span>
                   {/* <span>Ain Defla, Algeria – 4:42 pm local time</span> */}

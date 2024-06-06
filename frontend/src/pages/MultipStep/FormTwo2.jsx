@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import AppContext from "./Context";
 import "./styles.module.css";
-import { State, City } from "country-state-city";
+import { Country, State, City } from "country-state-city";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhoneInput from "react-phone-input-2";
@@ -11,7 +11,23 @@ const FormTwo2 = () => {
   const myContext = useContext(AppContext);
   const updateContext = myContext.userDetails;
   const userInfo = JSON.parse(localStorage.getItem("currentUser"));
-  const userCountry = userInfo.country;
+    const getCountryIsoCode = (countryName) => {
+      const countries = Country.getAllCountries();
+      const country = countries.find(
+        (c) => c.name.toLowerCase() === countryName.toLowerCase()
+      );
+      return country ? country.isoCode : "N/A";
+    };
+  const userCountry = getCountryIsoCode(userInfo.country);
+
+
+  // Function to get the state name from the state code and country ISO code
+  const getStateName = (stateCode, countryIsoCode) => {
+    const state = State.getStateByCodeAndCountry(stateCode, countryIsoCode);
+    return state ? state.name : "N/A";
+  };
+
+
 
   const [state, setState] = useState("");
   const [statesData, setStatesData] = useState([]);
@@ -53,7 +69,7 @@ const FormTwo2 = () => {
     } else if (!updateContext.userOccupation) {
       toast.error("Please enter your Occupation");
     } else {
-
+      updateContext.setState(getStateName(updateContext.state, userCountry));
       updateContext.setStep(updateContext.currentPage + 1);
     }
   };

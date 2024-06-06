@@ -34,7 +34,7 @@ function NavbarF() {
   const navigate = useNavigate();
   const sticky = useStickyMenu(50);
   const [open, setOpen] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
+  const [isOnline, setIsOnline] = useState(false);
 
   const [openDropdown, setOpenDropdown] = useState(null); // state to manage which dropdown is open
 
@@ -86,6 +86,9 @@ function NavbarF() {
 
   const handleLogout = async () => {
     try {
+      await newRequest.put(`/users/${currentUser._id}`, {
+        isOnline,
+      });
       await newRequest.post("/auth/logout");
       //localStorage.setItem("currentUser", null);
       //setCurrentUser(null); // Update state to reflect logout

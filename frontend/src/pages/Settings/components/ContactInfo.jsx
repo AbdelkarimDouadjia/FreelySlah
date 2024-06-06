@@ -33,13 +33,36 @@ const ContactInfo = () => {
   const [citiesData, setCitiesData] = useState([]);
   const [countriesData, setCountriesData] = useState([]);
 
+  // Function to get the country ISO code from the country name
+  const getCountryIsoCode = (countryName) => {
+    const countries = Country.getAllCountries();
+    const country = countries.find(
+      (c) => c.name.toLowerCase() === countryName.toLowerCase()
+    );
+    return country ? country.isoCode : "N/A";
+  };
+
+  // Function to get the state ISO code from the state name and country ISO code
+  const getStateIsoCode = (stateName, countryIsoCode) => {
+    const states = State.getAllStates();
+    const state = states.find(
+      (s) =>
+        s.name.toLowerCase() === stateName.toLowerCase() &&
+        s.countryCode === countryIsoCode
+    );
+    return state ? state.isoCode : "N/A";
+  };
+
   // Temporary state for editing
-  const [tempCountry, setTempCountry] = useState(currentUser.country);
+  const [tempCountry, setTempCountry] = useState(
+    getCountryIsoCode(currentUser.country)
+  );
+
   const [tempState, setTempState] = useState("");
   const [tempCity, setTempCity] = useState("");
   const [tempZipCode, setTempZipCode] = useState("");
   const [tempAddress, setTempAddress] = useState("");
-  const [tempPhone, setTempPhone] = useState("");
+  const [tempPhone, setTempPhone] = useState(currentUser.phone);
   const [tempDisplayName, setTempDisplayName] = useState(""); // Added temp state for display name
   const [tempDateOfBirth, setTempDateOfBirth] = useState(""); // Added temp state for Date of Birth
   const [tempGender, setTempGender] = useState(""); // Added temp state for Gender
@@ -67,6 +90,67 @@ const ContactInfo = () => {
     }
   }, [tempState, tempCountry]);
 
+  const handleEditLocationClick = () => {
+    setTempCountry(getCountryIsoCode(currentUser.country) || country);
+    setTempState(
+      getStateIsoCode(
+        currentUser.state,
+        getCountryIsoCode(currentUser.country)
+      ) || state
+    );
+    setTempCity(currentUser.city || city);
+    setIsEditingLocation(true);
+  };
+
+  const handleCancelLocationClick = () => {
+    setIsEditingLocation(false);
+  };
+
+  
+  // Function to get the country name from the ISO code
+  const getCountryName = (isoCode) => {
+    const country = Country.getCountryByCode(isoCode);
+    return country ? country.name : "N/A";
+  };
+
+  // Function to get the state name from the state code and country ISO code
+  const getStateName = (stateCode, countryIsoCode) => {
+    const state = State.getStateByCodeAndCountry(stateCode, countryIsoCode);
+    return state ? state.name : "N/A";
+  };
+
+
+  const handleUpdateLocationClick = async (e) => {
+    e.preventDefault();
+    console.log("hello");
+    setCountry(tempCountry);
+    setState(tempState);
+    setCity(tempCity);
+    setZipCode(tempZipCode);
+    setAddress(tempAddress);
+    setPhone(tempPhone);
+    console.log(tempCountry, tempState, tempCity, tempPhone);
+
+    try {
+      const res = await newRequest.put(`/users/${currentUser._id}`, {
+        country: getCountryName(tempCountry),
+        state: getStateName(tempState, tempCountry),
+        city: tempCity,
+        phone: tempPhone,
+      });
+      updateUser(res.data);
+      setIsEditingLocation(false);
+      navigate("/settings/contact-info");
+      toast.success("Location Info updated successfully");
+    } catch (err) {
+      console.log(err);
+      setError(err.response.data.message);
+      toast.error(error);
+    }
+  };
+
+
+  
   const handleEditAccountClick = () => {
     setTempDisplayName(displayName); // Set temp display name
     setIsEditingAccount(true);
@@ -75,28 +159,6 @@ const ContactInfo = () => {
   const handleCancelAccountClick = () => {
     setIsEditingAccount(false);
   };
-
-  const handleEditLocationClick = () => {
-    setTempCountry(country);
-    setTempState(state);
-    setTempCity(city);
-    setIsEditingLocation(true);
-  };
-
-  const handleCancelLocationClick = () => {
-    setIsEditingLocation(false);
-  };
-
-  const handleUpdateLocationClick = () => {
-    setCountry(tempCountry);
-    setState(tempState);
-    setCity(tempCity);
-    setZipCode(tempZipCode);
-    setAddress(tempAddress);
-    setPhone(tempPhone);
-    setIsEditingLocation(false);
-  };
-
   /*const handleUpdateAccountClick = () => {
     setDisplayName(tempDisplayName); // Update display name
     setIsEditingAccount(false);
@@ -164,23 +226,23 @@ const ContactInfo = () => {
     }
   };
 
-const handleDeleteAccount = async () => {
-  const isConfirmed = window.confirm(
-    "Are you sure you want to delete your account?"
-  );
-  if (!isConfirmed) {
-    return;
-  }
+  const handleDeleteAccount = async () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete your account?"
+    );
+    if (!isConfirmed) {
+      return;
+    }
 
-  try {
-    await newRequest.delete(`/users/${currentUser._id}`);
-    updateUser(null);
-    navigate("/login");
-  } catch (err) {
-    console.log(err);
-    setError(err.response.data.message);
-  }
-};
+    try {
+      await newRequest.delete(`/users/${currentUser._id}`);
+      updateUser(null);
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+      setError(err.response.data.message);
+    }
+  };
 
   return (
     <div className="p-4">
@@ -433,8 +495,11 @@ const handleDeleteAccount = async () => {
       </div>
 
       {/* Location Edit */}
-      <div className="bg-white shadow-sm border border-[#D9D9D9] rounded-2xl p-7 mb-7">
-        <div className="full flex justify-between items-center mb-4">
+      <form
+          onSubmit={handleUpdateLocationClick} className="bg-white shadow-sm border border-[#D9D9D9] rounded-2xl p-7 mb-7">
+        <div
+          className="full flex justify-between items-center mb-4"
+        >
           <h2 className="text-2xl font-medium tracking-tighter">Location</h2>
           <div className="flex items-center">
             {!isLocationEditing && (
@@ -491,7 +556,7 @@ const handleDeleteAccount = async () => {
                 id="country"
                 value={tempCountry}
                 onChange={(e) => setTempCountry(e.target.value)}
-                defaultValue={currentUser.country}
+                defaultValue={getCountryIsoCode(currentUser.country)}
               >
                 <option value="">Select Country</option>
                 {countriesData.map((country) => (
@@ -533,10 +598,9 @@ const handleDeleteAccount = async () => {
               <select
                 className="w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                 id="city"
-                //value={tempCity}
+                value={tempCity}
                 onChange={(e) => setTempCity(e.target.value)}
                 disabled={!tempState}
-                defaultValue={currentUser.country}
               >
                 <option value="">Select City</option>
                 {citiesData.map((city) => (
@@ -584,8 +648,7 @@ const handleDeleteAccount = async () => {
             <div className="flex items-center mt-7">
               <button
                 className="px-5 py-2 !bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e] mr-5"
-                type="button"
-                onClick={handleUpdateLocationClick}
+                type="submit"
               >
                 Update
               </button>
@@ -643,12 +706,12 @@ const handleDeleteAccount = async () => {
             <div className="flex items-center mb-5">
               <p className="text-lg font-medium text-gray-800 mr-7">Phone:</p>
               <p className="text-lg font-medium text-gray-800">
-                {currentUser.phone || "N/A"}
+                +{currentUser.phone || "N/A"}
               </p>
             </div>
           </div>
         )}
-      </div>
+      </form>
       <ToastContainer />
     </div>
   );

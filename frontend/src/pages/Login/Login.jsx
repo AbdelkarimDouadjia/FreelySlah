@@ -25,7 +25,6 @@ export const Login = () => {
       const res = await newRequest.post("/auth/login", {
         email,
         password,
-        isOnline: true,
       });
       //localStorage.setItem("currentUser", JSON.stringify(res.data));
       updateUser(res.data);
@@ -50,7 +49,7 @@ export const Login = () => {
         email,
         name: displayName,
         img: photoURL,
-        country: "DZ",
+        country: "Algeria",
         isOnline: true,
       });
       //localStorage.setItem("currentUser", JSON.stringify(res1.data));

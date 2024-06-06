@@ -23,6 +23,11 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
+  const getCountryName = (isoCode) => {
+    const country = Country.getCountryByCode(isoCode);
+    return country ? country.name : "N/A";
+  };
+
   //handle all notifications
 
   const handleChange = (e) => {
@@ -42,7 +47,7 @@ const Signup = () => {
         email: user1.email,
         name: user1.displayName,
         img: user1.photoURL,
-        country: "DZ",
+        country: "Algeria",
       });
       // navigate("/");
       // Show success notification
@@ -59,6 +64,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    user.country = getCountryName(user.country);
 
     try {
       await newRequest.post("/auth/register", {
