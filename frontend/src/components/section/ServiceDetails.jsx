@@ -26,7 +26,7 @@ import PropTypes from "prop-types";
 
 export default function ServiceDetails(props) {
   const isMatchedScreen = useScreen(1216);
- /* const [currentUser, setCurrentUser] = useState(() => {
+  /* const [currentUser, setCurrentUser] = useState(() => {
     return JSON.parse(localStorage.getItem("currentUser"));
   });
 
@@ -205,7 +205,7 @@ export default function ServiceDetails(props) {
                               scope="col"
                             >
                               <span className="max-[575.98px]:text-[20px] mt-0 mb-2 text-[32px] font-bold text-[#222] leading-[1.3125] ">
-                                290 DA{" "}
+                                $29{" "}
                                 <small className="font-normal text-[15px] text-[#697488] leading-[1.3125] ">
                                   / monthly
                                 </small>
@@ -228,7 +228,7 @@ export default function ServiceDetails(props) {
                               scope="col"
                             >
                               <span className="max-[575.98px]:text-[20px] mt-0 mb-2 text-[32px] font-bold text-[#222] leading-[1.3125] ">
-                                490 DA{" "}
+                                $49{" "}
                                 <small className="font-normal text-[15px] text-[#697488] leading-[1.3125] ">
                                   / monthly
                                 </small>
@@ -249,7 +249,7 @@ export default function ServiceDetails(props) {
                               scope="col"
                             >
                               <span className="max-[575.98px]:text-[20px] mt-0 mb-2 text-[32px] font-bold text-[#222] leading-[1.3125] ">
-                                890 DA{" "}
+                                $89{" "}
                                 <small className="font-normal text-[15px] text-[#697488] leading-[1.3125] ">
                                   / monthly
                                 </small>
@@ -350,13 +350,13 @@ export default function ServiceDetails(props) {
                               Total
                             </th>
                             <td className="px-2 py-[30px] font-normal border-b-0 bg-inherit">
-                              290 DA
+                              $29
                             </td>
                             <td className="px-2 py-[30px] font-normal border-b-0 bg-inherit">
-                              490 DA
+                              $49
                             </td>
                             <td className="px-2 py-[30px] font-normal border-b-0 bg-inherit">
-                              890 DA
+                              $89
                             </td>
                           </tr>
                           <tr className="bgc-thm3 border-t border-[#e9e9e9] ">

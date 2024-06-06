@@ -109,7 +109,7 @@ const TrendingService = () => {
               <div className="!mt-[20px] text-center">
                 <Link
                   className="ud-btn2 font-semibold text-[15px] relative text-center transition-all duration-300 ease-linear text-[#222] cursor-pointer hover:text-[#0e9f6e] flex items-center justify-center mt-[20px] py-2"
-                  href="/service-single"
+                  to="/findservice"
                 >
                   All Categories
                   <FaArrowRight className="ml-[10px] text-base font-light" />

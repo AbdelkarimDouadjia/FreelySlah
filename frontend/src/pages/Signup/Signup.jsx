@@ -100,18 +100,12 @@ const Signup = () => {
         <div className="flex items-center flex-row justify-between p-6 bg-[#fcfcfc]   w-full ">
           {/* Login Header */}
           <div>
-            <a
-              href="/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#333] font-semibold text-sm"
-            >
-              <span className=" -ml-1 text-[20px] font-bold !text-xl !text-[#022C22] playfair-display-regular relative">
-                <span className="playfair-display-regular">freely</span>{" "}
-                <span className="!text-base z-10 relative text-[#022C22] -ml-[2px] dancing-script-regular  bg-[#BEF264] w-full h-full">
-                  Slah
-                </span>
-              </span>
+            <a href="/home">
+              <img
+                src="/src/assets/images/home/Logo.PNG"
+                alt="FreelySlah"
+                className="max-w-[80px]"
+              />
             </a>
           </div>
           <div>

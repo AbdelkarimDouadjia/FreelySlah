@@ -4,7 +4,7 @@ import { FaArrowRight } from "react-icons/fa6";
 
 export default function FindWork() {
   return (
-    <section className="pb90 pb20-md pt-0 ">
+    <section className="pb90 pb20-md pt-0 mb-20 ">
       <div className="visible w-full px-3 mx-auto min-[576px]:max-w-[540px]  min-[768px]:max-w-[720px] min-[992px]:max-w-[960px] min-[1200px]:max-w-[1140px] min-[1400px]:max-w-[1320px]">
         <div
           className="visible flex flex-wrap -mx-3 mt-0 items-center"
@@ -21,16 +21,16 @@ export default function FindWork() {
                 alt=" image "
               />
               <h2 className="mb-[30px] text-[20px] xs-b:text-[32px] font-bold text-[#222] leading-[1.3125] mt-0">
-                Find great work
+                Find great product
               </h2>
               <p className="text mb-[30px] text-[#222] font-normal mt-0 mx-0 leading-[1.85]">
-                Work with the largest network of independent professionals and{" "}
+                Buy from the largest network of independent professionals and{" "}
                 <br className="hidden lg-b:block" /> get things done—from quick
                 turnaround.
               </p>
               <Link
                 className="ud-btn rounded-[60px] bg-[#222] border border-[#222] text-white hover:border-none transition-all duration-300 ease-linear flex justify-center items-center w-fit mx-auto"
-                href="/job-1"
+                to="/findproduct"
               >
                 Get Started
                 <FaArrowRight className="text-base font-light ml-[10px] -rotate-45" />
@@ -56,7 +56,7 @@ export default function FindWork() {
               </p>
               <Link
                 className="ud-btn rounded-[60px] bg-[#222] border border-[#222] text-white  hover:border-none transition-all duration-300 ease-linear flex justify-center items-center w-fit mx-auto"
-                href="/freelancer-1"
+                to="/findtalent"
               >
                 Get Started
                 <FaArrowRight className="text-base font-light ml-[10px] -rotate-45" />

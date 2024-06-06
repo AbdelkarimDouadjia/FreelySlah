@@ -79,7 +79,7 @@ function PopularServiceCard(props) {
               <p className="m-0 text-[#6b7177] leading-[1.85] font-normal text-[14px]">
                 Starting at
                 <span className="font-medium text-[14px] text-[#222] ml-1 ">
-                  {data.price}DA
+                  ${data.price}
                 </span>
               </p>
             </div>
