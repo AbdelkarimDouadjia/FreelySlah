@@ -33,8 +33,12 @@ export default function NeedSomething() {
                   />
                 </div>
                 <div className="details">
-                  <h4 className="mt-[10px] mb-4 text-[20px] text-[#222] leading-[1.3125] font-medium ">{elm.title}</h4>
-                  <p className="text-[#222] font-normal mx-0 mt-0 mb-[15px] leading-[1.85] ">{elm.description}</p>
+                  <h4 className="mt-[10px] mb-4 text-[20px] text-[#222] leading-[1.3125] font-medium ">
+                    {elm.title}
+                  </h4>
+                  <p className="text-[#222] font-normal mx-0 mt-0 mb-[15px] leading-[1.85] ">
+                    {elm.description}
+                  </p>
                 </div>
               </div>
             </div>

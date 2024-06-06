@@ -67,7 +67,7 @@ function ServiceDetailExtra() {
                   <span className="checkmark border border-[#041e42] rounded-[4px] absolute top-[10px] left-0 h-4 w-4 " />
                 </label>
                 <span className="price  text-[#222] text-[28px] font-semibold absolute min-[576px]:right-[30px] min-[576px]:top-[45px] max-[575.98px]:right-5 max-[575.98px]:top-[10px] ">
-                  {item.price}0 DA
+                  ${item.price}
                 </span>
               </button>
             ))}

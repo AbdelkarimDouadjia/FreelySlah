@@ -94,13 +94,12 @@ const Signup = () => {
         <div className="flex items-center flex-row justify-between p-6 bg-[#fcfcfc]   w-full ">
           {/* Login Header */}
           <div>
-            <a
-              href="https://getanchor.co/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#333] font-semibold text-sm"
-            >
-              FreelySlah
+            <a href="/home">
+              <img
+                src="/src/assets/images/home/Logo.PNG"
+                alt="FreelySlah"
+                className="max-w-[80px]"
+              />
             </a>
           </div>
           <div>

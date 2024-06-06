@@ -2,8 +2,8 @@ import React from "react";
 
 const AboutUs = () => {
   return (
-    <div className="bg-[#FCFCFC] py-24">
-      <div className="section flex flex-row ml-10">
+    <div className="bg-[#FCFCFC] ">
+      <div className="section flex flex-row ml-24">
         <div className="container px-4 md:px-0 py-20 flex flex-row">
           <div className="content-section w-full md:w-3/5">
             <div className="title">
@@ -16,19 +16,13 @@ const AboutUs = () => {
                 The most trusted cryptocurrency
               </h2>
               <p className="mt-4 text-base md:text-lg text-gray-600">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Mollitia eligendi rerum impedit quidem sequi optio, labore
-                recusandae alias quibusdam! Praesentium doloribus, optio
-                recusandae libero molestias veritatis aut a velit fugit
-                consequatur quod earum, nemo nesciunt? Lorem ipsum dolor sit
-                amet, consectetur adipisicing elit. Similique eius delectus
-                consectetur assumenda eaque labore perspiciatis, minus sunt
-                dolore, maxime fugiat itaque repellendus at id, deleniti ipsum
-                blanditiis dolorum et. Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Eos exercitationem tempora, expedita eveniet
-                accusantium ducimus repellat magnam recusandae consequatur,
-                culpa facilis voluptatibus optio! Laboriosam ullam facilis animi
-                magni omnis et.
+                We are FreelySlah, dedicated to revolutionizing the freelancing
+                and e-commerce landscape. Our platform combines the flexibility
+                of freelancing with a robust marketplace for selling products.
+                This project was the cornerstone of our thesis, a testament to
+                our innovation and hard work, culminating in our Bachelor's
+                degree. Our mission is to provide a secure and efficient
+                platform where freelancers and entrepreneurs can thrive.
               </p>
             </div>
             <div className="social mt-8">
@@ -73,15 +67,13 @@ const AboutUs = () => {
                 The most trusted cryptocurrency
               </h2>
               <p className="mt-4 text-base md:text-lg text-gray-600">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Mollitia eligendi rerum impedit quidem sequi optio, labore
-                recusandae alias quibusdam! Praesentium doloribus, optio
-                recusandae libero molestias veritatis aut a velit fugit
-                consequatur quod earum, nemo nesciunt? Lorem ipsum dolor sit
-                amet, consectetur adipisicing elit. Similique eius delectus
-                consectetur assumenda eaque labore perspiciatis, minus sunt
-                dolore, maxime fugiat itaque repellendus at id, deleniti ipsum
-                blanditiis dolorum et.
+                Our journey began with a simple yet powerful idea: to create a
+                platform that empowers individuals and businesses alike. At
+                FreelySlah, we believe in the potential of technology to bridge
+                gaps and create opportunities. From freelancers looking to offer
+                their services to businesses aiming to reach a broader audience,
+                our platform is designed to meet diverse needs. Join us as we
+                continue to innovate and push the boundaries of what’s possible.
               </p>
             </div>
             <div className="social mt-8">

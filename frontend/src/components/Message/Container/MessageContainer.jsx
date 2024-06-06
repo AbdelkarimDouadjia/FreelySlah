@@ -4,7 +4,7 @@ import MessageInput from "./MessageInput";
 import Messages from "./Messages";
 import { TiMessages } from "react-icons/ti";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import useOutsideAlerter from "./useOutsideAlerter"; // Make sure the path is correct
+import useOutsideAlerter from "./useOutsideAlerter.js"; // Make sure the path is correct
 
 const MessageContainer = () => {
   const noChatSelected = false;

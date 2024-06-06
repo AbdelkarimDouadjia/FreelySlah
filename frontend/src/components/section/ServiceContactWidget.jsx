@@ -42,7 +42,7 @@ const ServiceContactWidget = () => {
             <a className="text-[#222] font-medium text-left cursor-pointer outline-none transition-all duration-300 ease-linear">
               Rate
               <br />
-              <span className="font-normal text-sm">90 DA/hr</span>
+              <span className="font-normal text-sm">$90 / hr</span>
             </a>
             <a className="text-[#222] font-medium text-left cursor-pointer outline-none transition-all duration-300 ease-linear">
               Job Success

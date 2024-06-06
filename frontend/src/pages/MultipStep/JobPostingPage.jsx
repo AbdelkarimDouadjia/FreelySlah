@@ -6,6 +6,7 @@ import { FaDollarSign } from "react-icons/fa";
 import { GoClock } from "react-icons/go";
 import { IoIosAttach } from "react-icons/io";
 import newRequest from "../../utils/newRequest";
+import { Link } from "react-router-dom";
 
 const categories = {
   "Web Design": ["UI/UX Design", "Responsive Design"],
@@ -155,14 +156,16 @@ const JobPostingPage = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center py-10">
       <div className="w-full max-w-4xl flex justify-between items-center mb-7 ">
-        <h1 className="text-2xl font-semibold">Job details</h1>
+        <h1 className="text-2xl font-semibold">Project details</h1>
         <div className="flex items-center justify-end ">
-          <button
-            onClick={finish}
-            className="cursor-pointer  !py-2 !px-4 hover:text-white rounded-[60px] !bg-[#0E9F6E] hover:!bg-[#046c4e] text-white hover:border-none transition-all duration-300 ease-linear font-medium w-fit"
-          >
-            Post this job
-          </button>
+          <Link to="/manageprojects">
+            <button
+              onClick={finish}
+              className="cursor-pointer  !py-2 !px-4 hover:text-white rounded-[60px] !bg-[#0E9F6E] hover:!bg-[#046c4e] text-white hover:border-none transition-all duration-300 ease-linear font-medium w-fit"
+            >
+              Post this Project
+            </button>
+          </Link>
         </div>
       </div>
       <div className="w-full max-w-4xl bg-white shadow-md border border-[#D9D9D9] rounded-2xl">
