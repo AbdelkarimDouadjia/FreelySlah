@@ -52,9 +52,8 @@ import Product from "../pages/Product/Product.jsx";
 import BecomeSeller from "../pages/BecomeSeller/BecomeSeller.jsx";
 import Proposals from "../pages/Proposals/Proposals.jsx";
 import ProjectProgress from "../pages/ProjectProgress/ProjectProgress.jsx";
-import RequireAuth from "../layout/Layout.jsx";
-
-
+import {RequireAuth} from "../layout/Layout.jsx";
+import { RequireAuthWelcome } from "../layout/Layout.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -126,8 +125,6 @@ const Router = () => {
         { path: "/proposals", element: <Proposals /> },
         { path: "/projectprogress", element: <ProjectProgress /> },
 
-        
-
         {
           path: "/settings",
           element: <Settings />,
@@ -152,7 +149,6 @@ const Router = () => {
       children: [
         { path: "/stepform", element: <StepForm /> },
         { path: "/t", element: <T /> },
-        { path: "/welcome", element: <StepForm1 /> },
       ],
     },
     {
@@ -173,6 +169,7 @@ const Router = () => {
     /*{ path: "/service", element: <Service /> },*/
     { path: "/breadcumb", element: <Breadcumb /> },
     { path: "/navbarF", element: <NavbarF /> },
+    { path: "/welcome", element: <StepForm1 /> },
 
     {
       path: "/",

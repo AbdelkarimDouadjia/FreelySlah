@@ -30,7 +30,9 @@ export const Login = () => {
       updateUser(res.data);
       // Show success notification
       toast.success("Logged in successfully", { position: "top-right" });
-      navigate("/welcome");
+      setTimeout(() => {
+        navigate("/welcome");
+      }, 2000);
     } catch (err) {
       setError(err.response.data);
       // Show error use state variable or error notification string
@@ -57,7 +59,9 @@ export const Login = () => {
 
       // to show success notification
       toast.success("Logged in successfully", { position: "top-right" });
-      navigate("/welcome");
+      setTimeout(() => {
+        navigate("/welcome");
+      }, 2000);
     } catch (err) {
       console.log("could not login with google", err);
       setError(err.response.data);

@@ -16,6 +16,21 @@ function RequireAuth() {
       </>
     );
   }
+}
+
+function RequireAuthWelcome() {
+  const { currentUser } = useContext(AuthContext);
+  if (!currentUser) return <Navigate to="/login" />;
+  else {
+    return (
+      <>
+        <NavbarF />
+        <Outlet />
+        <Footer />
+      </>
+    );
+  }
+}
   /*
   return (
     <>
@@ -24,6 +39,6 @@ function RequireAuth() {
       <Footer />
     </>
   );*/
-}
 
-export default RequireAuth;
+
+export  {RequireAuth, RequireAuthWelcome};

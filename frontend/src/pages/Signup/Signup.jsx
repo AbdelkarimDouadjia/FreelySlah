@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Country } from "country-state-city";
 import "./Signup.css";
-import { useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "@firebase/auth";
 import { app } from "../../firebase.js";
@@ -20,8 +19,6 @@ const Signup = () => {
     country: "",
     isSeller: false,
   });
-
-  const navigate = useNavigate();
 
   const getCountryName = (isoCode) => {
     const country = Country.getCountryByCode(isoCode);
@@ -49,7 +46,7 @@ const Signup = () => {
         img: user1.photoURL,
         country: "Algeria",
       });
-      // navigate("/");
+
       // Show success notification
       toast.success("Signup successful!", { position: "top-right" });
     } catch (err) {
