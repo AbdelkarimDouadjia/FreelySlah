@@ -44,10 +44,10 @@ const EditMyProfile = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [userLanguages, setUserLanguages] = useState([]);
 
-  // Simulate fetching language options from an API
   const fetchLanguageOptions = async () => {
     return [
       { value: "English", label: "English" },
+      { value: "Arabic", label: "Arabic" },
       { value: "Spanish", label: "Spanish" },
       { value: "French", label: "French" },
       { value: "German", label: "German" },
@@ -72,7 +72,18 @@ const EditMyProfile = () => {
     getLanguageOptions();
   }, []);
 
-  const handleAddLanguage = () => {
+  useEffect(() => {
+    if (
+      currentUser &&
+      currentUser.userProfile &&
+      currentUser.userProfile.length > 0
+    ) {
+      const userLangData = currentUser.userProfile[0].userLanguages || [];
+      setUserLanguages(userLangData);
+    }
+  }, [currentUser]);
+
+  const handleAddLanguage = async () => {
     if (!selectedLanguage || !selectedProficiency) {
       toast.error("Please select both language and proficiency level.");
       return;
@@ -83,14 +94,37 @@ const EditMyProfile = () => {
       proficiency: selectedProficiency.value,
     };
 
-    setUserLanguages([...userLanguages, newLanguage]);
+    const updatedLanguages = [...userLanguages, newLanguage];
 
-    setShowAddLanguageModal(false);
-    setSelectedLanguage(null);
-    setSelectedProficiency(null);
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userLanguages: updatedLanguages,
+          },
+        ],
+      };
+
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setUserLanguages(updatedLanguages);
+      setShowAddLanguageModal(false);
+      setSelectedLanguage(null);
+      setSelectedProficiency(null);
+      toast.success("Language added successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to add language");
+    }
   };
 
-  const handleEditLanguage = () => {
+  const handleEditLanguage = async () => {
     if (!selectedProficiency) {
       toast.error("Please select a proficiency level.");
       return;
@@ -99,18 +133,61 @@ const EditMyProfile = () => {
     const updatedLanguages = [...userLanguages];
     updatedLanguages[editIndex].proficiency = selectedProficiency.value;
 
-    setUserLanguages(updatedLanguages);
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userLanguages: updatedLanguages,
+          },
+        ],
+      };
 
-    setShowEditLanguageModal(false);
-    setSelectedProficiency(null);
-    setEditIndex(null);
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setUserLanguages(updatedLanguages);
+      setShowEditLanguageModal(false);
+      setSelectedProficiency(null);
+      setEditIndex(null);
+      toast.success("Language updated successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update language");
+    }
   };
 
-  const handleDeleteLanguage = (index) => {
+  const handleDeleteLanguage = async (index) => {
     const updatedLanguages = [...userLanguages];
     updatedLanguages.splice(index, 1);
-    setUserLanguages(updatedLanguages);
-    toast.success("Language deleted successfully.");
+
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userLanguages: updatedLanguages,
+          },
+        ],
+      };
+
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setUserLanguages(updatedLanguages);
+      toast.success("Language deleted successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete language");
+    }
   };
 
   const openEditLanguageModal = (index) => {
@@ -128,7 +205,6 @@ const EditMyProfile = () => {
       (option) => !addedLanguages.includes(option.value)
     );
   };
-
   const customStyles = {
     control: (provided, state) => ({
       ...provided,
@@ -177,42 +253,76 @@ const EditMyProfile = () => {
   const [showAddEducationModal, setShowAddEducationModal] = useState(false);
   const [showEditEducationModal, setShowEditEducationModal] = useState(false);
   const [school, setSchool] = useState("");
-  const [dataSchoolFrom, setDataSchoolFrom] = useState("");
-  const [dataSchoolTo, setDataSchoolTo] = useState("");
+  const [startYear, setStartYear] = useState("");
+  const [endYear, setEndYear] = useState("");
   const [degree, setDegree] = useState("");
-  const [areaOfStudy, setAreaOfStudy] = useState("");
-  const [descEducation, setDescEducation] = useState("");
+  const [fieldOfStudy, setFieldOfStudy] = useState("");
+  const [description, setDescription] = useState("");
   const [editEducationIndex, setEditEducationIndex] = useState(null);
   const [userEducation, setUserEducation] = useState([]);
 
-  const handleAddEducation = () => {
-    if (!school || !dataSchoolFrom || !dataSchoolTo) {
+  useEffect(() => {
+    if (
+      currentUser &&
+      currentUser.userProfile &&
+      currentUser.userProfile.length > 0
+    ) {
+      const userEducationData = currentUser.userProfile[0].userEducation;
+      setUserEducation(userEducationData);
+    }
+  }, [currentUser]);
+
+  const handleAddEducation = async () => {
+    if (!school || !startYear || !endYear) {
       toast.error("Please enter all required fields.");
       return;
     }
 
     const newEducation = {
       school,
-      dataSchoolFrom,
-      dataSchoolTo,
+      startYear,
+      endYear,
       degree,
-      areaOfStudy,
-      descEducation,
+      fieldOfStudy,
+      description,
     };
 
-    setUserEducation([...userEducation, newEducation]);
+    const updatedEducation = [...userEducation, newEducation];
 
-    setShowAddEducationModal(false);
-    setSchool("");
-    setDataSchoolFrom("");
-    setDataSchoolTo("");
-    setDegree("");
-    setAreaOfStudy("");
-    setDescEducation("");
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userEducation: updatedEducation,
+          },
+        ],
+      };
+
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setUserEducation(updatedEducation);
+      setShowAddEducationModal(false);
+      setSchool("");
+      setStartYear("");
+      setEndYear("");
+      setDegree("");
+      setFieldOfStudy("");
+      setDescription("");
+      toast.success("Education added successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to add education");
+    }
   };
 
-  const handleEditEducation = () => {
-    if (!school || !dataSchoolFrom || !dataSchoolTo) {
+  const handleEditEducation = async () => {
+    if (!school || !startYear || !endYear) {
       toast.error("Please enter all required fields.");
       return;
     }
@@ -220,49 +330,90 @@ const EditMyProfile = () => {
     const updatedEducation = [...userEducation];
     updatedEducation[editEducationIndex] = {
       school,
-      dataSchoolFrom,
-      dataSchoolTo,
+      startYear,
+      endYear,
       degree,
-      areaOfStudy,
-      descEducation,
+      fieldOfStudy,
+      description,
     };
 
-    setUserEducation(updatedEducation);
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userEducation: updatedEducation,
+          },
+        ],
+      };
 
-    setShowEditEducationModal(false);
-    setSchool("");
-    setDataSchoolFrom("");
-    setDataSchoolTo("");
-    setDegree("");
-    setAreaOfStudy("");
-    setDescEducation("");
-    setEditEducationIndex(null);
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setUserEducation(updatedEducation);
+      setShowEditEducationModal(false);
+      setSchool("");
+      setStartYear("");
+      setEndYear("");
+      setDegree("");
+      setFieldOfStudy("");
+      setDescription("");
+      setEditEducationIndex(null);
+      toast.success("Education updated successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update education");
+    }
   };
 
-  const handleDeleteEducation = (index) => {
+  const handleDeleteEducation = async (index) => {
     const updatedEducation = [...userEducation];
     updatedEducation.splice(index, 1);
-    setUserEducation(updatedEducation);
-    toast.success("Education deleted successfully.");
+
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userEducation: updatedEducation,
+          },
+        ],
+      };
+
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setUserEducation(updatedEducation);
+      toast.success("Education deleted successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete education");
+    }
   };
 
   const openEditEducationModal = (index) => {
     setEditEducationIndex(index);
     setSchool(userEducation[index].school);
-    setDataSchoolFrom(userEducation[index].dataSchoolFrom);
-    setDataSchoolTo(userEducation[index].dataSchoolTo);
+    setStartYear(userEducation[index].startYear);
+    setEndYear(userEducation[index].endYear);
     setDegree(userEducation[index].degree);
-    setAreaOfStudy(userEducation[index].areaOfStudy);
-    setDescEducation(userEducation[index].descEducation);
+    setFieldOfStudy(userEducation[index].fieldOfStudy);
+    setDescription(userEducation[index].description);
 
     setShowEditEducationModal(true);
   };
-
   // Manage Skills
   const [skills, setSkills] = useState([]);
   const [showEditSkillsModal, setShowEditSkillsModal] = useState(false);
   const [newSkill, setNewSkill] = useState("");
-
 
   useEffect(() => {
     if (
@@ -293,7 +444,10 @@ const EditMyProfile = () => {
           ],
         };
 
-        const res = await newRequest.put(`/users/${currentUser._id}`, userUpdated);
+        const res = await newRequest.put(
+          `/users/${currentUser._id}`,
+          userUpdated
+        );
         updateUser(res.data);
 
         setSkills(updatedSkills);
@@ -321,7 +475,10 @@ const EditMyProfile = () => {
         ],
       };
 
-      const res = await newRequest.put(`/users/${currentUser._id}`, userUpdated);
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
       updateUser(res.data);
 
       setSkills(updatedSkills);
@@ -332,7 +489,7 @@ const EditMyProfile = () => {
       toast.error(error);
     }
   };
-  //Work & Experience
+  //Work section
   const [showAddWorkModal, setShowAddWorkModal] = useState(false);
   const [showEditWorkModal, setShowEditWorkModal] = useState(false);
   const [companyName, setCompanyName] = useState("");
@@ -343,76 +500,152 @@ const EditMyProfile = () => {
   const [editWorkIndex, setEditWorkIndex] = useState(null);
   const [workExperience, setWorkExperience] = useState([]);
 
-  const handleAddWork = () => {
+  useEffect(() => {
+    if (
+      currentUser &&
+      currentUser.userProfile &&
+      currentUser.userProfile.length > 0
+    ) {
+      const userWorkData = currentUser.userProfile[0].workExperience;
+      setWorkExperience(userWorkData);
+    }
+  }, [currentUser]);
+
+  const handleAddWork = async () => {
     if (!companyName || !dateWorkFrom || !dateWorkTo) {
       toast.error("Please enter all required fields.");
       return;
     }
 
     const newWork = {
-      companyName,
-      dateWorkFrom,
-      dateWorkTo,
-      jobRole,
-      descWork,
+      title: jobRole,
+      company: companyName,
+      startYear: dateWorkFrom,
+      endYear: dateWorkTo,
+      description: descWork,
     };
 
-    setWorkExperience([...workExperience, newWork]);
+    const updatedWorkExperience = [...workExperience, newWork];
 
-    setShowAddWorkModal(false);
-    setCompanyName("");
-    setDateWorkFrom("");
-    setDateWorkTo("");
-    setJobRole("");
-    setDescWork("");
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            workExperience: updatedWorkExperience,
+          },
+        ],
+      };
+
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setWorkExperience(updatedWorkExperience);
+      setShowAddWorkModal(false);
+      setCompanyName("");
+      setDateWorkFrom("");
+      setDateWorkTo("");
+      setJobRole("");
+      setDescWork("");
+      toast.success("Work experience added successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to add work experience");
+    }
   };
 
-  const handleEditWork = () => {
+  const handleEditWork = async () => {
     if (!companyName || !dateWorkFrom || !dateWorkTo) {
       toast.error("Please enter all required fields.");
       return;
     }
 
-    const updatedWork = [...workExperience];
-    updatedWork[editWorkIndex] = {
-      companyName,
-      dateWorkFrom,
-      dateWorkTo,
-      jobRole,
-      descWork,
+    const updatedWorkExperience = [...workExperience];
+    updatedWorkExperience[editWorkIndex] = {
+      title: jobRole,
+      company: companyName,
+      startYear: dateWorkFrom,
+      endYear: dateWorkTo,
+      description: descWork,
     };
 
-    setWorkExperience(updatedWork);
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            workExperience: updatedWorkExperience,
+          },
+        ],
+      };
 
-    setShowEditWorkModal(false);
-    setCompanyName("");
-    setDateWorkFrom("");
-    setDateWorkTo("");
-    setJobRole("");
-    setDescWork("");
-    setEditWorkIndex(null);
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setWorkExperience(updatedWorkExperience);
+      setShowEditWorkModal(false);
+      setCompanyName("");
+      setDateWorkFrom("");
+      setDateWorkTo("");
+      setJobRole("");
+      setDescWork("");
+      setEditWorkIndex(null);
+      toast.success("Work experience updated successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update work experience");
+    }
   };
 
-  const handleDeleteWork = (index) => {
-    const updatedWork = [...workExperience];
-    updatedWork.splice(index, 1);
-    setWorkExperience(updatedWork);
-    toast.success("Work experience deleted successfully.");
+  const handleDeleteWork = async (index) => {
+    const updatedWorkExperience = [...workExperience];
+    updatedWorkExperience.splice(index, 1);
+
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            workExperience: updatedWorkExperience,
+          },
+        ],
+      };
+
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setWorkExperience(updatedWorkExperience);
+      toast.success("Work experience deleted successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete work experience");
+    }
   };
 
   const openEditWorkModal = (index) => {
     setEditWorkIndex(index);
-    setCompanyName(workExperience[index].companyName);
-    setDateWorkFrom(workExperience[index].dateWorkFrom);
-    setDateWorkTo(workExperience[index].dateWorkTo);
-    setJobRole(workExperience[index].jobRole);
-    setDescWork(workExperience[index].descWork);
+    setCompanyName(workExperience[index].company);
+    setDateWorkFrom(workExperience[index].startYear);
+    setDateWorkTo(workExperience[index].endYear);
+    setJobRole(workExperience[index].title);
+    setDescWork(workExperience[index].description);
 
     setShowEditWorkModal(true);
   };
 
-  // protfolio project
-  const [products, setProducts] = useState([]);
+  // Portfolio Project Section
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
   const [showEditProjectModal, setShowEditProjectModal] = useState(false);
   const [projectTitle, setProjectTitle] = useState("");
@@ -420,8 +653,34 @@ const EditMyProfile = () => {
   const [projectDescription, setProjectDescription] = useState("");
   const [images, setImages] = useState([]);
   const [coverImage, setCoverImage] = useState(null);
-
   const [editingProjectIndex, setEditingProjectIndex] = useState(null);
+  const [userProjects, setUserProjects] = useState([]);
+
+  useEffect(() => {
+    if (
+      currentUser &&
+      currentUser.userProfile &&
+      currentUser.userProfile.length > 0
+    ) {
+      const userProjectData = currentUser.userProfile[0].userProjects;
+      setUserProjects(userProjectData);
+    }
+  }, [currentUser]);
+
+  const handleImageUpload = (e) => {
+    const newImages = Array.from(e.target.files);
+    setImages((prevImages) => [...prevImages, ...newImages]);
+  };
+
+  const handleRemoveImage = (index) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
+  };
+
+  const handleSetCoverImage = (index) => {
+    setCoverImage(index);
+  };
 
   const handleAddProject = async () => {
     if (!projectTitle || !projectDescription || images.length === 0) {
@@ -452,8 +711,25 @@ const EditMyProfile = () => {
         coverImage: uploadedImageURLs[coverImage] || uploadedImageURLs[0],
       };
 
-      setProducts([...products, newProject]);
+      const updatedProjects = [...userProjects, newProject];
 
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userProjects: updatedProjects,
+          },
+        ],
+      };
+
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setUserProjects(updatedProjects);
       setShowAddProjectModal(false);
       setProjectTitle("");
       setProjectRole("");
@@ -461,6 +737,7 @@ const EditMyProfile = () => {
       setImages([]);
       setCoverImage(null);
       setUploading(false);
+      toast.success("Project added successfully");
     } catch (error) {
       console.error("Error uploading images:", error);
       toast.error("Error uploading images. Please try again.");
@@ -490,7 +767,7 @@ const EditMyProfile = () => {
       );
 
       const updatedProject = {
-        ...products[editingProjectIndex],
+        ...userProjects[editingProjectIndex],
         title: projectTitle,
         role: projectRole,
         description: projectDescription,
@@ -498,10 +775,26 @@ const EditMyProfile = () => {
         coverImage: uploadedImageURLs[coverImage] || uploadedImageURLs[0],
       };
 
-      const updatedProducts = [...products];
-      updatedProducts[editingProjectIndex] = updatedProject;
-      setProducts(updatedProducts);
+      const updatedProjects = [...userProjects];
+      updatedProjects[editingProjectIndex] = updatedProject;
 
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userProjects: updatedProjects,
+          },
+        ],
+      };
+
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setUserProjects(updatedProjects);
       setShowEditProjectModal(false);
       setEditingProjectIndex(null);
       setProjectTitle("");
@@ -510,6 +803,7 @@ const EditMyProfile = () => {
       setImages([]);
       setCoverImage(null);
       setUploading(false);
+      toast.success("Project updated successfully");
     } catch (error) {
       console.error("Error uploading images:", error);
       toast.error("Error uploading images. Please try again.");
@@ -517,36 +811,37 @@ const EditMyProfile = () => {
     }
   };
 
-  const handleImageUpload = async (e) => {
-    const files = Array.from(e.target.files);
-    const validFiles = files.filter(
-      (file) =>
-        file.size <= 10 * 1024 * 1024 &&
-        (file.type === "image/jpeg" || file.type === "image/png")
-    );
+  const handleDeleteProject = async (index) => {
+    const updatedProjects = [...userProjects];
+    updatedProjects.splice(index, 1);
 
-    if (validFiles.length + images.length > 20) {
-      toast.error("You can upload up to 20 images.");
-    } else {
-      setImages([...images, ...validFiles]);
+    try {
+      const userUpdated = {
+        ...currentUser,
+        userProfile: [
+          {
+            ...currentUser.userProfile[0],
+            userProjects: updatedProjects,
+          },
+        ],
+      };
+
+      const res = await newRequest.put(
+        `/users/${currentUser._id}`,
+        userUpdated
+      );
+      updateUser(res.data);
+
+      setUserProjects(updatedProjects);
+      toast.success("Project deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete project", error);
+      toast.error("Failed to delete project");
     }
-  };
-
-  const handleRemoveImage = (index) => {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
-    if (index === coverImage) {
-      setCoverImage(null);
-    }
-  };
-
-  const handleSetCoverImage = (index) => {
-    setCoverImage(index);
   };
 
   const openEditProjectModal = (index) => {
-    const project = products[index];
+    const project = userProjects[index];
     setProjectTitle(project.title);
     setProjectRole(project.role);
     setProjectDescription(project.description);
@@ -556,19 +851,9 @@ const EditMyProfile = () => {
     setShowEditProjectModal(true);
   };
 
-  const handleDeleteProject = (index) => {
-    const updatedProducts = products.filter((_, i) => i !== index);
-    setProducts(updatedProducts);
-  };
-
   //Occupation title
   const [showEditOccupationTitleModal, setShowEditOccupationTitleModal] =
     useState(false);
-  const [occupationTitle, setOccupationTitle] = useState(
-    "Full Stack Developer"
-  );
-  const [tempOccupationTitle, setTempOccupationTitle] =
-    useState(occupationTitle);
 
   // Function to handle occupation title update
   const handleEditOccupationTitle = async (e) => {
@@ -651,17 +936,12 @@ const EditMyProfile = () => {
   };
 
   //profile image
-  const [profileImage, setProfileImage] = useState(
-    "/src/assets/images/avatar/Image.jpg"
-  );
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [newProfileImage, setNewProfileImage] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   // Online/offline status state
   const [isOnline, setIsOnline] = useState(currentUser.isOnline);
-
-  
 
   const handleImageUploadProfile = async (e) => {
     const file = e.target.files[0];
@@ -789,7 +1069,7 @@ const EditMyProfile = () => {
         return (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-              {products.map((item, i) => (
+              {userProjects.map((item, i) => (
                 <div key={i}>
                   <div className="relative group">
                     <div className="overflow-hidden relative text-transparent transition-all duration-300 ease-linear w-full align-middle">
@@ -936,7 +1216,7 @@ const EditMyProfile = () => {
                                 </div>
                               </div>
                               <span className="bg-[#e0f4f1] rounded-full inline-block text-[13px] py-[5px] px-[20px] text-[#222] font-medium leading-[28px]">
-                                {edu.dataSchoolFrom} - {edu.dataSchoolTo}
+                                {edu.startYear} - {edu.endYear}
                               </span>
                               <h5 className="mt-4 text-[17px] font-medium text-[#222] leading-[1.3125] mb-2">
                                 {edu.degree}
@@ -945,7 +1225,7 @@ const EditMyProfile = () => {
                                 {edu.school}
                               </h6>
                               <p className="my-0 mr-[15px] text-[#6b7177] leading-[1.85] font-normal">
-                                {edu.descEducation}
+                                {edu.description}
                               </p>
                             </div>
                           </div>
@@ -1018,16 +1298,16 @@ const EditMyProfile = () => {
                                 </div>
                               </div>
                               <span className="bg-[#e0f4f1] rounded-full inline-block text-[13px] py-[5px] px-[20px] text-[#222] font-medium leading-[28px]">
-                                {wrk.dateWorkFrom} - {wrk.dateWorkTo}
+                                {wrk.startYear} - {wrk.endYear}
                               </span>
                               <h5 className="mt-4 text-[17px] font-medium text-[#222] leading-[1.3125] mb-2">
-                                {wrk.jobRole}
+                                {wrk.title}
                               </h5>
                               <h6 className="text-thm text-[#5bbb7b] text-[15px] font-medium leading-[1.3125] mt-0 mb-2">
-                                {wrk.companyName}
+                                {wrk.company}
                               </h6>
                               <p className="my-0 mr-[15px] text-[#6b7177] leading-[1.85] font-normal">
-                                {wrk.descWork}
+                                {wrk.description}
                               </p>
                             </div>
                           </div>
@@ -1138,7 +1418,7 @@ const EditMyProfile = () => {
                   </div>
                 </div>
 
-                {/* languages Section */}
+                {/* Languages Section */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-medium ">Languages</h3>
@@ -1216,7 +1496,7 @@ const EditMyProfile = () => {
                                   <p className="pl-1">{edu.degree}</p>
                                 </div>
                                 <p className="text-[#676767] font-normal">
-                                  {edu.dataSchoolFrom} - {edu.dataSchoolTo}
+                                  {edu.startYear} - {edu.endYear}
                                 </p>
                               </div>
                               <div className="relative w-[20%]">
@@ -1400,7 +1680,11 @@ const EditMyProfile = () => {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-3xl font-semibold">Add Language</h3>
               <button
-                onClick={() => setShowAddLanguageModal(false)}
+                onClick={() => {
+                  setSelectedLanguage(null);
+                  setSelectedProficiency(null);
+                  setShowAddLanguageModal(false);
+                }}
                 className="text-gray-600 hover:text-gray-900 !text-5xl"
               >
                 &times;
@@ -1427,7 +1711,11 @@ const EditMyProfile = () => {
             </div>
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowAddLanguageModal(false)}
+                onClick={() => {
+                  setSelectedLanguage(null);
+                  setSelectedProficiency(null);
+                  setShowAddLanguageModal(false);
+                }}
                 className="px-4 py-2  mr-2 text-[#0E9F6E] "
               >
                 Cancel
@@ -1445,13 +1733,17 @@ const EditMyProfile = () => {
 
       {/* Edit Language Modal */}
       {showEditLanguageModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2">
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50 ">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">Edit Language</h3>
               <button
-                onClick={() => setShowEditLanguageModal(false)}
-                className="text-gray-600 hover:text-gray-900"
+                onClick={() => {
+                  setSelectedLanguage(null);
+                  setSelectedProficiency(null);
+                  setShowEditLanguageModal(false);
+                }}
+                className="text-gray-600 hover:text-gray-900 !text-5xl"
               >
                 &times;
               </button>
@@ -1469,7 +1761,11 @@ const EditMyProfile = () => {
 
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowEditLanguageModal(false)}
+                onClick={() => {
+                  setSelectedLanguage(null);
+                  setSelectedProficiency(null);
+                  setShowEditLanguageModal(false);
+                }}
                 className="px-4 py-2  mr-2 text-[#0E9F6E] "
               >
                 Cancel
@@ -1518,8 +1814,8 @@ const EditMyProfile = () => {
                     id="date_start"
                     name="date_start"
                     className="block w-full input focus:outline-none focus:border-[#2525258a]  focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] bg-[#ffffff]"
-                    value={dataSchoolFrom}
-                    onChange={(e) => setDataSchoolFrom(e.target.value)}
+                    value={startYear}
+                    onChange={(e) => setStartYear(e.target.value)}
                   >
                     <option value="">from</option>
                     {years.map((year, index) => (
@@ -1539,8 +1835,8 @@ const EditMyProfile = () => {
                     id="date_end"
                     name="date_end"
                     className="block w-full input focus:outline-none focus:border-[#2525258a] focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] bg-[#ffffff]"
-                    onChange={(e) => setDataSchoolTo(e.target.value)}
-                    value={dataSchoolTo}
+                    onChange={(e) => setEndYear(e.target.value)}
+                    value={endYear}
                   >
                     <option value="">To (or expected graduation year)</option>
                     {years.map((year, index) => (
@@ -1569,8 +1865,8 @@ const EditMyProfile = () => {
                   <label>Area of Study (Optional)</label>
                   <input
                     type="text"
-                    value={areaOfStudy}
-                    onChange={(e) => setAreaOfStudy(e.target.value)}
+                    value={fieldOfStudy}
+                    onChange={(e) => setFieldOfStudy(e.target.value)}
                     className="block p-4 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
              focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3]"
                     placeholder="Ex: Computer Science"
@@ -1583,8 +1879,8 @@ const EditMyProfile = () => {
                 <textarea
                   name="descEducation"
                   id="descEducation"
-                  value={descEducation}
-                  onChange={(e) => setDescEducation(e.target.value)}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                   className="block w-full !h-96 input focus:outline-none focus:border-[#2525258a] bg-white focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] !p-2 !h-24`}"
                   placeholder="Description"
                 ></textarea>
@@ -1593,7 +1889,15 @@ const EditMyProfile = () => {
 
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowAddEducationModal(false)}
+                onClick={() => {
+                  setSchool("");
+                  setStartYear("");
+                  setEndYear("");
+                  setDegree("");
+                  setFieldOfStudy("");
+                  setDescription("");
+                  setShowAddEducationModal(false);
+                }}
                 className="px-4 py-2 mr-2 text-[#0E9F6E]"
               >
                 Cancel
@@ -1643,8 +1947,8 @@ const EditMyProfile = () => {
                     id="date_start"
                     name="date_start"
                     className="block w-full input focus:outline-none focus:border-[#2525258a]  focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] bg-[#ffffff]"
-                    value={dataSchoolFrom}
-                    onChange={(e) => setDataSchoolFrom(e.target.value)}
+                    value={startYear}
+                    onChange={(e) => setStartYear(e.target.value)}
                   >
                     <option value="">from</option>
                     {years.map((year, index) => (
@@ -1664,8 +1968,8 @@ const EditMyProfile = () => {
                     id="date_end"
                     name="date_end"
                     className="block w-full input focus:outline-none focus:border-[#2525258a] focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] bg-[#ffffff]"
-                    onChange={(e) => setDataSchoolTo(e.target.value)}
-                    value={dataSchoolTo}
+                    onChange={(e) => setEndYear(e.target.value)}
+                    value={endYear}
                   >
                     <option value="">To (or expected graduation year)</option>
                     {years.map((year, index) => (
@@ -1694,8 +1998,8 @@ const EditMyProfile = () => {
                   <label>Area of Study (Optional)</label>
                   <input
                     type="text"
-                    value={areaOfStudy}
-                    onChange={(e) => setAreaOfStudy(e.target.value)}
+                    value={fieldOfStudy}
+                    onChange={(e) => setFieldOfStudy(e.target.value)}
                     className="block p-4 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
              focus-within:outline-none focus-within:border  placeholder:text-sm placeholder:text-[#BEB5C3]"
                     placeholder="Ex: Computer Science"
@@ -1708,8 +2012,8 @@ const EditMyProfile = () => {
                 <textarea
                   name="descEducation"
                   id="descEducation"
-                  value={descEducation}
-                  onChange={(e) => setDescEducation(e.target.value)}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                   className="block w-full !h-96 input focus:outline-none focus:border-[#2525258a] bg-white focus-within:outline-none placeholder:text-sm placeholder:text-[#BEB5C3] !p-2 !h-24`}"
                   placeholder="Description"
                 ></textarea>
@@ -1718,7 +2022,15 @@ const EditMyProfile = () => {
 
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowEditEducationModal(false)}
+                onClick={() => {
+                  setSchool("");
+                  setStartYear("");
+                  setEndYear("");
+                  setDegree("");
+                  setFieldOfStudy("");
+                  setDescription("");
+                  setShowEditEducationModal(false);
+                }}
                 className="px-4 py-2  mr-2 text-[#0E9F6E] "
               >
                 Cancel
@@ -1744,7 +2056,10 @@ const EditMyProfile = () => {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-3xl font-semibold">Add Skill</h3>
               <button
-                onClick={() => setShowEditSkillsModal(false)}
+                onClick={() => {
+                  setNewSkill("");
+                  setShowEditSkillsModal(false);
+                }}
                 className="text-gray-600 hover:text-gray-900 !text-5xl"
               >
                 &times;
@@ -1766,7 +2081,10 @@ const EditMyProfile = () => {
 
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowEditSkillsModal(false)}
+                onClick={() => {
+                  setNewSkill("");
+                  setShowEditSkillsModal(false);
+                }}
                 className="px-4 py-2  mr-2 text-[#0E9F6E] "
               >
                 Cancel
@@ -1873,7 +2191,14 @@ const EditMyProfile = () => {
             {/* Add Work Button */}
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowAddWorkModal(false)}
+                onClick={() => {
+                  setCompanyName("");
+                  setDateWorkFrom("");
+                  setDateWorkTo("");
+                  setJobRole("");
+                  setDescWork("");
+                  setShowAddWorkModal(false);
+                }}
                 className="px-4 py-2 mr-2 text-[#0E9F6E]"
               >
                 Cancel
@@ -1980,7 +2305,14 @@ const EditMyProfile = () => {
             {/* Edit Work Button */}
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowEditWorkModal(false)}
+                onClick={() => {
+                  setCompanyName("");
+                  setDateWorkFrom("");
+                  setDateWorkTo("");
+                  setJobRole("");
+                  setDescWork("");
+                  setShowEditWorkModal(false);
+                }}
                 className="px-4 py-2 mr-2 text-[#0E9F6E]"
               >
                 Cancel
@@ -1996,13 +2328,22 @@ const EditMyProfile = () => {
         </div>
       )}
 
+      {/* Add Project Modal Done */}
       {showAddProjectModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-3xl font-semibold">Add Portfolio Project</h3>
               <button
-                onClick={() => setShowAddProjectModal(false)}
+                onClick={() => {
+                  setProjectTitle("");
+                  setProjectRole("");
+                  setProjectDescription("");
+                  setImages([]);
+                  setCoverImage(null);
+                  setUploading(false);
+                  setShowAddProjectModal(false);
+                }}
                 className="text-gray-600 hover:text-gray-900 !text-5xl"
               >
                 &times;
@@ -2021,7 +2362,7 @@ const EditMyProfile = () => {
                 />
               </div>
               <div className="mb-7">
-                <label>Your Role (optional)</label>
+                <label>Your Role</label>
                 <input
                   type="text"
                   value={projectRole}
@@ -2032,16 +2373,15 @@ const EditMyProfile = () => {
                 />
               </div>
               <div className="mb-7">
-                <label>Project Description</label>
+                <label>Description</label>
                 <textarea
                   value={projectDescription}
                   onChange={(e) => setProjectDescription(e.target.value)}
-                  className="block p-4 h-24 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
-                  focus-within:outline-none focus-within:border placeholder:text-sm placeholder:text-[#BEB5C3]"
+                  className="block p-4 h-24 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] focus-within:outline-none focus-within:border placeholder:text-sm placeholder:text-[#BEB5C3]"
                   placeholder="Ex: This project is about..."
                 />
               </div>
-              <div className="flex items-center justify-center border-[#D9D9D9] border-2 p-4 cursor-pointer w-64 h-48 bg-[#F1F1F1] rounded-lg text-sm">
+              <div className="flex mb-7 items-center justify-center border-[#D9D9D9] border-2 p-4 cursor-pointer w-64 h-48 bg-[#F1F1F1] rounded-lg text-sm">
                 <label className="w-full h-full text-center cursor-pointer flex flex-col items-center justify-center">
                   <CiImageOn size={38} className="mb-2" />
                   <span>
@@ -2059,32 +2399,36 @@ const EditMyProfile = () => {
                   />
                 </label>
               </div>
-              <div className="mt-4 flex items-center flex-wrap justify-between">
-                {images.map((image, index) => (
-                  <div key={index} className="flex items-center mb-2">
-                    <img
-                      src={URL.createObjectURL(image)}
-                      alt={`Project Image ${index + 1}`}
-                      className="w-20 h-20 object-cover rounded-lg mr-4"
-                    />
-                    <button
-                      onClick={() => handleRemoveImage(index)}
-                      className="text-red-500"
-                    >
-                      Remove
-                    </button>
-                    <button
-                      onClick={() => handleSetCoverImage(index)}
-                      className={`ml-4 ${
-                        coverImage === index
-                          ? "text-green-500"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      {coverImage === index ? "Cover Image" : "Set as Cover"}
-                    </button>
+              <div className="mb-4">
+                {images.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {images.map((image, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={URL.createObjectURL(image)}
+                          alt={`Project Image ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                        <button
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full px-2"
+                        >
+                          &times;
+                        </button>
+                        <button
+                          onClick={() => handleSetCoverImage(index)}
+                          className={`absolute bottom-2 right-2 ${
+                            coverImage === index
+                              ? "bg-green-500"
+                              : "bg-gray-500"
+                          } text-white rounded-full p-1`}
+                        >
+                          {coverImage === index ? "Cover" : "Set as Cover"}
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
               {uploading && (
                 <div className="flex justify-center mt-4">
@@ -2094,7 +2438,15 @@ const EditMyProfile = () => {
             </div>
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowAddProjectModal(false)}
+                onClick={() => {
+                  setProjectTitle("");
+                  setProjectRole("");
+                  setProjectDescription("");
+                  setImages([]);
+                  setCoverImage(null);
+                  setUploading(false);
+                  setShowAddProjectModal(false);
+                }}
                 className="px-4 py-2 mr-2 text-[#0E9F6E]"
               >
                 Cancel
@@ -2104,21 +2456,29 @@ const EditMyProfile = () => {
                 className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
                 disabled={uploading}
               >
-                Save
+                {uploading ? "Uploading..." : "Save"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Edit Project Modal */}
+      {/* Edit Project Modal Done */}
       {showEditProjectModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 max-w-[740px]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-3xl font-semibold">Edit Portfolio Project</h3>
               <button
-                onClick={() => setShowEditProjectModal(false)}
+                onClick={() => {
+                  setProjectTitle("");
+                  setProjectRole("");
+                  setProjectDescription("");
+                  setImages([]);
+                  setCoverImage(null);
+                  setUploading(false);
+                  setShowEditProjectModal(false);
+                }}
                 className="text-gray-600 hover:text-gray-900 !text-5xl"
               >
                 &times;
@@ -2137,7 +2497,7 @@ const EditMyProfile = () => {
                 />
               </div>
               <div className="mb-7">
-                <label>Your Role (optional)</label>
+                <label>Your Role</label>
                 <input
                   type="text"
                   value={projectRole}
@@ -2148,16 +2508,16 @@ const EditMyProfile = () => {
                 />
               </div>
               <div className="mb-7">
-                <label>Project Description</label>
+                <label>Description</label>
                 <textarea
                   value={projectDescription}
                   onChange={(e) => setProjectDescription(e.target.value)}
-                  className="block p-4 w-full h-24 input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
+                  className="block p-4 h-24 w-full input bg-[#ffffff] focus:outline-none focus:border-[#2525258a] 
                   focus-within:outline-none focus-within:border placeholder:text-sm placeholder:text-[#BEB5C3]"
-                  placeholder="Describe your project..."
+                  placeholder="Ex: This project is about..."
                 />
               </div>
-              <div className="flex items-center justify-center border-[#D9D9D9] border-2 p-4 cursor-pointer w-64 h-48 bg-[#F1F1F1] rounded-lg text-sm">
+              <div className="flex mb-7 items-center justify-center border-[#D9D9D9] border-2 p-4 cursor-pointer w-64 h-48 bg-[#F1F1F1] rounded-lg text-sm">
                 <label className="w-full h-full text-center cursor-pointer flex flex-col items-center justify-center">
                   <CiImageOn size={38} className="mb-2" />
                   <span>
@@ -2175,36 +2535,36 @@ const EditMyProfile = () => {
                   />
                 </label>
               </div>
-              <div className="flex flex-wrap mt-4">
-                {images.map((image, index) => (
-                  <div key={index} className="relative mr-4 mb-4">
-                    <img
-                      src={
-                        image instanceof File
-                          ? URL.createObjectURL(image)
-                          : image.url
-                      }
-                      alt="uploaded"
-                      className="w-24 h-24 object-cover rounded-md"
-                    />
-                    <button
-                      onClick={() => handleRemoveImage(index)}
-                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                    >
-                      &times;
-                    </button>
-                    <button
-                      onClick={() => handleSetCoverImage(index)}
-                      className={`ml-4 ${
-                        coverImage === index
-                          ? "text-green-500"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      {coverImage === index ? "Cover Image" : "Set as Cover"}
-                    </button>
+              <div className="mb-4">
+                {images.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {images.map((image, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={image.url || URL.createObjectURL(image)}
+                          alt={`Project Image ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                        <button
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full px-2"
+                        >
+                          &times;
+                        </button>
+                        <button
+                          onClick={() => handleSetCoverImage(index)}
+                          className={`absolute bottom-2 right-2 ${
+                            coverImage === index
+                              ? "bg-green-500"
+                              : "bg-gray-500"
+                          } text-white rounded-full p-1`}
+                        >
+                          {coverImage === index ? "Cover" : "Set as Cover"}
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
               {uploading && (
                 <div className="flex justify-center mt-4">
@@ -2214,7 +2574,15 @@ const EditMyProfile = () => {
             </div>
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setShowEditProjectModal(false)}
+                onClick={() => {
+                  setProjectTitle("");
+                  setProjectRole("");
+                  setProjectDescription("");
+                  setImages([]);
+                  setCoverImage(null);
+                  setUploading(false);
+                  setShowEditProjectModal(false);
+                }}
                 className="px-4 py-2 mr-2 text-[#0E9F6E]"
               >
                 Cancel
@@ -2224,7 +2592,7 @@ const EditMyProfile = () => {
                 className="px-5 py-2 bg-[#0E9F6E] text-white rounded-3xl hover:bg-[#046c4e]"
                 disabled={uploading}
               >
-                Save
+                {uploading ? "Uploading..." : "Save"}
               </button>
             </div>
           </div>

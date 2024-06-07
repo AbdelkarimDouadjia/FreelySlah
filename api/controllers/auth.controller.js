@@ -43,7 +43,7 @@ export const login = async (req, res, next) => {
         isSeller: user.isSeller,
       },
       process.env.JWT_KEY,
-      { expiresIn: "1h" } // Add token expiration
+      { expiresIn: "24h" } // Add token expiration
     );
 
     user.isOnline = true;
@@ -55,7 +55,7 @@ export const login = async (req, res, next) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // Secure in production
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 3600000, // 1 hour expiration
+        maxAge: 86400000, // 24 hours expiration
       })
       .status(200)
       .send(info);
@@ -86,7 +86,7 @@ export const google = async (req, res, next) => {
           id: user._id,
         },
         process.env.JWT_KEY,
-        { expiresIn: "1h" } // Add token expiration
+        { expiresIn: "24h" } // Add token expiration
       );
       const { password, ...rest } = user._doc;
       res
@@ -94,7 +94,7 @@ export const google = async (req, res, next) => {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production", // Secure in production
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-          maxAge: 3600000, // 1 hour expiration
+          maxAge: 86400000, // 24 hours expiration
         })
         .status(200)
         .send(rest);
@@ -118,7 +118,7 @@ export const google = async (req, res, next) => {
           id: newUser._id,
         },
         process.env.JWT_KEY,
-        { expiresIn: "1h" } // Add token expiration
+        { expiresIn: "24h" } // Add token expiration
       );
       const { password, ...rest } = newUser._doc;
       res
@@ -126,7 +126,7 @@ export const google = async (req, res, next) => {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production", // Secure in production
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-          maxAge: 3600000, // 1 hour expiration
+          maxAge: 86400000, // 24 hours expiration
         })
         .status(200)
         .send(rest);

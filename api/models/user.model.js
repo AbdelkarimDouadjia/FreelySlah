@@ -123,7 +123,6 @@ const userSchema = new Schema(
             },
           },
         ],
-        //user Skills (array of strings)
         userSkills: [
           {
             skill: {
@@ -168,9 +167,34 @@ const userSchema = new Schema(
             },
           },
         ],
+        userProjects: [
+          {
+            title: {
+              type: String,
+              required: true,
+            },
+            role: {
+              type: String,
+              required: false,
+            },
+            description: {
+              type: String,
+              required: true,
+            },
+            images: [
+              {
+                type: String,
+                required: true,
+              },
+            ],
+            coverImage: {
+              type: String,
+              required: true,
+            },
+          },
+        ],
       },
     ],
-    //get from him his storeImg storeName storeLocation storeCat  storeDesc
     userStore: {
       storeImg: {
         type: String,
@@ -193,7 +217,7 @@ const userSchema = new Schema(
         required: false,
       },
     },
-  }, // Add a closing bracket here
+  },
   {
     timestamps: true,
   }
