@@ -52,8 +52,10 @@ import Product from "../pages/Product/Product.jsx";
 import BecomeSeller from "../pages/BecomeSeller/BecomeSeller.jsx";
 import Proposals from "../pages/Proposals/Proposals.jsx";
 import ProjectProgress from "../pages/ProjectProgress/ProjectProgress.jsx";
-import {RequireAuth} from "../layout/Layout.jsx";
+import { RequireAuth } from "../layout/Layout.jsx";
 import { RequireAuthWelcome } from "../layout/Layout.jsx";
+import UpdateProject from "../pages/UpdateProject/UpdateProject.jsx";
+import UpdateService from "../pages/UpdateService/UpdateService.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -100,7 +102,9 @@ const Router = () => {
 
         { path: "/gigform", element: <GigForm /> },
         { path: "/createservice", element: <CreateService /> },
+        { path: "updateservice/:id", element: <UpdateService />},
         { path: "/createproject", element: <JobPostingPage /> },
+        { path: "/updateproject/:id", element: <UpdateProject /> },
         { path: "/editmyprofile", element: <EditMyProfile /> },
         { path: "/service", element: <Service /> },
         { path: "/manageproducts", element: <ManageProducts /> },

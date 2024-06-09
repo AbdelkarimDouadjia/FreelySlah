@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -6,7 +6,7 @@ import { FaDollarSign } from "react-icons/fa";
 import { GoClock } from "react-icons/go";
 import { IoIosAttach } from "react-icons/io";
 import newRequest from "../../utils/newRequest";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const categories = {
   "Web Design": ["UI/UX Design", "Responsive Design"],
@@ -15,22 +15,84 @@ const categories = {
   Marketing: ["SEO", "Social Media"],
 };
 
-const JobPostingPage = () => {
+const UpdateProject = () => {
+  const { id } = useParams();
+  const [project, setProject] = useState(null);
   const navigate = useNavigate();
 
-  // file
+  // Initialize state with default values
+  const [jobTitle, setJobTitle] = useState("");
+  const [tempJobTitle, setTempJobTitle] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
+  const [tempJobDescription, setTempJobDescription] = useState("");
+  const [jobCategory, setJobCategory] = useState("");
+  const [jobSubCategory, setJobSubCategory] = useState("");
+  const [tempJobCategory, setTempJobCategory] = useState("");
+  const [tempJobSubCategory, setTempJobSubCategory] = useState("");
+  const [skills, setSkills] = useState([]);
+  const [showEditJobTitleModal, setShowEditJobTitleModal] = useState(false);
+  const [showEditJobDescriptionModal, setShowEditJobDescriptionModal] =
+    useState(false);
+  const [showEditJobCategoryModal, setShowEditJobCategoryModal] =
+    useState(false);
+  const [showEditSkillsModal, setShowEditSkillsModal] = useState(false);
+  const [newSkill, setNewSkill] = useState("");
+  const [showEditBudgetModal, setShowEditBudgetModal] = useState(false);
+  const [budgetType, setBudgetType] = useState("hourly");
+  const [hourlyRateFrom, setHourlyRateFrom] = useState(0);
+  const [hourlyRateTo, setHourlyRateTo] = useState(0);
+  const [fixedPrice, setFixedPrice] = useState(0);
+  const [tempBudgetType, setTempBudgetType] = useState(budgetType);
+  const [tempHourlyRateFrom, setTempHourlyRateFrom] = useState(hourlyRateFrom);
+  const [tempHourlyRateTo, setTempHourlyRateTo] = useState(hourlyRateTo);
+  const [tempFixedPrice, setTempFixedPrice] = useState(fixedPrice);
+  const [showEditScopeModal, setShowEditScopeModal] = useState(false);
+  const [scopeDuration, setScopeDuration] = useState("1 to 3 months");
+  const [scopeLevel, setScopeLevel] = useState("Intermediate level");
+  const [scopeHiring, setScopeHiring] = useState(
+    "Not planning to hire full time"
+  );
+  const [tempScopeDuration, setTempScopeDuration] = useState(scopeDuration);
+  const [tempScopeLevel, setTempScopeLevel] = useState(scopeLevel);
+  const [tempScopeHiring, setTempScopeHiring] = useState(scopeHiring);
   const [files, setFiles] = useState([]);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const res = await newRequest.get(`/projects/single/${id}`);
+        const projectData = res.data;
+        setProject(projectData);
+        setJobTitle(projectData.title);
+        setTempJobTitle(projectData.title);
+        setJobDescription(projectData.description);
+        setTempJobDescription(projectData.description);
+        setJobCategory(projectData.category);
+        setJobSubCategory(projectData.subCategory);
+        setTempJobCategory(projectData.category);
+        setTempJobSubCategory(projectData.subCategory);
+        setSkills(projectData.skills);
+        setBudgetType(projectData.budgetType);
+        if (projectData.budgetType === "hourly") {
+          setHourlyRateFrom(projectData.hourlyRateFrom);
+          setHourlyRateTo(projectData.hourlyRateTo);
+        } else {
+          setFixedPrice(projectData.fixedPrice);
+        }
+        setScopeDuration(projectData.scopeDuration);
+        setScopeLevel(projectData.scopeLevel);
+        setScopeHiring(projectData.scopeHiring);
+        console.log(projectData);
+      } catch (err) {
+        toast.error("Failed to fetch project data.");
+      }
+    };
+    fetchProject();
+  }, [id]);
 
   const handleFileChange = (e) => {
     setFiles([...e.target.files]);
   };
-
-  // Edit Job Title Modal
-  const [showEditJobTitleModal, setShowEditJobTitleModal] = useState(false);
-  const [jobTitle, setJobTitle] = useState(
-    "Build responsive WordPress site with booking/payment functionality"
-  );
-  const [tempJobTitle, setTempJobTitle] = useState(jobTitle);
 
   const handleEditJobTitle = () => {
     setJobTitle(tempJobTitle);
@@ -38,29 +100,11 @@ const JobPostingPage = () => {
     setShowEditJobTitleModal(false);
   };
 
-  // Edit Job Description Modal
-  const [showEditJobDescriptionModal, setShowEditJobDescriptionModal] =
-    useState(false);
-  const [jobDescription, setJobDescription] = useState(
-    "my work is about something I can’t tell you about it right now"
-  );
-  const [tempJobDescription, setTempJobDescription] = useState(jobDescription);
-
   const handleEditJobDescription = () => {
     setJobDescription(tempJobDescription);
     toast.success("Job description updated successfully");
     setShowEditJobDescriptionModal(false);
   };
-
-  // Edit Job Category Modal
-  const [showEditJobCategoryModal, setShowEditJobCategoryModal] =
-    useState(false);
-  const [jobCategory, setJobCategory] = useState("Web Design");
-  const [jobSubCategory, setJobSubCategory] = useState("UI/UX Design");
-
-  // Temporary state for modal
-  const [tempJobCategory, setTempJobCategory] = useState(jobCategory);
-  const [tempJobSubCategory, setTempJobSubCategory] = useState(jobSubCategory);
 
   const openEditJobCategoryModal = () => {
     setTempJobCategory(jobCategory);
@@ -75,11 +119,6 @@ const JobPostingPage = () => {
     setShowEditJobCategoryModal(false);
   };
 
-  // Manage Skills
-  const [skills, setSkills] = useState(["Framer", "CSS", "PHP", "Web Design"]);
-  const [showEditSkillsModal, setShowEditSkillsModal] = useState(false);
-  const [newSkill, setNewSkill] = useState("");
-
   const handleAddSkill = () => {
     if (newSkill.trim()) {
       setSkills([...skills, newSkill.trim()]);
@@ -93,23 +132,6 @@ const JobPostingPage = () => {
     setSkills(skills.filter((skill) => skill !== skillToDelete));
     toast.success("Skill deleted successfully");
   };
-
-  // State for budget modal
-  const [showEditBudgetModal, setShowEditBudgetModal] = useState(false);
-  /*const [budgetType, setBudgetType] = useState("hourly");
-  const [hourlyRateFrom, setHourlyRateFrom] = useState(15);
-  const [hourlyRateTo, setHourlyRateTo] = useState(30);
-  const [fixedPrice, setFixedPrice] = useState(0);*/
-  const [budgetType, setBudgetType] = useState("hourly");
-  const [hourlyRateFrom, setHourlyRateFrom] = useState(0);
-  const [hourlyRateTo, setHourlyRateTo] = useState(0);
-  const [fixedPrice, setFixedPrice] = useState(0);
-
-  // Temporary state for modal
-  const [tempBudgetType, setTempBudgetType] = useState(budgetType);
-  const [tempHourlyRateFrom, setTempHourlyRateFrom] = useState(hourlyRateFrom);
-  const [tempHourlyRateTo, setTempHourlyRateTo] = useState(hourlyRateTo);
-  const [tempFixedPrice, setTempFixedPrice] = useState(fixedPrice);
 
   const openEditBudgetModal = () => {
     setTempBudgetType(budgetType);
@@ -128,19 +150,6 @@ const JobPostingPage = () => {
     setShowEditBudgetModal(false);
   };
 
-  // State for scope modal
-  const [showEditScopeModal, setShowEditScopeModal] = useState(false);
-  const [scopeDuration, setScopeDuration] = useState("1 to 3 months");
-  const [scopeLevel, setScopeLevel] = useState("Intermediate level");
-  const [scopeHiring, setScopeHiring] = useState(
-    "Not planning to hire full time"
-  );
-
-  // Temporary state for modal
-  const [tempScopeDuration, setTempScopeDuration] = useState(scopeDuration);
-  const [tempScopeLevel, setTempScopeLevel] = useState(scopeLevel);
-  const [tempScopeHiring, setTempScopeHiring] = useState(scopeHiring);
-
   const openEditScopeModal = () => {
     setTempScopeDuration(scopeDuration);
     setTempScopeLevel(scopeLevel);
@@ -155,16 +164,6 @@ const JobPostingPage = () => {
     toast.success("Scope updated successfully");
     setShowEditScopeModal(false);
   };
-
-  /* const finish = async () => {
-    try {
-      await newRequest.post("/project", {});
-
-      toast.success("Job posted successfully");
-    } catch (error) {
-      toast.error("Failed to post job");
-    }
-  };*/
 
   const finish = async (e) => {
     e.preventDefault();
@@ -187,7 +186,7 @@ const JobPostingPage = () => {
       return;
     }
     if (!skills || skills.length < 3) {
-      toast.error("At least three skill is required");
+      toast.error("At least three skills are required");
       return;
     }
     if (!budgetType) {
@@ -239,34 +238,17 @@ const JobPostingPage = () => {
     }
 
     try {
-      const res = await newRequest.post("/projects", data);
-      setJobTitle(
-        "Build responsive WordPress site with booking/payment functionality"
-      );
-      setJobDescription(
-        "my work is about something I can’t tell you about it right now"
-      );
-      setJobCategory("Web Design");
-      setJobSubCategory("UI/UX Design");
-      setSkills(["Framer", "CSS", "PHP", "Web Design"]);
-      setBudgetType("hourly");
-      setHourlyRateFrom(0);
-      setHourlyRateTo(0);
-      setFixedPrice(0);
-      setScopeDuration("1 to 3 months");
-      setScopeLevel("Intermediate level");
-      setScopeHiring("Not planning to hire full time");
-      setFiles([]);
+      const res = await newRequest.put(`/projects/${id}`, data);
+      console.log(res);
+      toast.success("Project updated successfully");
 
-      toast.success("Project created successfully");
-      console.log("Project created successfully:", res.data);
-
+      // Redirect to manage projects page
       setTimeout(() => {
         navigate("/manageprojects");
       }, 2000);
     } catch (err) {
-      console.error("Error creating project:", err);
-      toast.error("Error creating project");
+      console.error("Error updating project:", err);
+      toast.error("Failed to update project");
     }
   };
   return (
@@ -279,7 +261,7 @@ const JobPostingPage = () => {
             onClick={finish}
             className="cursor-pointer  !py-2 !px-4 hover:text-white rounded-[60px] !bg-[#0E9F6E] hover:!bg-[#046c4e] text-white hover:border-none transition-all duration-300 ease-linear font-medium w-fit"
           >
-            Post this Project
+            Update this Project
           </button>
           {/* </Link> */}
         </div>
@@ -900,4 +882,4 @@ const JobPostingPage = () => {
   );
 };
 
-export default JobPostingPage;
+export default UpdateProject;

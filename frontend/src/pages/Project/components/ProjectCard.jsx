@@ -1,22 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiFillStar } from "react-icons/ai";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import propTypes from "prop-types";
+import { toast } from "react-toastify"; // Adjust this import according to your project structure
+import newRequest from "../../../utils/newRequest";
 
 const ProjectCard = ({
   title,
-  type,
-  salary,
-  imageSrc,
   description,
-  tags,
+  category,
+  subCategory,
+  skills,
+  budgetType,
+  hourlyRateFrom,
+  hourlyRateTo,
+  fixedPrice,
+  scopeDuration,
+  scopeLevel,
+  scopeHiring,
   location,
-  estimatedTime,
   isPaymentVerified,
+  userId,
 }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [userProject, setUserProject] = useState({});
+
+  useEffect(() => {
+    const projectUser = async () => {
+      try {
+        const res = await newRequest.get(`/users/${userId}`);
+        setUserProject(res.data);
+      } catch (err) {
+        console.log(err);
+        toast.error(err.response.data.message);
+      }
+    };
+
+    projectUser();
+  }, [userId]);
 
   const handleBookmark = () => {
     setIsBookmarked(!isBookmarked);
@@ -25,14 +48,18 @@ const ProjectCard = ({
     if (!isBookmarked) {
       const newProject = {
         title,
-        type,
-        salary,
-        imageSrc,
         description,
-        tags,
+        category,
+        subCategory,
+        skills,
+        budgetType,
+        fixedPrice,
+        scopeDuration,
+        scopeLevel,
+        scopeHiring,
         location,
-        estimatedTime,
         isPaymentVerified,
+        imageSrc: userProject.img,
       };
       localStorage.setItem(
         "savedProjects",
@@ -44,6 +71,20 @@ const ProjectCard = ({
       );
       localStorage.setItem("savedProjects", JSON.stringify(updatedProjects));
     }
+  };
+
+  const skillColors = [
+    { bgColor: "#EBF5F9", textColor: "#70B8D7" },
+    { bgColor: "#EBF9EF", textColor: "#50CF74" },
+    { bgColor: "#EFEBF9", textColor: "#6D4BCD" },
+    { bgColor: "#F9F2EB", textColor: "#CE894B" },
+    { bgColor: "#EBF0F9", textColor: "#4B77CE" },
+    { bgColor: "#EBF9F4", textColor: "#3DCA97" },
+  ];
+
+  const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * skillColors.length);
+    return skillColors[randomIndex];
   };
 
   return (
@@ -66,8 +107,8 @@ const ProjectCard = ({
         <div className="w-fit p-4 pl-0">
           <img
             className="h-14 w-auto object-cover rounded-md"
-            src={imageSrc}
-            alt="Job"
+            src={userProject.img}
+            alt="User"
           />
         </div>
         <div className="pt-4">
@@ -75,8 +116,13 @@ const ProjectCard = ({
             {title}
           </div>
           <p className="block mt-1 text-xs leading-tight font-medium text-[#77859A]">
-            <span className="font-bold">{salary}</span> - {type} - Est. Time:{" "}
-            {estimatedTime}
+            <span className="font-bold">
+              $
+              {budgetType === "fixed"
+                ? fixedPrice
+                : `${hourlyRateFrom} - ${hourlyRateTo}`}
+            </span>{" "}
+            - {budgetType} - Est. Time: {scopeDuration}
           </p>
         </div>
       </div>
@@ -85,15 +131,18 @@ const ProjectCard = ({
           {description}
         </p>
         <div className="mt-4 flex items-center flex-wrap">
-          {tags.map((tag, index) => (
-            <span
-              key={index}
-              className={`inline-block  rounded-md px-3 py-1 text-sm font-semibold mr-2 mb-2`}
-              style={{ backgroundColor: tag.bgColor, color: tag.textColor }}
-            >
-              {tag.name}
-            </span>
-          ))}
+          {skills.map((skill, index) => {
+            const { bgColor, textColor } = getRandomColor();
+            return (
+              <span
+                key={index}
+                className={`inline-block rounded-md px-3 py-1 text-sm font-semibold mr-2 mb-2`}
+                style={{ backgroundColor: bgColor, color: textColor }}
+              >
+                {skill}
+              </span>
+            );
+          })}
         </div>
         <div className="mt-4 flex items-center">
           {isPaymentVerified ? (
@@ -137,7 +186,7 @@ const ProjectCard = ({
           </div>
           <div className="text-sm text-gray-500 ml-4 font-semibold">
             <FaMapMarkerAlt className="inline-block text-gray-400 mr-1" />
-            {location}
+            {userProject.state}, {userProject.city}
           </div>
         </div>
       </div>
@@ -147,14 +196,20 @@ const ProjectCard = ({
 
 ProjectCard.propTypes = {
   title: propTypes.string.isRequired,
-  type: propTypes.string.isRequired,
-  salary: propTypes.string.isRequired,
-  imageSrc: propTypes.string.isRequired,
   description: propTypes.string.isRequired,
-  tags: propTypes.array.isRequired,
-  location: propTypes.string.isRequired,
-  estimatedTime: propTypes.string.isRequired,
+  category: propTypes.string.isRequired,
+  subCategory: propTypes.string.isRequired,
+  skills: propTypes.array.isRequired,
+  budgetType: propTypes.string.isRequired,
+  fixedPrice: propTypes.number.isRequired,
+  hourlyRateFrom: propTypes.number,
+  hourlyRateTo: propTypes.number,
+  scopeDuration: propTypes.string.isRequired,
+  scopeLevel: propTypes.string.isRequired,
+  scopeHiring: propTypes.string.isRequired,
+  location: propTypes.string,
   isPaymentVerified: propTypes.bool,
+  userId: propTypes.string.isRequired,
 };
 
 export default ProjectCard;

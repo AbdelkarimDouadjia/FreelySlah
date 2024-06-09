@@ -3,7 +3,11 @@ import "./App.css";
 // import Login from "./pages/Login/Login.jsx";
 //import Routers from "./routes/Routers.jsx";
 // import Routers from "./routes/Routers.jsx";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
 import { GlobalProvider } from "./context/GlobalContext.jsx";
 
 import Router from "./routes/Router.jsx";

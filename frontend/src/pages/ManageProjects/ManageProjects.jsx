@@ -1,36 +1,46 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Input, Select } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import { AuthContext } from "../../context/AuthContext";
+import newRequest from "../../utils/newRequest";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
 const ManageProjects = () => {
+  const { currentUser } = useContext(AuthContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [projects, setProjects] = useState([
-    {
-      key: "1",
-      id: "1",
-      name: "Project One",
-      picture: "https://via.placeholder.com/50",
-      category: "Web Development",
-      subcategory: "E-commerce",
-      duration: "3 months",
-    },
-    {
-      key: "2",
-      id: "2",
-      name: "Project Two",
-      picture: "https://via.placeholder.com/50",
-      category: "Digital Marketing",
-      subcategory: "SEO",
-      duration: "6 months",
-    },
-  ]);
+  const [projects, setProjects] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await newRequest.get(`/projects?userId=${currentUser._id}`);
+        const fetchedProjects = res.data.map((project, index) => ({
+          key: project._id,
+          index: index + 1,
+          id: project._id,
+          title: project.title,
+          category: project.category,
+          subcategory: project.subCategory,
+          time: new Date(project.createdAt).toLocaleString(),
+        }));
+        setProjects(fetchedProjects);
+        console.log(fetchedProjects);
+      } catch (err) {
+        console.log(err.response.data.message);
+      }
+    };
+    fetchProjects();
+  }, [currentUser._id]);
 
   const handleAddProject = () => {
     setIsModalVisible(true);
@@ -63,15 +73,20 @@ const ManageProjects = () => {
     setIsModalVisible(false);
   };
 
-  const handleEdit = (record) => {
-    setIsModalVisible(true);
-    setIsEditing(true);
-    setCurrentRecord(record);
-    form.setFieldsValue(record);
+  const handleEdit = (record, event) => {
+    event.stopPropagation();
+    navigate(`/updateproject/${record.id}`);
   };
 
-  const handleDelete = (key) => {
-    setProjects(projects.filter((project) => project.key !== key));
+  const handleDelete = async (key, event) => {
+    event.stopPropagation();
+    try {
+      await newRequest.delete(`/projects/${key}`);
+      setProjects(projects.filter((project) => project.key !== key));
+      toast.success("Project has been deleted!");
+    } catch (err) {
+      toast.error("Failed to delete the project.");
+    }
   };
 
   const handleSelectChange = (selectedRowKeys) => {
@@ -80,22 +95,14 @@ const ManageProjects = () => {
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: "Index",
+      dataIndex: "index",
+      key: "index",
     },
     {
-      title: "Project Title",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Picture",
-      dataIndex: "picture",
-      key: "picture",
-      render: (picture) => (
-        <img src={picture} alt="project" style={{ width: 50, height: 50 }} />
-      ),
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
     },
     {
       title: "Category",
@@ -108,9 +115,9 @@ const ManageProjects = () => {
       key: "subcategory",
     },
     {
-      title: "Duration",
-      dataIndex: "duration",
-      key: "duration",
+      title: "Time",
+      dataIndex: "time",
+      key: "time",
     },
     {
       title: "Action",
@@ -120,15 +127,14 @@ const ManageProjects = () => {
           <Button
             type="link"
             icon={<AiOutlineEdit />}
-            //onClick={() => handleEdit(record)}
-            href="/createproject"
+            onClick={(event) => handleEdit(record, event)}
             className="text-green-500 border border-green-500 mr-2 hover:!bg-green-500 hover:!text-white"
           />
           <Button
             type="link"
             icon={<AiOutlineDelete />}
             danger
-            onClick={() => handleDelete(record.key)}
+            onClick={(event) => handleDelete(record.key, event)}
             className="text-red-500 border border-red-500 hover:!bg-red-500 hover:!text-white"
           />
         </span>
@@ -146,7 +152,6 @@ const ManageProjects = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            //onClick={handleAddProject}
             href="/createproject"
             className="!border-[#0E9F6E] px-5 py-5 flex justify-center items-center !bg-[#0E9F6E] text-white rounded-3xl hover:!bg-[#046c4e] font-[500] outline-none text-[16px]"
           >
@@ -167,20 +172,9 @@ const ManageProjects = () => {
             rowClassName={(record, index) =>
               index % 2 === 0 ? "table-row-light" : "table-row-dark"
             }
-            onRow={(record, rowIndex) => {
-              return {
-                onMouseEnter: () => {
-                  document
-                    .querySelector(`.ant-table-row:nth-child(${rowIndex + 1})`)
-                    .classList.add("hovered-row");
-                },
-                onMouseLeave: () => {
-                  document
-                    .querySelector(`.ant-table-row:nth-child(${rowIndex + 1})`)
-                    .classList.remove("hovered-row");
-                },
-              };
-            }}
+            onRow={(record) => ({
+              onClick: () => navigate(`/project/${record.id}`),
+            })}
           />
         </div>
         <Modal
@@ -199,18 +193,9 @@ const ManageProjects = () => {
               <Input />
             </Form.Item>
             <Form.Item
-              name="name"
-              label="Name"
-              rules={[{ required: true, message: "Please input the name!" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="picture"
-              label="Picture URL"
-              rules={[
-                { required: true, message: "Please input the picture URL!" },
-              ]}
+              name="title"
+              label="Title"
+              rules={[{ required: true, message: "Please input the title!" }]}
             >
               <Input />
             </Form.Item>
@@ -222,9 +207,9 @@ const ManageProjects = () => {
               ]}
             >
               <Select>
+                <Option value="Web & App Design">Web & App Design</Option>
                 <Option value="Web Development">Web Development</Option>
                 <Option value="Digital Marketing">Digital Marketing</Option>
-                <Option value="Graphic Design">Graphic Design</Option>
               </Select>
             </Form.Item>
             <Form.Item
@@ -237,11 +222,9 @@ const ManageProjects = () => {
               <Input />
             </Form.Item>
             <Form.Item
-              name="duration"
-              label="Duration"
-              rules={[
-                { required: true, message: "Please input the duration!" },
-              ]}
+              name="time"
+              label="Time"
+              rules={[{ required: true, message: "Please input the time!" }]}
             >
               <Input />
             </Form.Item>
@@ -348,6 +331,7 @@ const ManageProjects = () => {
           }
         `}</style>
       </div>
+      <ToastContainer />
     </div>
   );
 };

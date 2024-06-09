@@ -1,22 +1,61 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { GoSearch } from "react-icons/go";
 import ProjectCard from "../Project/components/ProjectCard";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import "../../App.css";
 import styles from "../../pages/Create Service/CreateService.module.css";
+import { AuthContext } from "../../context/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
+import newRequest from "../../utils/newRequest";
+import { useQuery } from "@tanstack/react-query";
+
+const categories = {
+  "Web Design": ["UI/UX Design", "Responsive Design"],
+  "Software Development": ["Frontend Development", "Backend Development"],
+  Writing: ["Content Writing", "Technical Writing"],
+  Marketing: ["SEO", "Social Media"],
+};
 
 const HomeFreelancer = () => {
-  const [isOnline, setIsOnline] = useState(true);
-  const [salaryRange, setSalaryRange] = useState([19444, 100000]);
+  const { currentUser, updateUser } = useContext(AuthContext);
+  const [isOnline, setIsOnline] = useState(currentUser.isOnline);
+
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => newRequest.get("/projects").then((res) => res.data),
+  });
+  console.log(data);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [jobType, setJobType] = useState([]);
   const [experienceLevel, setExperienceLevel] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [budgetType, setBudgetType] = useState("");
+  const [hourlyBudgetRange, setHourlyBudgetRange] = useState([0, 1000]);
+  const [fixedBudgetRange, setFixedBudgetRange] = useState([0, 100000]);
+  const [duration, setDuration] = useState("");
   const [searchTriggered, setSearchTriggered] = useState(false);
+  const [availableSkills, setAvailableSkills] = useState([]);
 
-  const toggleStatus = () => {
-    setIsOnline(!isOnline);
+  const toggleStatus = async () => {
+    try {
+      const res = await newRequest.put(`/users/${currentUser._id}`, {
+        isOnline: !isOnline,
+      });
+      updateUser(res.data);
+      // Implement your status update logic here
+      setIsOnline(!isOnline);
+      isOnline
+        ? toast.error("You are now invisible")
+        : toast.success("You are now online");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response.data.message);
+    }
   };
 
   const handleSearchChange = (event) => {
@@ -45,52 +84,45 @@ const HomeFreelancer = () => {
     );
   };
 
-  const handleSalaryChange = (values) => {
-    setSalaryRange(values);
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const handleSubCategoryChange = (event) => {
+    setSelectedSubCategory(event.target.value);
+  };
+
+  const handleSkillsChange = (event) => {
+    const value = event.target.value;
+    setSelectedSkills(
+      selectedSkills.includes(value)
+        ? selectedSkills.filter((skill) => skill !== value)
+        : [...selectedSkills, value]
+    );
+  };
+
+  const handleBudgetTypeChange = (event) => {
+    setBudgetType(event.target.value);
+  };
+
+  const handleHourlyBudgetChange = (values) => {
+    setHourlyBudgetRange(values);
+  };
+
+  const handleFixedBudgetChange = (values) => {
+    setFixedBudgetRange(values);
+  };
+
+  const handleDurationChange = (event) => {
+    setDuration(event.target.value);
   };
 
   const handleSearchClick = () => {
     setSearchTriggered(true);
   };
 
-  // Dummy data for ProjectCard components
-  const projects = [
-    {
-      title: "Building end-to-end crowdfunding application",
-      type: "Remote work",
-      salary: 12000,
-      imageSrc: "/src/assets/images/icon/company1.svg",
-      description:
-        "Looking for an experienced developer for an ongoing project. You will work with an existing SCRUM team for this project...",
-      tags: [
-        { name: "Kotlin", bgColor: "#EBF5F9", textColor: "#70B8D7" },
-        { name: "IOS Developer", bgColor: "#EBF9EF", textColor: "#50CF74" },
-        { name: "Software Engineer", bgColor: "#EFEBF9", textColor: "#6D4BCD" },
-      ],
-      location: "New York, Manhattan",
-      estimatedTime: "1 to 3 months",
-      isPaymentVerified: true,
-    },
-    {
-      title: "UX Copywriter for company profile landing page",
-      type: "Fulltime",
-      salary: 2200,
-      imageSrc: "/src/assets/images/icon/company2.svg",
-      description:
-        "Seeking a creative UX Copywriter for our landing page. The ideal candidate will collaborate with our design team to deliver...",
-      tags: [
-        { name: "UX", bgColor: "#F9F2EB", textColor: "#CE894B" },
-        { name: "Copywriting", bgColor: "#EBF0F9", textColor: "#4B77CE" },
-        { name: "Marketing", bgColor: "#EBF9F4", textColor: "#3DCA97" },
-      ],
-      location: "San Francisco, CA",
-      estimatedTime: "2 to 4 weeks",
-      isPaymentVerified: false,
-    },
-    // Add more project objects here
-  ];
+  const projects = data;
 
-  // Filtered projects based on search query and filters
   const filteredProjects = searchTriggered
     ? projects.filter((project) => {
         const query = searchQuery.toLowerCase();
@@ -98,10 +130,12 @@ const HomeFreelancer = () => {
         const matchesDescription = project.description
           .toLowerCase()
           .includes(query);
-        const matchesTags = project.tags.some((tag) =>
-          tag.name.toLowerCase().includes(query)
+        const matchesTags = project.skills.some((skill) =>
+          skill.toLowerCase().includes(query)
         );
-        const matchesLocation = project.location.toLowerCase().includes(query);
+        const matchesLocation = project.location
+          ? project.location.toLowerCase().includes(query)
+          : false;
 
         return (
           (matchesTitle ||
@@ -109,12 +143,26 @@ const HomeFreelancer = () => {
             matchesTags ||
             matchesLocation) &&
           (selectedLocation === "" ||
-            project.location.includes(selectedLocation)) &&
+            (project.location &&
+              project.location.includes(selectedLocation))) &&
           (jobType.length === 0 || jobType.includes(project.type)) &&
           (experienceLevel.length === 0 ||
-            experienceLevel.includes(project.estimatedTime)) &&
-          project.salary >= salaryRange[0] &&
-          project.salary <= salaryRange[1]
+            experienceLevel.includes(project.scopeLevel)) &&
+          (selectedCategory === "" || project.category === selectedCategory) &&
+          (selectedSubCategory === "" ||
+            project.subCategory === selectedSubCategory) &&
+          (selectedSkills.length === 0 ||
+            selectedSkills.every((skill) => project.skills.includes(skill))) &&
+          (budgetType === "" ||
+            (budgetType === "fixed" &&
+              project.budgetType === "fixed" &&
+              project.fixedPrice >= fixedBudgetRange[0] &&
+              project.fixedPrice <= fixedBudgetRange[1]) ||
+            (budgetType === "hourly" &&
+              project.budgetType === "hourly" &&
+              project.hourlyRate >= hourlyBudgetRange[0] &&
+              project.hourlyRate <= hourlyBudgetRange[1])) &&
+          (duration === "" || project.scopeDuration === duration)
         );
       })
     : projects;
@@ -130,7 +178,13 @@ const HomeFreelancer = () => {
               setSelectedLocation("");
               setJobType([]);
               setExperienceLevel([]);
-              setSalaryRange([0, 100000]);
+              setSelectedCategory("");
+              setSelectedSubCategory("");
+              setSelectedSkills([]);
+              setBudgetType("");
+              setHourlyBudgetRange([0, 1000]);
+              setFixedBudgetRange([0, 100000]);
+              setDuration("");
               setSearchQuery("");
               setSearchTriggered(false);
             }}
@@ -194,71 +248,228 @@ const HomeFreelancer = () => {
             <input
               type="checkbox"
               id="entry"
-              value="1 to 3 months"
+              value="Entry level"
               className="mr-2"
-              checked={experienceLevel.includes("1 to 3 months")}
+              checked={experienceLevel.includes("Entry level")}
               onChange={handleExperienceChange}
             />
-            <label htmlFor="entry">Entry Level (1 to 3 months)</label>
+            <label htmlFor="entry">Entry Level</label>
           </div>
           <div className={`${styles.checkboxContainer} mb-2`}>
             <input
               type="checkbox"
               id="intermediate"
-              value="2 to 4 weeks"
+              value="Intermediate level"
               className="mr-2"
-              checked={experienceLevel.includes("2 to 4 weeks")}
+              checked={experienceLevel.includes("Intermediate level")}
               onChange={handleExperienceChange}
             />
-            <label htmlFor="intermediate">Intermediate (2 to 4 weeks)</label>
+            <label htmlFor="intermediate">Intermediate Level</label>
           </div>
           <div className={`${styles.checkboxContainer} mb-2`}>
             <input
               type="checkbox"
               id="expert"
-              value="Expert"
+              value="Expert level"
               className="mr-2"
-              checked={experienceLevel.includes("Expert")}
+              checked={experienceLevel.includes("Expert level")}
               onChange={handleExperienceChange}
             />
-            <label htmlFor="expert">Expert</label>
+            <label htmlFor="expert">Expert Level</label>
           </div>
         </div>
         <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-4">Expected Salary</h3>
-          <RangeSlider
-            min={0}
-            max={100000}
-            step={1}
-            value={salaryRange}
-            onInput={handleSalaryChange}
-            className="w-full custom-range-slider"
-          />
-          <div className="flex justify-between mt-8 px-8 items-center">
-            <input
-              type="number"
-              value={salaryRange[0]}
-              onChange={(e) =>
-                setSalaryRange([Number(e.target.value), salaryRange[1]])
-              }
-              className="border border-gray-300 rounded p-2 w-24"
-            />
-            <span className="mx-2">-</span>
-            <input
-              type="number"
-              value={salaryRange[1]}
-              onChange={(e) =>
-                setSalaryRange([salaryRange[0], Number(e.target.value)])
-              }
-              className="border border-gray-300 rounded p-2 w-24"
-            />
-          </div>
+          <h3 className="text-lg font-semibold mb-4">Category</h3>
+          <select
+            className="w-full border p-2 rounded-lg py-2 px-3  focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
+            <option value="">Select a category</option>
+            <option value="Web Design">Web Design</option>
+            <option value="Software Development">Software Development</option>
+            {/* Add more options here */}
+          </select>
         </div>
         <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-4">Job Specialties</h3>
+          <h3 className="text-lg font-semibold mb-4">Subcategory</h3>
+          <select
+            className="w-full border p-2 rounded-lg py-2 px-3  focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
+            value={selectedSubCategory}
+            onChange={handleSubCategoryChange}
+          >
+            <option value="">Select a subcategory</option>
+            <option value="UI/UX Design">UI/UX Design</option>
+            <option value="Frontend Development">Frontend Development</option>
+            {/* Add more options here */}
+          </select>
+        </div>
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-4">Skills</h3>
           <div className={`${styles.checkboxContainer} mb-2`}>
-            <input type="checkbox" id="design" className="mr-2" />
-            <label htmlFor="design">Design</label>
+            <input
+              type="checkbox"
+              id="skill1"
+              value="Skill 1"
+              className="mr-2"
+              checked={selectedSkills.includes("Skill 1")}
+              onChange={handleSkillsChange}
+            />
+            <label htmlFor="skill1">Skill 1</label>
+          </div>
+          <div className={`${styles.checkboxContainer} mb-2`}>
+            <input
+              type="checkbox"
+              id="skill2"
+              value="Skill 2"
+              className="mr-2"
+              checked={selectedSkills.includes("Skill 2")}
+              onChange={handleSkillsChange}
+            />
+            <label htmlFor="skill2">Skill 2</label>
+          </div>
+          {/* Add more skills checkboxes here */}
+        </div>
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-4">Budget Type</h3>
+          <div className={`${styles.radioContainer} mb-2`}>
+            <input
+              type="radio"
+              id="fixed"
+              name="budgetType"
+              value="fixed"
+              className="mr-2"
+              checked={budgetType === "fixed"}
+              onChange={handleBudgetTypeChange}
+            />
+            <label htmlFor="fixed">Fixed Price</label>
+          </div>
+          <div className={`${styles.radioContainer} mb-2`}>
+            <input
+              type="radio"
+              id="hourly"
+              name="budgetType"
+              value="hourly"
+              className="mr-2"
+              checked={budgetType === "hourly"}
+              onChange={handleBudgetTypeChange}
+            />
+            <label htmlFor="hourly">Hourly Rate</label>
+          </div>
+        </div>
+        {budgetType === "hourly" && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-4">Hourly Budget Range</h3>
+            <RangeSlider
+              min={0}
+              max={1000}
+              step={1}
+              value={hourlyBudgetRange}
+              onInput={handleHourlyBudgetChange}
+              className="w-full custom-range-slider"
+            />
+            <div className="flex justify-between mt-8 px-8 items-center">
+              <input
+                type="number"
+                value={hourlyBudgetRange[0]}
+                onChange={(e) =>
+                  setHourlyBudgetRange([
+                    Number(e.target.value),
+                    hourlyBudgetRange[1],
+                  ])
+                }
+                className="border border-gray-300 rounded p-2 w-24"
+              />
+              <span className="mx-2">-</span>
+              <input
+                type="number"
+                value={hourlyBudgetRange[1]}
+                onChange={(e) =>
+                  setHourlyBudgetRange([
+                    hourlyBudgetRange[0],
+                    Number(e.target.value),
+                  ])
+                }
+                className="border border-gray-300 rounded p-2 w-24"
+              />
+            </div>
+          </div>
+        )}
+        {budgetType === "fixed" && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-4">Fixed Budget Range</h3>
+            <RangeSlider
+              min={0}
+              max={100000}
+              step={1}
+              value={fixedBudgetRange}
+              onInput={handleFixedBudgetChange}
+              className="w-full custom-range-slider"
+            />
+            <div className="flex justify-between mt-8 px-8 items-center">
+              <input
+                type="number"
+                value={fixedBudgetRange[0]}
+                onChange={(e) =>
+                  setFixedBudgetRange([
+                    Number(e.target.value),
+                    fixedBudgetRange[1],
+                  ])
+                }
+                className="border border-gray-300 rounded p-2 w-24"
+              />
+              <span className="mx-2">-</span>
+              <input
+                type="number"
+                value={fixedBudgetRange[1]}
+                onChange={(e) =>
+                  setFixedBudgetRange([
+                    fixedBudgetRange[0],
+                    Number(e.target.value),
+                  ])
+                }
+                className="border border-gray-300 rounded p-2 w-24"
+              />
+            </div>
+          </div>
+        )}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-4">Duration</h3>
+          <div className={`${styles.radioContainer} mb-2`}>
+            <input
+              type="radio"
+              id="moreThan6Months"
+              name="duration"
+              value="more than 6 months"
+              className="mr-2"
+              checked={duration === "more than 6 months"}
+              onChange={handleDurationChange}
+            />
+            <label htmlFor="moreThan6Months">More than 6 months</label>
+          </div>
+          <div className={`${styles.radioContainer} mb-2`}>
+            <input
+              type="radio"
+              id="threeToSixMonths"
+              name="duration"
+              value="3 to 6 months"
+              className="mr-2"
+              checked={duration === "3 to 6 months"}
+              onChange={handleDurationChange}
+            />
+            <label htmlFor="threeToSixMonths">3 to 6 months</label>
+          </div>
+          <div className={`${styles.radioContainer} mb-2`}>
+            <input
+              type="radio"
+              id="oneToThreeMonths"
+              name="duration"
+              value="1 to 3 months"
+              className="mr-2"
+              checked={duration === "1 to 3 months"}
+              onChange={handleDurationChange}
+            />
+            <label htmlFor="oneToThreeMonths">1 to 3 months</label>
           </div>
         </div>
       </div>
@@ -292,11 +503,17 @@ const HomeFreelancer = () => {
         </div>
 
         {/* Render filtered ProjectCard components */}
-        {filteredProjects.map((project, index) => (
-          <div className="mb-7" key={index}>
-            <ProjectCard key={index} {...project} />
-          </div>
-        ))}
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          "Something went wrong!"
+        ) : (
+          filteredProjects.map((project, index) => (
+            <div className="mb-7" key={index}>
+              <ProjectCard key={index} {...project} />
+            </div>
+          ))
+        )}
       </div>
 
       <div className="lg:w-1/4 p-4">
@@ -340,24 +557,18 @@ const HomeFreelancer = () => {
         <div className="bg-white p-6 mb-4 rounded-2xl shadow">
           <h3 className="text-lg font-bold mb-2">Skill & Expertise</h3>
           <div className="flex flex-wrap">
-            <span className="bg-gray-100 text-gray-500 px-4 py-1 m-1 rounded-2xl">
-              User Interface
-            </span>
-            <span className="bg-gray-100 text-gray-500 px-4 py-1 m-1 rounded-2xl">
-              Research
-            </span>
-            <span className="bg-gray-100 text-gray-500 px-4 py-1 m-1 rounded-2xl">
-              Motion Design
-            </span>
-            <span className="bg-gray-100 text-gray-500 px-4 py-1 m-1 rounded-2xl">
-              Illustration
-            </span>
-            <span className="bg-gray-100 text-gray-500 px-4 py-1 m-1 rounded-2xl">
-              3D Designer
-            </span>
+            {currentUser.userProfile[0].userSkills.map((skill, index) => (
+              <span
+                key={index}
+                className="bg-[#D9F9E4] text-[#268D61] text-sm px-4 py-1 rounded-2xl mr-2 mb-2"
+              >
+                {skill.skill}
+              </span>
+            ))}
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

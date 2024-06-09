@@ -9,6 +9,7 @@ import messageRoute from "./routes/message.route.js";
 import reviewRoute from "./routes/review.route.js";
 import authRoute from "./routes/auth.route.js";
 import stepperRoute from "./routes/stepper.route.js";
+import projectRoute from "./routes/project.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -33,6 +34,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/gigs", gigRoute);
 // app.use("/api/orders", orderRoute);
+app.use("/api/projects", projectRoute);
 app.use("/api/conversations", conversationRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/reviews", reviewRoute);

@@ -46,7 +46,7 @@ export const login = async (req, res, next) => {
       { expiresIn: "24h" } // Add token expiration
     );
 
-    user.isOnline = true;
+    user.isOnline = true; // Set isOnline to true on login
     await user.save();
 
     const { password, ...info } = user._doc;
@@ -64,15 +64,30 @@ export const login = async (req, res, next) => {
   }
 };
 
-export const logout = async (req, res) => {
-  res
-    .clearCookie("accessToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Secure in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    })
-    .status(200)
-    .send("User has been logged out.");
+export const logout = async (req, res, next) => {
+  try {
+    const token = req.cookies.accessToken;
+    if (!token) return next(createError(401, "Not authenticated!"));
+
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const user = await User.findById(decoded.id);
+
+    if (!user) return next(createError(404, "User not found!"));
+
+    user.isOnline = false;
+    await user.save();
+
+    res
+      .clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // Secure in production
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      })
+      .status(200)
+      .send("User has been logged out.");
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const google = async (req, res, next) => {
@@ -81,6 +96,9 @@ export const google = async (req, res, next) => {
 
     if (user) {
       // Handle login for existing user
+      user.isOnline = true; // Set isOnline to true on login
+      await user.save();
+
       const token = jwt.sign(
         {
           id: user._id,
@@ -111,6 +129,7 @@ export const google = async (req, res, next) => {
         password: hashedPassword,
         img: req.body.img,
         country: req.body.country,
+        isOnline: true, // Set isOnline to true on new user creation
       });
       await newUser.save();
       const token = jwt.sign(

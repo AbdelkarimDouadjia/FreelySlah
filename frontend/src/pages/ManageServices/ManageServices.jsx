@@ -1,36 +1,47 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Input, Select } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import { AuthContext } from "../../context/AuthContext";
+import newRequest from "../../utils/newRequest";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
 const ManageServices = () => {
+  const { currentUser } = useContext(AuthContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [services, setServices] = useState([
-    {
-      key: "1",
-      id: "1",
-      title: "Service One",
-      picture: "/src/assets/images/listings/s1.jpg",
-      category: "Web & App Design",
-      subcategory: "Mobile App",
-      time: "2 hours ago",
-    },
-    {
-      key: "2",
-      id: "2",
-      title: "Service Two",
-      picture: "https://via.placeholder.com/50",
-      category: "Web Development",
-      subcategory: "E-commerce",
-      time: "5 hours ago",
-    },
-  ]);
+  const [services, setServices] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await newRequest.get(`/gigs?userId=${currentUser._id}`);
+        const fetchedServices = res.data.map((service, index) => ({
+          key: service._id,
+          index: index + 1,
+          id: service._id,
+          title: service.title,
+          picture: service.serviceImages[0] || "https://via.placeholder.com/50",
+          category: service.category,
+          subcategory: service.subCategory,
+          time: new Date(service.createdAt).toLocaleString(), // Format the time as needed
+        }));
+        setServices(fetchedServices);
+        console.log(fetchedServices);
+      } catch (err) {
+        console.log(err.response.data.message);
+      }
+    };
+    fetchServices();
+  }, [currentUser._id]);
 
   const handleAddService = () => {
     setIsModalVisible(true);
@@ -63,15 +74,20 @@ const ManageServices = () => {
     setIsModalVisible(false);
   };
 
-  const handleEdit = (record) => {
-    setIsModalVisible(true);
-    setIsEditing(true);
-    setCurrentRecord(record);
-    form.setFieldsValue(record);
+  const handleEdit = (record, event) => {
+    event.stopPropagation();
+    navigate(`/updateservice/${record.key}`);
   };
 
-  const handleDelete = (key) => {
-    setServices(services.filter((service) => service.key !== key));
+  const handleDelete = async (key, event) => {
+    event.stopPropagation();
+    try {
+      await newRequest.delete(`/gigs/${key}`);
+      setServices(services.filter((service) => service.key !== key));
+      toast.success("Gig has been deleted!");
+    } catch (err) {
+      toast.error("Failed to delete the gig.");
+    }
   };
 
   const handleSelectChange = (selectedRowKeys) => {
@@ -80,9 +96,9 @@ const ManageServices = () => {
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: "Index",
+      dataIndex: "index",
+      key: "index",
     },
     {
       title: "Title",
@@ -120,15 +136,14 @@ const ManageServices = () => {
           <Button
             type="link"
             icon={<AiOutlineEdit />}
-            //onClick={() => handleEdit(record)}
-            href="/createservice"
+            onClick={(event) => handleEdit(record, event)}
             className="text-green-500 border border-green-500 mr-2 hover:!bg-green-500 hover:!text-white"
           />
           <Button
             type="link"
             icon={<AiOutlineDelete />}
             danger
-            onClick={() => handleDelete(record.key)}
+            onClick={(event) => handleDelete(record.key, event)}
             className="text-red-500 border border-red-500 hover:!bg-red-500 hover:!text-white"
           />
         </span>
@@ -146,7 +161,6 @@ const ManageServices = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            //onClick={handleAddService}
             href="/createservice"
             className="!border-[#0E9F6E] px-5 py-5 flex justify-center items-center !bg-[#0E9F6E] text-white rounded-3xl hover:!bg-[#046c4e] font-[500] outline-none text-[16px]"
           >
@@ -167,20 +181,9 @@ const ManageServices = () => {
             rowClassName={(record, index) =>
               index % 2 === 0 ? "table-row-light" : "table-row-dark"
             }
-            onRow={(record, rowIndex) => {
-              return {
-                onMouseEnter: () => {
-                  document
-                    .querySelector(`.ant-table-row:nth-child(${rowIndex + 1})`)
-                    .classList.add("hovered-row");
-                },
-                onMouseLeave: () => {
-                  document
-                    .querySelector(`.ant-table-row:nth-child(${rowIndex + 1})`)
-                    .classList.remove("hovered-row");
-                },
-              };
-            }}
+            onRow={(record) => ({
+              onClick: () => navigate(`/service/${record.id}`),
+            })}
           />
         </div>
         <Modal
@@ -346,6 +349,7 @@ const ManageServices = () => {
           }
         `}</style>
       </div>
+      <ToastContainer />
     </div>
   );
 };
