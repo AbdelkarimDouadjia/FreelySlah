@@ -1,0 +1,20 @@
+.pay {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	background-color: #f5f5f5;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pay h2 {
+	margin-bottom: 1.5rem;
+	color: #333;
+}
+
+.pay .elements-wrapper {
+	width: 100%;
+	max-width: 500px;
+}

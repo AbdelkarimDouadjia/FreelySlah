@@ -9,6 +9,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import newRequest from "../../utils/newRequest";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const categories = {
   "Web Design": ["UI/UX Design", "Responsive Design"],
@@ -18,6 +19,10 @@ const categories = {
 };
 
 const HomeFreelancer = () => {
+  const navigate = useNavigate();
+  const handleCardClick = (projectId) => {
+    navigate(`/project/${projectId}`);
+  };
   const { currentUser, updateUser } = useContext(AuthContext);
   const [isOnline, setIsOnline] = useState(currentUser.isOnline);
 
@@ -510,7 +515,7 @@ const HomeFreelancer = () => {
         ) : (
           filteredProjects.map((project, index) => (
             <div className="mb-7" key={index}>
-              <ProjectCard key={index} {...project} />
+              <ProjectCard key={index} data={project} />
             </div>
           ))
         )}
@@ -519,13 +524,17 @@ const HomeFreelancer = () => {
       <div className="lg:w-1/4 p-4">
         <div className="bg-white p-4 mb-4 rounded-2xl shadow flex items-center flex-col">
           <img
-            src="/src/assets/images/avatar/Image.jpg"
+            src={currentUser.img}
             alt="Profile"
             className="w-24 h-24 rounded-full mb-4"
           />
           <div className="text-center">
-            <h3 className="text-lg font-bold">Abdelkarim Douadjia</h3>
-            <p className="text-gray-500">Freelancer</p>
+            <h3 className="text-lg font-bold">
+              {currentUser.fname} {currentUser.lname}
+            </h3>
+            <p className="text-gray-500">
+              {currentUser.isSeller ? "Freelancer" : "Client"}
+            </p>
           </div>
           <div className="mt-4">
             <button

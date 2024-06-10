@@ -56,6 +56,9 @@ import { RequireAuth } from "../layout/Layout.jsx";
 import { RequireAuthWelcome } from "../layout/Layout.jsx";
 import UpdateProject from "../pages/UpdateProject/UpdateProject.jsx";
 import UpdateService from "../pages/UpdateService/UpdateService.jsx";
+import ServiceProject from "../pages/Service/ServiceProject.jsx";
+import Pay from "../pages/Pay/Pay.jsx";
+import Success from "../pages/Pay/Success.jsx";
 
 const Router = () => {
   const Layout = () => {
@@ -95,27 +98,30 @@ const Router = () => {
       children: [
         { path: "/", element: <Home /> },
         { path: "/home", element: <Home /> },
-        { path: "/gig/:id", element: <Service /> },
+        //{ path: "/gig/:id", element: <Service /> },
 
         { path: "/overview", element: <Overview /> },
         // { path: "/welcome", element: <MultiStep /> },
 
         { path: "/gigform", element: <GigForm /> },
         { path: "/createservice", element: <CreateService /> },
-        { path: "updateservice/:id", element: <UpdateService />},
+        { path: "updateservice/:id", element: <UpdateService /> },
         { path: "/createproject", element: <JobPostingPage /> },
         { path: "/updateproject/:id", element: <UpdateProject /> },
         { path: "/editmyprofile", element: <EditMyProfile /> },
-        { path: "/service", element: <Service /> },
+        { path: "/service/:id", element: <Service /> },
         { path: "/manageproducts", element: <ManageProducts /> },
         { path: "/manageservices", element: <ManageServices /> },
         { path: "/manageprojects", element: <ManageProjects /> },
-        { path: "/project", element: <Project /> },
+        { path: "/project/:id", element: <Project /> },
         { path: "/shopcart", element: <ShopCart /> },
         { path: "/shopcheckout", element: <ShopCheckOut /> },
         { path: "/shoporder", element: <ShopOrder /> },
         { path: "/savedprojects", element: <SavedProjects /> },
         { path: "/product", element: <Product /> },
+        { path: "/service-project", element: <ServiceProject /> },
+        { path: "/pay/:id", element: <Pay /> },
+        { path: "/success", element: <Success /> },
 
         { path: "/findjob", element: <FindJob /> },
         { path: "/findtalent", element: <FindTalent /> },

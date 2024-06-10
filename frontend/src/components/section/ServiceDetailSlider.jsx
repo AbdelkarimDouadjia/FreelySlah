@@ -7,8 +7,12 @@ import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
+import newRequest from "../../utils/newRequest";
+import PropTypes from "prop-types";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const gigImages = [
+/*const gigImages = [
   "/src/assets/images/listings/s0.jpg",
   "/src/assets/images/listings/s1.jpg",
   "/src/assets/images/listings/s2.jpg",
@@ -20,9 +24,30 @@ const gigImages = [
   "/src/assets/images/listings/s8.jpg",
   "/src/assets/images/listings/s9.jpg",
   "/src/assets/images/listings/s10.jpg",
-];
+];*/
 
-const ServiceDetailSlider = () => {
+const ServiceDetailSlider = (props) => {
+  const userId = props.data.userId;
+  const [userService, setUserService] = useState({});
+  console.log(userId);  
+  const data = props.data;
+  console.log(data);
+  const gigImages = data.serviceImages.map((item) => item);
+
+  useEffect(() => {
+    const ServiceUser = async () => {
+      try {
+        const res = await newRequest.get(`/users/${userId}`);
+        setUserService(res.data);
+      } catch (err) {
+        console.log(err);
+        toast.error(err.response.data.message);
+      }
+    };
+
+    ServiceUser();
+  }, [userId]);
+
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [showSwiper, setShowSwiper] = useState(false);
   useEffect(() => {
@@ -52,7 +77,8 @@ const ServiceDetailSlider = () => {
                   Delivery Time
                 </h5>
                 <p className="text-[#222] font-normal mx-0 my-0 leading-[1.85]">
-                  1-3 Days
+                  {data.pricingTiers[0].deliveryDays} -
+                  {data.pricingTiers[2].deliveryDays} Days
                 </p>
               </div>
             </div>
@@ -101,7 +127,7 @@ const ServiceDetailSlider = () => {
                   Location
                 </h5>
                 <p className="text-[#222] font-normal mx-0 my-0 leading-[1.85]">
-                  New York
+                  {userService.city}
                 </p>
               </div>
             </div>
@@ -184,9 +210,18 @@ const ServiceDetailSlider = () => {
             </Swiper>
           )}
         </div>
+        <ToastContainer />
       </div>
     </>
   );
+};
+
+ServiceDetailSlider.propTypes = {
+  data: PropTypes.object,
+};
+
+ServiceDetailSlider.defaultProps = {
+  data: {},
 };
 
 export default ServiceDetailSlider;

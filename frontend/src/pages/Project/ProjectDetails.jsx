@@ -1,33 +1,18 @@
-import React from "react";
-import { project, projectProposal } from "../../components/section/product.js";
-/*import ProjectProposalCard1 from "../card/ProjectProposalCard1";
-import ServiceDetailExtra1 from "../element/ServiceDetailExtra1";*/
-import { Sticky, StickyContainer } from "react-sticky";
-/*import ProjectPriceWidget1 from "../element/ProjectPriceWidget1";
-import ProjectContactWidget1 from "../element/ProjectContactWidget1";*/
-import useScreen from "../../components/section/useScreen.js";
-//import { useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { StickyContainer } from "react-sticky";
 import { LuCalendarCheck } from "react-icons/lu";
 import { TfiLocationPin } from "react-icons/tfi";
 import { LuBadgeDollarSign } from "react-icons/lu";
 import { PiClockCountdownBold } from "react-icons/pi";
 import { BiCopy } from "react-icons/bi";
 import { FaArrowRightLong } from "react-icons/fa6";
-import FileUpload from "./FileUpload";
-import ServiceContactWidget from "../../components/section/ServiceContactWidget.jsx";
-import ProjectPriceWidget from "./components/ProjectPriceWidget.jsx";
+//import FileUpload from "./FileUpload";
 import ProjectCard from "./components/ProjectCard.jsx";
-
-const skills = [
-  "SaaS",
-  "Figma",
-  "Software Design",
-  "Sketch",
-  "Prototyping",
-  "HTML5",
-  "Design",
-  "Writing",
-];
+import PropTypes from "prop-types";
+import newRequest from "../../utils/newRequest.js";
+import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { AuthContext } from "../../context/AuthContext.jsx";
 
 // Dummy data for ProjectCard components
 const projects = [
@@ -71,12 +56,51 @@ const projects = [
   // Add more project objects here
 ];
 
-export default function ProjectDetails() {
-  //const isMatchedScreen = useScreen(1216);
-  const isMatchedScreen = true;
-  //const { id } = useParams();
+export default function ProjectDetails(props) {
+  const { currentUser } = useContext(AuthContext);
 
-  //const data = project1.find((item) => item.id == id);
+  const data = props.data;
+  const userId = data.userId;
+  const [userProject, setUserProject] = useState({});
+
+
+  useEffect(() => {
+    const ProjectUser = async () => {
+      try {
+        const res = await newRequest.get(`/users/${userId}`);
+        setUserProject(res.data);
+      } catch (err) {
+        console.log(err);
+        toast.error(err.response.data.message);
+      }
+    };
+
+    ProjectUser();
+  }, [userId]);
+
+  const handleSubmitProposal = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const { coverLetter, hourlyPrice, estimatedHours } =
+      Object.fromEntries(formData);
+
+    try {
+      const res = await newRequest.post("/proposals", {
+        sellerId: userProject._id,
+        buyerId: currentUser._id,
+        coverLetter,
+        hourlyPrice,
+        estimatedHours,
+        projectId: data._id,
+      });
+      toast.success("Proposal submitted successfully");
+      console.log("Proposal submitted successfully:", res.data);
+    } catch (err) {
+      console.error("Error submitting proposal:", err);
+      toast.error("Error submitting proposal");
+    }
+  };
 
   return (
     <>
@@ -89,19 +113,20 @@ export default function ProjectDetails() {
                   <div className="row visible ">
                     <div className="col-xl-12">
                       <div className="position-relative pl60 pl20-sm relative md-b:pl-[60px] pl-5 ">
-                        {/* {data ? (
-                          <h2>{data.title}</h2>
+                        {data ? (
+                          <h2 className=" xs-b:text-[32px] text-[20px] font-bold text-white leading-[1.3125] mt-0 mb-2">
+                            {data.title}
+                          </h2>
                         ) : (
-                          <h2>Website Designer Required For Directory Theme</h2>
-                        )} */}
-                        <h2 className=" xs-b:text-[32px] text-[20px] font-bold text-white leading-[1.3125] mt-0 mb-2">
-                          Website Designer Required For Directory Theme
-                        </h2>
+                          <h2 className=" xs-b:text-[32px] text-[20px] font-bold text-white leading-[1.3125] mt-0 mb-2">
+                            Website Designer Required For Directory Theme
+                          </h2>
+                        )}
                         <div className="list-meta mt-[15px] flex items-center flex-wrap">
                           <p className=" md-b:mb-0 mr-2 mb-[5px] font-medium text-[15px]  text-white mt-0 ml-0 leading-[1.85] flex items-center justify-start ">
                             <TfiLocationPin className="align-middle text-[40px] !text-white mr-2 bg-[#233D2D] p-2 rounded-full " />
                             <span className="bg-[#ffffff24] px-4 py-1 rounded-lg ">
-                              London, UK
+                              {userProject.city}, {userProject.country}
                             </span>
                           </p>
                           <p className=" md-b:mb-0 mr-2 mb-[5px] font-medium text-[15px]  text-white mt-0 ml-0 leading-[1.85] flex items-center justify-start xs-b:ml-[15px] ">
@@ -110,7 +135,7 @@ export default function ProjectDetails() {
                               <LuCalendarCheck className="align-middle z-10 text-[24px] " />
                             </span>
                             <span className="bg-[#ffffff24] px-4 py-1 rounded-lg">
-                              January 15, 2022
+                              {new Date(data.createdAt).toLocaleString()}
                             </span>
                           </p>
                           <p className=" md-b:mb-0 mr-2 mb-[5px] font-medium text-[15px]  text-white mt-0 ml-0 leading-[1.85] flex items-center justify-start xs-b:ml-[15px]">
@@ -194,10 +219,10 @@ export default function ProjectDetails() {
                           </div>
                           <div className="details z-10 pl-[35px]">
                             <h5 className="title mb-[5px] text-[17px] font-medium text-[#222] leading-[1.3125] mt-0">
-                              Seller Type
+                              Seller Name
                             </h5>
                             <p className="mb-0 text-[#222] font-normal mt-0 mx-0 leading-[1.85] ">
-                              Company
+                              {userProject.fname} {userProject.lname}
                             </p>
                           </div>
                         </div>
@@ -212,7 +237,7 @@ export default function ProjectDetails() {
                               Project type
                             </h5>
                             <p className="mb-0 text-[#222] font-normal mt-0 mx-0 leading-[1.85]">
-                              Hourly
+                              {data.budgetType}
                             </p>
                           </div>
                         </div>
@@ -421,22 +446,33 @@ export default function ProjectDetails() {
                       <h4 className="text-[20px] font-medium text-[#222] leading-[1.3125] mt-0 mb-2">
                         Description
                       </h4>
-                      <p className="text-[#222] mb-[30px] mt-0 mx-0 leading-[1.85]">
-                        It is a long established fact that a reader will be
-                        distracted by the readable content of a page when
-                        looking at its layout. The point of using Lorem Ipsum is
-                        that it has a more-or-less normal distribution of
-                        letters, as opposed to using &apos;Content here, content
-                        here&apos;, making it look like readable English.{" "}
-                      </p>
-                      <p className="text-[#222] mb-[30px] mt-0 mx-0 leading-[1.85]">
-                        Many desktop publishing packages and web page editors
-                        now use Lorem Ipsum as their default model text, and a
-                        search for &apos;lorem ipsum&apos; will uncover many web
-                        sites still in their infancy. Various versions have
-                        evolved over the years, sometimes by accident, sometimes
-                        on purpose (injected humour and the like).
-                      </p>
+                      {data ? (
+                        <p className="text-[#222] mb-[30px] mt-0 mx-0 leading-[1.85]">
+                          {data.description}
+                        </p>
+                      ) : (
+                        <>
+                          <p className="text-[#222] mb-[30px] mt-0 mx-0 leading-[1.85]">
+                            It is a long established fact that a reader will be
+                            distracted by the readable content of a page when
+                            looking at its layout. The point of using Lorem
+                            Ipsum is that it has a more-or-less normal
+                            distribution of letters, as opposed to using
+                            &apos;Content here, content here&apos;, making it
+                            look like readable English.{" "}
+                          </p>
+
+                          <p className="text-[#222] mb-[30px] mt-0 mx-0 leading-[1.85]">
+                            Many desktop publishing packages and web page
+                            editors now use Lorem Ipsum as their default model
+                            text, and a search for &apos;lorem ipsum&apos; will
+                            uncover many web sites still in their infancy.
+                            Various versions have evolved over the years,
+                            sometimes by accident, sometimes on purpose
+                            (injected humour and the like).
+                          </p>
+                        </>
+                      )}
                       <hr className="opacity-100 mb-[60px]  mt-[60px] bg-[#e9e9e9] mx-0 border-0 border-t" />
                       <h4 className="mb-[30px] text-[20px] font-normal text-[#222] leading-[1.3125] mt-0">
                         Attachments
@@ -472,7 +508,7 @@ export default function ProjectDetails() {
                         Skills Required
                       </h4>
                       <div className="mb-[60px] flex flex-wrap">
-                        {skills.map((item, i) => (
+                        {data.skills.map((item, i) => (
                           <a
                             key={i}
                             className={` flex items-center py-0 px-[14px] bg-gray-200 text-sm text-[#000] rounded-full border    
@@ -490,29 +526,44 @@ export default function ProjectDetails() {
                         <h4 className="mb-[30px] text-[20px] font-normal text-[#222] leading-[1.3125] mt-0">
                           Send Your Proposal
                         </h4>
-                        <form className="comments_form max-[991.98px]:mb-[30px] mt-[30px]">
+                        <form
+                          onSubmit={handleSubmitProposal}
+                          className="comments_form max-[991.98px]:mb-[30px] mt-[30px]"
+                        >
                           <div className="row">
                             <div className="col-md-6">
                               <div className="mb-[20px]">
-                                <label className="font-medium text-[#222] mb-2">
+                                <label
+                                  htmlFor="hourlyPrice"
+                                  className="font-medium text-[#222] mb-2"
+                                >
                                   Your hourly price
                                 </label>
                                 <input
                                   type="text"
-                                  className="form-control w-full border p-2 rounded-lg py-2 px-3  focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
+                                  className="form-control w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                                   placeholder="$99"
+                                  id="hourlyPrice"
+                                  name="hourlyPrice"
+                                  required
                                 />
                               </div>
                             </div>
                             <div className="col-md-6">
                               <div className="mb-[20px]">
-                                <label className="font-medium text-[#222] mb-2">
+                                <label
+                                  htmlFor="estimatedHours"
+                                  className="font-medium text-[#222] mb-2"
+                                >
                                   Estimated Hours
                                 </label>
                                 <input
                                   type="text"
-                                  className="form-control w-full border p-2 rounded-lg py-2 px-3  focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
+                                  className="form-control w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                                   placeholder={4}
+                                  id="estimatedHours"
+                                  name="estimatedHours"
+                                  required
                                 />
                               </div>
                             </div>
@@ -522,91 +573,97 @@ export default function ProjectDetails() {
                                   Cover Letter
                                 </label>
                                 <textarea
-                                  className="pt-[15px] form-control w-full border p-2 rounded-lg py-2 px-3  focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
+                                  className="pt-[15px] form-control w-full border p-2 rounded-lg py-2 px-3 focus-within:border-[#3e3e3e5f] focus-within:outline-none hover:border-[#3e3e3e5f] focus:border-[#3e3e3e5f]"
                                   rows={6}
                                   placeholder="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text."
+                                  id="coverLetter"
+                                  name="coverLetter"
+                                  required
                                 />
                               </div>
                             </div>
                             <div className="col-md-12">
-                              <FileUpload />
-                            </div>
-                            <div className="col-md-12">
                               <div className="d-grid grid">
-                                <a className="ud-btn btn-thm bg-[#5bbb7b] border-2 border-[#5bbb7b] text-white cursor-pointer font-medium flex justify-center items-center text-lg">
+                                <button
+                                  className="ud-btn btn-thm !bg-[#5bbb7b] !border-2 !border-[#5bbb7b] !text-white cursor-pointer font-medium flex justify-center items-center text-lg"
+                                  type="submit"
+                                >
                                   Submit a Proposal
                                   <FaArrowRightLong className="ml-[10px] -rotate-45 text-white" />
-                                </a>
+                                </button>
                               </div>
                             </div>
                           </div>
                         </form>
                       </div>
+
                       {/* Project cards */}
 
                       <hr className="opacity-100 mb-[60px]  mt-[60px] bg-[#e9e9e9] mx-0 border-0 border-t" />
                       <h4 className="mb-[30px] text-[20px] font-normal text-[#222] leading-[1.3125] mt-0">
-                        Project Proposals (3)
+                        Project Proposals ({projects.length})
                       </h4>
-                      <div className="row">
-                        {projectProposal.slice(0, 3).map((item, i) => (
-                          <div key={i} className="col-md-6 col-lg-12">
-                            {/* <ProjectProposalCard1 data={item} /> */}
-                          </div>
-                        ))}
-                      </div>
 
                       {projects.map((project, index) => (
                         <div className="mb-7" key={index}>
-                          <ProjectCard key={index} {...project} />
+                          <ProjectCard key={index} data={project} />
                         </div>
                       ))}
-                      {/* <div>
-                        <div className="w-full !mb-7">
-                          <ProjectCard />
-                        </div>
-                        <div className="w-full !mb-7">
-                          <ProjectCard />
-                        </div>
-                        <div className="w-full !mb-7">
-                          <ProjectCard />
-                        </div>
-                      </div> */}
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-lg-4">
                 <div className="column">
-                  {isMatchedScreen ? (
-                    <Sticky>
-                      {({ style }) => (
-                        <div className="scrollbalance-inner ">
-                          <div className="blog-sidebar ms-lg-auto max-w-[370px]">
-                            <ProjectPriceWidget />
-                            {/* 
-                            <ProjectContactWidget1 /> */}
-
-                            <ServiceContactWidget />
-                          </div>
+                  <div className="scrollbalance-inner">
+                    <div className="blog-sidebar ms-lg-auto max-w-[370px]">
+                      {/* <ProjectPriceWidget data={data} /> */}
+                      <div className="price-widget pt-[25px] rounded-[8px] border border-[#e9e9e9] mb-[40px] pb-[30px] px-[30px] relative bg-white shadow">
+                        {data.budgetType === "hourly" ? (
+                          <>
+                            <h3 className="text-[28px] text-[#222] leading-[1.3125] mt-0 mb-2 font-medium">
+                              ${data.hourlyRateFrom} - ${data.hourlyRateTo}
+                            </h3>
+                            <p className="text-[#222] font-normal mx-0 mt-0 mb-[15px] leading-[1.85]  text-[14px] ">
+                              Hourly Rate
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <h3 className="text-[28px] text-[#222] leading-[1.3125] mt-0 mb-2 font-medium">
+                              ${data.fixedPrice}
+                            </h3>
+                            <p className="text-[#222] font-normal mx-0 mt-0 mb-[15px] leading-[1.85]  text-[14px] ">
+                              Fixed Price
+                            </p>
+                          </>
+                        )}
+                        <div className="grid">
+                          <Link
+                            href="/contact"
+                            className="ud-btn btn-thm max-[339px]:py-[13px] max-[339px]:px-[25px] bg-[#5bbb7b] border-2 border-[#5bbb7b] text-white cursor-pointer !font-medium flex justify-center items-center text-lg  "
+                          >
+                            Submit a Proposal
+                            <FaArrowRightLong className="ml-[10px] -rotate-45 text-white" />
+                          </Link>
                         </div>
-                      )}
-                    </Sticky>
-                  ) : (
-                    <div className="scrollbalance-inner">
-                      <div className="blog-sidebar ms-lg-auto max-w-[370px]">
-                        {/* <ProjectPriceWidget1 />
-                        <ProjectContactWidget1 /> */}
-                        <ServiceContactWidget />
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
+        <ToastContainer />
       </StickyContainer>
     </>
   );
 }
+
+ProjectDetails.propTypes = {
+  data: PropTypes.object,
+};
+ProjectDetails.defaultProps = {
+  data: {},
+};

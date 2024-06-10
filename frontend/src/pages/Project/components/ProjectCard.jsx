@@ -3,30 +3,35 @@ import { AiFillStar } from "react-icons/ai";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
-import propTypes from "prop-types";
 import { toast } from "react-toastify"; // Adjust this import according to your project structure
 import newRequest from "../../../utils/newRequest";
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+//import Project from "../../../../../api/models/project.model";
 
-const ProjectCard = ({
-  title,
-  description,
-  category,
-  subCategory,
-  skills,
-  budgetType,
-  hourlyRateFrom,
-  hourlyRateTo,
-  fixedPrice,
-  scopeDuration,
-  scopeLevel,
-  scopeHiring,
-  location,
-  isPaymentVerified,
-  userId,
-}) => {
+const ProjectCard = (props) => {
+  console.log(props.data);
+  const {
+    title,
+    description,
+    category,
+    subCategory,
+    skills,
+    budgetType,
+    hourlyRateFrom,
+    hourlyRateTo,
+    fixedPrice,
+    scopeDuration,
+    scopeLevel,
+    scopeHiring,
+    location,
+    isPaymentVerified,
+    userId,
+  } = props.data;
+  const id = props.data._id;
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [userProject, setUserProject] = useState({});
-
+  const navigate = useNavigate();
   useEffect(() => {
     const projectUser = async () => {
       try {
@@ -106,15 +111,18 @@ const ProjectCard = ({
       <div className="md:flex px-8 pt-8">
         <div className="w-fit p-4 pl-0">
           <img
-            className="h-14 w-auto object-cover rounded-md"
+            className="h-14 !max-w-14 object-cover rounded-md"
             src={userProject.img}
             alt="User"
           />
         </div>
         <div className="pt-4">
-          <div className="uppercase text-xl text-black font-semibold w-fit">
+          <button
+            className="uppercase text-xl text-black font-semibold w-fit"
+            onClick={() => navigate(`/project/${id}`)}
+          >
             {title}
-          </div>
+          </button>
           <p className="block mt-1 text-xs leading-tight font-medium text-[#77859A]">
             <span className="font-bold">
               $
@@ -195,21 +203,11 @@ const ProjectCard = ({
 };
 
 ProjectCard.propTypes = {
-  title: propTypes.string.isRequired,
-  description: propTypes.string.isRequired,
-  category: propTypes.string.isRequired,
-  subCategory: propTypes.string.isRequired,
-  skills: propTypes.array.isRequired,
-  budgetType: propTypes.string.isRequired,
-  fixedPrice: propTypes.number.isRequired,
-  hourlyRateFrom: propTypes.number,
-  hourlyRateTo: propTypes.number,
-  scopeDuration: propTypes.string.isRequired,
-  scopeLevel: propTypes.string.isRequired,
-  scopeHiring: propTypes.string.isRequired,
-  location: propTypes.string,
-  isPaymentVerified: propTypes.bool,
-  userId: propTypes.string.isRequired,
+  data: PropTypes.object,
+};
+
+ProjectCard.defaultProps = {
+  data: {},
 };
 
 export default ProjectCard;

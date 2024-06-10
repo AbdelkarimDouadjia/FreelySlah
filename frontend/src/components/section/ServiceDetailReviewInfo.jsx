@@ -1,9 +1,44 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
+import PropTypes from "prop-types";
+import newRequest from "../../utils/newRequest";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Review from "./Review";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+const ServiceDetailReviewInfo = ({ gigId }) => {
+  const queryClient = useQueryClient();
 
-const ServiceDetailReviewInfo = () => {
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["reviews"],
+    queryFn: () => newRequest.get(`/reviews/${gigId}`).then((res) => res.data),
+  });
+
+  const mutation = useMutation({
+    mutationFn: (review) => {
+      return newRequest.post("/reviews", review);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["reviews"]);
+    },
+  });
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const desc = comment;
+    const star = rating;
+    mutation.mutate({ gigId, desc, star });
+    setComment("");
+    setRating(0);
+    setHover(0);
+    toast.success("Review submitted successfully");
+  };
+
   return (
     <>
       <div className="product_single_content mb-[50px]">
@@ -123,6 +158,17 @@ const ServiceDetailReviewInfo = () => {
               </div>
             </div>
             <div className="flex-shrink-0 w-full max-w-full px-3 min-[992px]:flex-initial min-[992px]:flex-shrink-0">
+              {isLoading ? (
+                <div>Loading...</div>
+              ) : error ? (
+                <div>Error: {error.message}</div>
+              ) : (
+                data.map((review) => (
+                  <Review key={review._id} review={review} />
+                ))
+              )}
+            </div>
+            {/* <div className="flex-shrink-0 w-full max-w-full px-3 min-[992px]:flex-initial min-[992px]:flex-shrink-0">
               <div className="max-[767px]:mb-[30px] text-center justify-start relative flex">
                 <img
                   height={60}
@@ -195,8 +241,8 @@ const ServiceDetailReviewInfo = () => {
                   Not helpful
                 </a>
               </div>
-            </div>
-            <div className="flex-shrink-0 w-full max-w-full px-3 min-[992px]:flex-initial min-[992px]:flex-shrink-0">
+            </div> */}
+            {/* <div className="flex-shrink-0 w-full max-w-full px-3 min-[992px]:flex-initial min-[992px]:flex-shrink-0">
               <div className="relative pb-[50px] border-b border-[#e9e9e9]">
                 <Link
                   href="/service-single"
@@ -206,11 +252,82 @@ const ServiceDetailReviewInfo = () => {
                   <FaArrowRightLong className="ml-[10px] text-base -rotate-45 font-light" />
                 </Link>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
+      <form className="bsp_reveiw_wrt mb-[20px]" onSubmit={handleSubmit}>
+        <h6 className="text-[17px] font-medium text-[#222] leading-[1.3125] mt-0 mb-2">
+          Add a Review
+        </h6>
+        <p className="text-[#222] font-normal mt-0 mx-0 mb-[15px] leading-[1.85]">
+          Your email address will not be published. Required fields are marked *
+        </p>
+        <h6 className="text-[15px] font-medium text-[#222] leading-[1.3125] mt-0 mb-2">
+          Your rating of this product
+        </h6>
+        <div className="flex">
+          {[...Array(5)].map((star, index) => {
+            const ratingValue = index + 1;
+            return (
+              <label key={index}>
+                <input
+                  type="radio"
+                  name="rating"
+                  value={ratingValue}
+                  onClick={() => setRating(ratingValue)}
+                  className="hidden"
+                />
+                <i
+                  className={
+                    ratingValue <= (hover || rating)
+                      ? ratingValue <= rating
+                        ? " !cursor-pointer fas fa-star  !text-[#e1c03f]"
+                        : "!cursor-pointer fas fa-star  !text-[#675914] "
+                      : "!cursor-pointer far fa-star  !text-[#e1c03f] ml-2"
+                  }
+                  onMouseEnter={() => setHover(ratingValue)}
+                  onMouseLeave={() => setHover(rating)}
+                />
+              </label>
+            );
+          })}
+        </div>
+        <div className="comments_form max-[991px]:mb-[30px] mt-[30px]">
+          <div className="flex flex-wrap -mx-3">
+            <div className="flex-shrink-0 w-full max-w-full px-3 min-[992px]:flex-initial min-[992px]:flex-shrink-0">
+              <div className="mb-6">
+                <label className="font-medium text-base text-[#222] mb-2 inline-block">
+                  Comment
+                </label>
+                <textarea
+                  className="bg-[#fcfcfc] border border-[#e9e9e9] rounded-lg h-auto w-full py-[25px] px-[20px] resize-y pt-[15px] m-0 placeholder:text-[15px] placeholder-[#6b7177] placeholder:leading-[1.85]"
+                  rows={6}
+                  placeholder="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text."
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="flex-shrink-0 w-full max-w-full px-3 min-[992px]:flex-initial min-[992px]:flex-shrink-0">
+              <button
+                className="ud-btn btn-thm !bg-[#5bbb7b] !border-2 !border-[#5bbb7b] !text-white rounded-[4px] font-bold text-[15px] not-italic  tracking-normal py-[13px] px-[35px] realtive overflow-hidden text-center z-0 transition-all duration-300 ease-linear cursor-pointer hover:border-2 hover:border-[#1f4b3f] flex items-center justify-center w-fit hover:text-white"
+                type="submit"
+              >
+                Send
+                <FaArrowRightLong className="ml-[5px] -rotate-45 font-light" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <ToastContainer />
     </>
   );
 };
+
+ServiceDetailReviewInfo.propTypes = {
+  gigId: PropTypes.string.isRequired,
+};
+
 export default ServiceDetailReviewInfo;

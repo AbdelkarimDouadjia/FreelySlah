@@ -35,6 +35,10 @@ const OrderSchema = new Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      default: "progress",
+    },
   },
   {
     timestamps: true,
@@ -42,4 +46,3 @@ const OrderSchema = new Schema(
 );
 
 export default mongoose.model("Order", OrderSchema);
-	

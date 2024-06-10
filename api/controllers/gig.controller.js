@@ -66,7 +66,9 @@ export const updateGig = async (req, res, next) => {
     if (gig.userId !== req.userId)
       return next(createError(403, "You can update only your gig!"));
 
-    const updatedGig = await Gig.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedGig = await Gig.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     res.status(200).json(updatedGig);
   } catch (err) {
     next(err);
