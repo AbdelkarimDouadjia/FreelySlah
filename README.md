@@ -42,12 +42,12 @@ cd freelyslah
    ```bash
    npm install
    ```
-3. Configure environment variables by creating a `.env` file in the `api` directory. Example:
+<!--3. Configure environment variables by creating a `.env` file in the `api` directory. Example:
    ```env
    MONGO_URI=your_mongodb_uri
    JWT_SECRET=your_jwt_secret
    PORT=5000
-   ```
+   ```-->
 
 ### Frontend
 1. Navigate to the `frontend` directory:
@@ -58,10 +58,10 @@ cd freelyslah
    ```bash
    npm install
    ```
-3. Configure environment variables by creating a `.env` file in the `frontend` directory. Example:
+<!--3. Configure environment variables by creating a `.env` file in the `frontend` directory. Example:
    ```env
    REACT_APP_API_URL=http://localhost:5000
-   ```
+   ```-->
 
 ## Usage
 
@@ -77,7 +77,7 @@ cd freelyslah
    npm start
    ```
 
-The application should now be running with the frontend accessible at `http://localhost:3000` and the backend API at `http://localhost:5000`.
+<!--The application should now be running with the frontend accessible at `http://localhost:3000` and the backend API at `http://localhost:5000`.-->
 
 ## Project Structure
 ```
