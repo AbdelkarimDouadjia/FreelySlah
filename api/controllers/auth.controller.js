@@ -42,7 +42,7 @@ export const login = async (req, res, next) => {
         id: user._id,
         isSeller: user.isSeller,
       },
-      process.env.JWT_KEY,
+      `${process.env.JWT_KEY}`,
       { expiresIn: "24h" } // Add token expiration
     );
 
@@ -69,7 +69,7 @@ export const logout = async (req, res, next) => {
     const token = req.cookies.accessToken;
     if (!token) return next(createError(401, "Not authenticated!"));
 
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const decoded = jwt.verify(token, `${process.env.JWT_KEY}`);
     const user = await User.findById(decoded.id);
 
     if (!user) return next(createError(404, "User not found!"));

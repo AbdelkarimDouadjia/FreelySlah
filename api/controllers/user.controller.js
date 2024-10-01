@@ -53,7 +53,7 @@ export const updateUser = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(id, updatedData, {
       new: true,
     });
-    //const { password: userPassword, ...rest } = updatedUser.toObject();
+    const { password: userPassword, ...rest } = updatedUser.toObject();
 
     res.status(200).json(updatedUser);
   } catch (err) {

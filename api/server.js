@@ -17,10 +17,12 @@ import proposalRoute from "./routes/proposal.route.js";
 const app = express();
 dotenv.config();
 mongoose.set("strictQuery", true);
+const HOST = process.env.HOST || 'localhost';
+const DBName = process.env.DBNAME || 'freelyslah';
 
 const connect = async () => {
   try {
-    await mongoose.connect(process.env.MONGO);
+    await mongoose.connect(`mongodb://${HOST}/${DBName}`);
     console.log("Connected to mongoDB!");
   } catch (error) {
     console.log(error);
