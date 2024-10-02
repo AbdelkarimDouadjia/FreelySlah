@@ -109,6 +109,8 @@ freelyslah/
 ** Firebase
 ** Nodemon
 ** Postman
+** Github
+
 ## Contributing
 Contributions are welcome! Please fork the repository and create a pull request with your feature or bug fix.
 
