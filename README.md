@@ -105,11 +105,11 @@ freelyslah/
 - **Deployment**: TBD
 
 ## Other Tools Used
-** VS Code
-** Firebase
-** Nodemon
-** Postman
-** Github
+* VS Code
+* Firebase
+* Nodemon
+* Postman
+* Github
 
 ## Contributing
 Contributions are welcome! Please fork the repository and create a pull request with your feature or bug fix.
