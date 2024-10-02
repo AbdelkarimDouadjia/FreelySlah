@@ -104,6 +104,11 @@ freelyslah/
 - **Authentication**: JSON Web Tokens (JWT)
 - **Deployment**: TBD
 
+## Other Tools Used
+** VS Code
+** Firebase
+** Nodemon
+** Postman
 ## Contributing
 Contributions are welcome! Please fork the repository and create a pull request with your feature or bug fix.
 
