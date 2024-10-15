@@ -13,6 +13,10 @@ import projectRoute from "./routes/project.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import proposalRoute from "./routes/proposal.route.js";
+import {createServer} from "node:http";
+import {server} from "socket.io";
+import {createMessage} from "./controllers/message.controller.js";
+import { message } from "antd";
 
 const app = express();
 dotenv.config();
@@ -51,6 +55,25 @@ app.use((err, req, res, next) => {
   return res.status(errorStatus).send(errorMessage);
 });
 
+//create HTTP server and Socket.io
+const server = createServer(app);
+export const io = new server(server);
+
+// Handle Socket.IO connections
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+
+  // Listen for messages
+  socket.on("sendMessage", (message,res,userId) => {
+    createMessage.send(message,res,userId)
+    // Broadcast the message to all connected clients
+    io.emit("receiveMessage", message);
+});
+
+  socket.on("req", (res) => {
+    createMessage.req(res);
+  });
+});
 app.listen(8800, () => {
   connect();
   console.log("Backend server is running!");
