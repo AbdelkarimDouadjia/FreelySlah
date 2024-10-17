@@ -1,0 +1,17 @@
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+        server_name _;
+        location / {
+		proxy_pass http://localhost:5173/;
+        }
+
+        error_page 404 /404-def.html;
+        location = /404-def.html {
+                root /var/www/html;
+                internal;
+        } 
+
+
+        add_header X-Served-By ec2-5c2114;
+}
